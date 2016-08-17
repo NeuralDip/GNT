@@ -874,6 +874,7 @@ namespace GeneticNetworkTrainer
                 else // Split
                 {
                     int Multiplier = NewIslands / OldIslands;
+
                     for (int SICnt = 0; SICnt < DevelopingNetsStructure.Count; SICnt++)// in case Struct islands have changed too, we first restructure the Internal islands, so we loop on the old Struct Islands here 
                     {
                         for (int SPCnt = 0; SPCnt < DevelopingNetsStructure[0].Count; SPCnt++)// in case Struct islands have changed too, we first restructure the Internal islands, so we loop on the old Struct population here 
