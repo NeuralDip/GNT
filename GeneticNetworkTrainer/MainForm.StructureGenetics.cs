@@ -156,10 +156,11 @@ namespace GeneticNetworkTrainer
                 return;
             }
             LabelStructureIslands.Text = NewValue.ToString();
-            MyGenTrainer.MyState.NumberStructureIslands = NewValue;
+            MyGenTrainer.MyState.InitialNumberStructureIslands = NewValue;
+            MyGenTrainer.MyState.CurrNumberStructureIslands = NewValue;
 
-            MyGenTrainer.MyState.TotalStructurePopulation = (MyGenTrainer.MyState.TotalStructurePopulation - (MyGenTrainer.MyState.TotalStructurePopulation % MyGenTrainer.MyState.NumberStructureIslands));
-            MyGenTrainer.MyState.StructurePopulationPerIsland = MyGenTrainer.MyState.TotalStructurePopulation / MyGenTrainer.MyState.NumberStructureIslands;
+            MyGenTrainer.MyState.TotalStructurePopulation = (MyGenTrainer.MyState.TotalStructurePopulation - (MyGenTrainer.MyState.TotalStructurePopulation % MyGenTrainer.MyState.CurrNumberStructureIslands));
+            MyGenTrainer.MyState.StructurePopulationPerIsland = MyGenTrainer.MyState.TotalStructurePopulation / MyGenTrainer.MyState.CurrNumberStructureIslands;
             TextBoxStructurePopulation.Text = MyGenTrainer.MyState.TotalStructurePopulation.ToString();
         }
         private void CheckBoxStructureHalve_CheckedChanged(object sender, EventArgs e)

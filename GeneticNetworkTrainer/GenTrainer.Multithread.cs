@@ -67,11 +67,11 @@ namespace GeneticNetworkTrainer
             //preparing threads
             if (MyState.ThreadingActivated && MyState.DynamicSearchMaxThreads) CalculateDynamicThreading(true);
             MyThreads = new ThreadsStruct();
-            for (int SICnt = 0; SICnt < MyState.NumberStructureIslands; SICnt++)
+            for (int SICnt = 0; SICnt < MyState.CurrNumberStructureIslands; SICnt++)
                 for (int SPCnt = 0; SPCnt < MyState.StructurePopulationPerIsland; SPCnt++)
                     MyThreads.Add(SICnt, SPCnt);
 
-            for (int SICnt = 0; SICnt < MyState.NumberStructureIslands; SICnt++)
+            for (int SICnt = 0; SICnt < MyState.CurrNumberStructureIslands; SICnt++)
                 NextStructGeneration(SICnt);// prepare generation for this Structure Island
             LaunchAnyWaitingThreads();
         }
@@ -142,7 +142,7 @@ namespace GeneticNetworkTrainer
         {
             if (ForceStopTraining) { CallTheForm(TrainingState.TrainingStopped); StopTraining = false; ForceStopTraining = false; return; }//stop before populating STats
 
-            for (int Cnt = 0; Cnt < MyState.NumberStructureIslands; Cnt++)
+            for (int Cnt = 0; Cnt < MyState.CurrNumberStructureIslands; Cnt++)
                 PopulateStatsStructure(TrainingState.StructIslandEnded, Cnt, 0, 0, 0);
 
             PopulateStatsStructure(TrainingState.StructGenEnded, 0, 0, 0, 0);

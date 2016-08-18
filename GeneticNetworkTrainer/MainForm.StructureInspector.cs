@@ -382,7 +382,7 @@ namespace GeneticNetworkTrainer
             if (MainTabControl.SelectedIndex != 3 || !NewStructStatsReady) return;
 
             ListViewStructIslands.Items.Clear();
-            for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NumberStructureIslands; Cnt++)
+            for (int Cnt = 0; Cnt < MyGenTrainer.MyState.CurrNumberStructureIslands; Cnt++)
             {
                 ListViewStructIslands.Items.Add(Cnt.ToString());
                 ListViewStructIslands.Items[Cnt].SubItems.Add(MyGenTrainer.SettledStatsStructure.StructIslandsStats[Cnt].ScoreHistory.ReadLastValue().ToString());

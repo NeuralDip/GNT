@@ -268,12 +268,12 @@ namespace GeneticNetworkTrainer
             SliderStructureCopy.Value = (int)(MyGenTrainer.MyState.StructureCopy * 100);
             LabelStructureCopy.Text = MyGenTrainer.MyState.StructureCopy.ToString();
 
-            if (MyGenTrainer.MyState.NumberStructureIslands == 1) SliderStructureIslands.Value = 0;
-            else if (MyGenTrainer.MyState.NumberStructureIslands == 2) SliderStructureIslands.Value = 1;
-            else if (MyGenTrainer.MyState.NumberStructureIslands == 4) SliderStructureIslands.Value = 2;
-            else if (MyGenTrainer.MyState.NumberStructureIslands == 8) SliderStructureIslands.Value = 3;
+            if (MyGenTrainer.MyState.CurrNumberStructureIslands == 1) SliderStructureIslands.Value = 0;
+            else if (MyGenTrainer.MyState.CurrNumberStructureIslands == 2) SliderStructureIslands.Value = 1;
+            else if (MyGenTrainer.MyState.CurrNumberStructureIslands == 4) SliderStructureIslands.Value = 2;
+            else if (MyGenTrainer.MyState.CurrNumberStructureIslands == 8) SliderStructureIslands.Value = 3;
             else /*if (MyState.NumberStructureIslands == 16)*/ SliderStructureIslands.Value = 4;
-            LabelStructureIslands.Text = MyGenTrainer.MyState.NumberStructureIslands.ToString();
+            LabelStructureIslands.Text = MyGenTrainer.MyState.CurrNumberStructureIslands.ToString();
             CheckBoxStructureHalve.Checked = MyGenTrainer.MyState.HalveStructureIslands;
             TextBoxStructureIslandsSteps.Text = MyGenTrainer.MyState.StructureIslandsHalvingSteps.ToString();
             LabelStructureHalveIn.Text = MyGenTrainer.MyState.StructureIslandsHalveIn.ToString();

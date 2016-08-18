@@ -218,16 +218,16 @@ namespace GeneticNetworkTrainer
         private void TextBoxStructurePopulation_TextChanged(object sender, EventArgs e)
         {
             int NewValue;
-            if (!int.TryParse(TextBoxStructurePopulation.Text, out NewValue) || NewValue < 2 * MyGenTrainer.MyState.NumberStructureIslands)
+            if (!int.TryParse(TextBoxStructurePopulation.Text, out NewValue) || NewValue < 2 * MyGenTrainer.MyState.CurrNumberStructureIslands)
             {
-                AppendFeedback(string.Format("Invalid input. Expected {0}(2*NumIslands-1) < Integer. ", 2 * MyGenTrainer.MyState.NumberStructureIslands - 1), 1);
+                AppendFeedback(string.Format("Invalid input. Expected {0}(2*NumIslands-1) < Integer. ", 2 * MyGenTrainer.MyState.CurrNumberStructureIslands - 1), 1);
                 TextBoxStructurePopulation.Text = MyGenTrainer.MyState.TotalStructurePopulation.ToString();
             }
             else//Number has to be divisible by the number of islands
             {
-                NewValue = (NewValue - (NewValue % MyGenTrainer.MyState.NumberStructureIslands));
+                NewValue = (NewValue - (NewValue % MyGenTrainer.MyState.CurrNumberStructureIslands));
                 MyGenTrainer.MyState.TotalStructurePopulation = NewValue;
-                MyGenTrainer.MyState.StructurePopulationPerIsland = NewValue / MyGenTrainer.MyState.NumberStructureIslands;
+                MyGenTrainer.MyState.StructurePopulationPerIsland = NewValue / MyGenTrainer.MyState.CurrNumberStructureIslands;
                 MyGenTrainer.ResetStructures(false);
             }
         }
