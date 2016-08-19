@@ -115,7 +115,7 @@ namespace GeneticNetworkTrainer
             public float ThresholdOfValidOut = 0.0f;
 
             //Net Structure That will be saved
-            public List<List<List<GenNetwork[]>>> SettledNetsStructure; //Islands[Structures[Islands[Nets]]]
+            public List<List<List<GenNetwork[]>>> NetsStructureToSave; //Islands[Structures[Islands[Nets]]]
         }
         [Serializable]
         public class StatsStructureClass
@@ -252,6 +252,8 @@ namespace GeneticNetworkTrainer
         public StateClass MyState;
         //Ststs and net Structures that are not saved
         public List<List<List<GenNetwork[]>>> DevelopingNetsStructure; //Islands[Structures[Islands[Nets]]]
+        public List<List<List<GenNetwork[]>>> SettledNetsStructure; //Islands[Structures[Islands[Nets]]]
+
         public StatsStructureClass SettledStatsStructure;
         public StatsStructureClass DevelopingStatsStructure;
 
@@ -278,39 +280,43 @@ namespace GeneticNetworkTrainer
             ParentFormLogging = iLoggingFunction;
             ParentFormControlSet = iParentFormControlSet;
             ParentFormControlGet = iParentFormControlGet;
-            MyState.SettledNetsStructure = new List<List<List<GenNetwork[]>>>(); //Islands[Structures[Islands[Nets]]]
+            SettledNetsStructure = new List<List<List<GenNetwork[]>>>(); //Islands[Structures[Islands[Nets]]]
             DevelopingNetsStructure = new List<List<List<GenNetwork[]>>>(); //Islands[Structures[Islands[Nets]]]
             SettledStatsStructure = new StatsStructureClass(MyState.InitialNumberStructureIslands, MyState.StructurePopulationPerIsland, MyState.InitialNumberInternalIslands, MyState.InternalPopulationPerIsland, MyState.StructureGenerations, MyState.InternalGenerations);
             DevelopingStatsStructure = new StatsStructureClass(MyState.InitialNumberStructureIslands, MyState.StructurePopulationPerIsland, MyState.InitialNumberInternalIslands, MyState.InternalPopulationPerIsland, MyState.StructureGenerations, MyState.InternalGenerations);
         }
 
-        public void ResetStructures(bool Complete)
+        public void ResetStructures(bool Complete, bool StatsOnly)
         {
-            if (Complete) MyState.SettledNetsStructure = new List<List<List<GenNetwork[]>>>(); //Islands[Structures[Islands[Nets]]]
-            DevelopingNetsStructure = new List<List<List<GenNetwork[]>>>(); //Islands[Structures[Islands[Nets]]]
-            if (Complete) SettledStatsStructure = new StatsStructureClass(MyState.InitialNumberStructureIslands, MyState.StructurePopulationPerIsland, MyState.InitialNumberInternalIslands, MyState.InternalPopulationPerIsland, MyState.StructureGenerations, MyState.InternalGenerations);
-            DevelopingStatsStructure = new StatsStructureClass(MyState.InitialNumberStructureIslands, MyState.StructurePopulationPerIsland, MyState.InitialNumberInternalIslands, MyState.InternalPopulationPerIsland, MyState.StructureGenerations, MyState.InternalGenerations);
-
-            for (int SICnt = 0; SICnt < MyState.InitialNumberStructureIslands; SICnt++)
+            if (!StatsOnly)
             {
-                if (Complete) MyState.SettledNetsStructure.Add(new List<List<GenNetwork[]>>());
-                DevelopingNetsStructure.Add(new List<List<GenNetwork[]>>());
-                for (int SPCnt = 0; SPCnt < MyState.StructurePopulationPerIsland; SPCnt++)
+                if (Complete) SettledNetsStructure = new List<List<List<GenNetwork[]>>>(); //Islands[Structures[Islands[Nets]]]
+                DevelopingNetsStructure = new List<List<List<GenNetwork[]>>>(); //Islands[Structures[Islands[Nets]]]
+
+                for (int SICnt = 0; SICnt < MyState.InitialNumberStructureIslands; SICnt++)
                 {
-                    if (Complete) MyState.SettledNetsStructure[SICnt].Add(new List<GenNetwork[]>());
-                    DevelopingNetsStructure[SICnt].Add(new List<GenNetwork[]>());
-                    for (int IICnt = 0; IICnt < MyState.InitialNumberInternalIslands; IICnt++)
+                    if (Complete) SettledNetsStructure.Add(new List<List<GenNetwork[]>>());
+                    DevelopingNetsStructure.Add(new List<List<GenNetwork[]>>());
+                    for (int SPCnt = 0; SPCnt < MyState.StructurePopulationPerIsland; SPCnt++)
                     {
-                        if (Complete)
+                        if (Complete) SettledNetsStructure[SICnt].Add(new List<GenNetwork[]>());
+                        DevelopingNetsStructure[SICnt].Add(new List<GenNetwork[]>());
+                        for (int IICnt = 0; IICnt < MyState.InitialNumberInternalIslands; IICnt++)
                         {
-                            MyState.SettledNetsStructure[SICnt][SPCnt].Add(new GenNetwork[MyState.InternalPopulationPerIsland]);
-                            for (int IPCnt = 0; IPCnt < MyState.InternalPopulationPerIsland; IPCnt++) MyState.SettledNetsStructure[SICnt][SPCnt][IICnt][IPCnt] = new GenNetwork(MyState.NetInputs, 1, MyState.NetOutputs, new int[] { });
+                            if (Complete)
+                            {
+                                SettledNetsStructure[SICnt][SPCnt].Add(new GenNetwork[MyState.InternalPopulationPerIsland]);
+                                for (int IPCnt = 0; IPCnt < MyState.InternalPopulationPerIsland; IPCnt++) SettledNetsStructure[SICnt][SPCnt][IICnt][IPCnt] = new GenNetwork(MyState.NetInputs, 1, MyState.NetOutputs, new int[] { });
+                            }
+                            DevelopingNetsStructure[SICnt][SPCnt].Add(new GenNetwork[MyState.InternalPopulationPerIsland]);
+                            for (int IPCnt = 0; IPCnt < MyState.InternalPopulationPerIsland; IPCnt++) DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt] = new GenNetwork(MyState.NetInputs, 1, MyState.NetOutputs, new int[] { });
                         }
-                        DevelopingNetsStructure[SICnt][SPCnt].Add(new GenNetwork[MyState.InternalPopulationPerIsland]);
-                        for (int IPCnt = 0; IPCnt < MyState.InternalPopulationPerIsland; IPCnt++) DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt] = new GenNetwork(MyState.NetInputs, 1, MyState.NetOutputs, new int[] { });
                     }
                 }
             }
+            if (Complete) SettledStatsStructure = new StatsStructureClass(MyState.InitialNumberStructureIslands, MyState.StructurePopulationPerIsland, MyState.InitialNumberInternalIslands, MyState.InternalPopulationPerIsland, MyState.StructureGenerations, MyState.InternalGenerations);
+            DevelopingStatsStructure = new StatsStructureClass(MyState.InitialNumberStructureIslands, MyState.StructurePopulationPerIsland, MyState.InitialNumberInternalIslands, MyState.InternalPopulationPerIsland, MyState.StructureGenerations, MyState.InternalGenerations);
+
         }
 
         public void TrainNetNotThreaded(object iInput)
@@ -321,6 +327,7 @@ namespace GeneticNetworkTrainer
             MyGlobalWatch.Reset();
             MyGlobalWatch.Start();
             SomePreps();
+            ParentFormLogging("Training Started.", 0);
             for (int StrGenCnt = MyState.CurrStructureGeneration; StrGenCnt < MyState.StructureGenerations; StrGenCnt++)
             {
                 MyState.CurrStructureGeneration = StrGenCnt;
@@ -328,7 +335,7 @@ namespace GeneticNetworkTrainer
                 if (BoolSaveState) ForceSaveState();
                 if (StopTraining) { CallTheForm(TrainingState.TrainingStopped); StopTraining = false; return; }
 
-                //CheckIslandsUpadate(true, StrGenCnt);
+                CheckIslandsUpadate(false, 0, 0, StrGenCnt);
 
                 for (int SICnt = 0; SICnt < MyState.CurrNumberStructureIslands; SICnt++)
                 {
@@ -340,7 +347,7 @@ namespace GeneticNetworkTrainer
                         for (int IntGenCnt = 0; IntGenCnt < MyState.InternalGenerations; IntGenCnt++)
                         {
                             CheckAnnealingUpdate(IntGenCnt);
-                            //CheckIslandsUpadate(false, IntGenCnt);
+                            CheckIslandsUpadate(true, SICnt, SPCnt, IntGenCnt);
                             ParentFormControlSet("LabelCurrInternalGen", "Text", IntGenCnt.ToString());
                             for (int IICnt = 0; IICnt < CurrInternalIslands; IICnt++)
                             {
@@ -365,7 +372,7 @@ namespace GeneticNetworkTrainer
                     PopulateStatsStructure(TrainingState.StructIslandEnded, SICnt, 0, 0, 0);
                 }
                 PopulateStatsStructure(TrainingState.StructGenEnded, 0, 0, 0, 0);
-                MyState.SettledNetsStructure = CloneNetsStruct(DevelopingNetsStructure);
+                SettledNetsStructure = CloneNetsStruct(DevelopingNetsStructure);
                 SettledStatsStructure = CloneStatsStruct(DevelopingStatsStructure);
                 CheckStopConditions();
                 CallTheForm(TrainingState.StructGenEnded);
@@ -765,62 +772,105 @@ namespace GeneticNetworkTrainer
                 }
             }
         }
-        private void CheckIslandsUpadate(bool IsStructure, int CurrGeneration)
+        private void CheckIslandsUpadate(bool IsInternal, int CurrSI, int CurrSP, int CurrGeneration)
         {
-            if (IsStructure)
+            if (IsInternal)
             {
-                if (MyState.HalveStructureIslands)
+                if (MyState.HalveInternalIslands)
                 {
-                    int GenerationsStride = MyState.InitialNumberStructureIslands / (MyState.StructureIslandsHalvingSteps + 1);
-                    int GensRemaining = MyState.StructureGenerations % GenerationsStride;
+                    if (CurrGeneration == 0) CurrInternalIslands = MyState.InitialNumberInternalIslands;
+                    int GenerationsStride = MyState.InternalGenerations / (MyState.InternalIslandsHalvingSteps + 1);
 
-                    ParentFormControlSet("LabelStructureHalveIn", "Text", GensRemaining.ToString());
-                    if (GensRemaining == 0)
+                    if (CurrGeneration >0&& CurrGeneration % GenerationsStride == 0)
                     {
-                        int SliderValue = (int)ParentFormControlGet("SliderStructureIslands", "Value");
-                        MyState.CurrNumberStructureIslands /= 2;
-                        ParentFormControlSet("SliderStructureIslands", "Value", SliderValue - 1);
-                        ParentFormLogging("Struct IslandsModified : " + MyState.CurrNumberStructureIslands, 1);
-                        RestructureIslands(true);
+                        CurrInternalIslands /= 2;
+
+                        ParentFormLogging("Internal IslandsModified : " + CurrInternalIslands + " On Generation : " + CurrGeneration, 1);
+                        RestructureIslands(true, false, CurrSI, CurrSP);
                     }
                 }
             }
             else
             {
-                //if (MyState.ReduceAnnealing)
-                //{
-                //    if (CurrGeneration == 0) CurrAnnealing = MyState.InitialInternalAnnealing;
-                //    float SingleReduceAmount = CurrAnnealing / (MyState.AnnealingReducingSteps);
-                //    int GenerationsStride = MyState.InternalGenerations / (MyState.AnnealingReducingSteps + 1);
-                //    if (CurrGeneration % GenerationsStride == 0)
-                //    {
-                //        CurrAnnealing = (float)(SingleReduceAmount * (Math.Floor((float)(MyState.InternalGenerations - CurrGeneration) / (float)GenerationsStride) - 1));
-                //        //ParentFormLogging("Curr Annealing : " + CurrAnnealing + " On Generation : " + CurrGeneration, 1);
-                //    }
-                //}
-
-                if (MyState.HalveInternalIslands)
+                if (MyState.HalveStructureIslands)
                 {
-                    if (CurrGeneration == 0) CurrInternalIslands = MyState.InitialNumberInternalIslands;
-                    int GenerationsStride = CurrInternalIslands / (MyState.StructureIslandsHalvingSteps + 1);
+                    int GenerationsStride = MyState.StructureGenerations / (MyState.StructureIslandsHalvingSteps + 1);
+                    int GensRemaining = MyState.StructureGenerations % GenerationsStride;
 
-                    if (CurrInternalIslands % GenerationsStride == 0)
+                    ParentFormControlSet("LabelStructureHalveIn", "Text", GensRemaining.ToString());
+                    if (CurrGeneration > 0 && CurrGeneration % GenerationsStride == 0)
                     {
-                        CurrInternalIslands /= 2;
-
-                        RestructureIslands(false);
-                        ParentFormLogging("Internal IslandsModified : " + CurrInternalIslands + " On Generation : " + CurrGeneration, 1);
+                        int SliderValue = (int)ParentFormControlGet("SliderStructureIslands", "Value");
+                        MyState.CurrNumberStructureIslands /= 2;
+                        ParentFormControlSet("SliderStructureIslands", "Value", SliderValue - 1);
+                        ParentFormLogging("Struct IslandsModified : " + MyState.CurrNumberStructureIslands, 1);
+                        RestructureIslands(false, false, 0, 0);
                     }
                 }
             }
+
         }
-        public void RestructureIslands(bool IsStructure)
+        public void RestructureIslands(bool IsInternal, bool CompleteRestructure, int CurrSI, int CurrSP)
         {
-            if (IsStructure)
+            if (IsInternal)
+            {
+                if (CurrInternalIslands == 0) CurrInternalIslands = MyState.InitialNumberInternalIslands;
+                int OldIslands = DevelopingNetsStructure[0][0].Count;
+                int NewIslands = CurrInternalIslands;
+                int OldPopulation = DevelopingNetsStructure[0][0][0].Length;
+                MyState.InternalPopulationPerIsland = MyState.TotalInternalPopulation/ NewIslands;
+                int NewPopulation = MyState.InternalPopulationPerIsland;
+
+                if (NewIslands < OldIslands)// Merge
+                {
+                    int Multiplier = OldIslands / NewIslands;
+                    for (int SICnt = CompleteRestructure ? 0 : CurrSI; SICnt < (CompleteRestructure ? DevelopingNetsStructure.Count : CurrSI + 1); SICnt++)// in case Struct islands have changed too, we first restructure the Internal islands, so we loop on the old Struct Islands here 
+                    {
+                        for (int SPCnt = CompleteRestructure ? 0 : CurrSP; SPCnt < (CompleteRestructure ? DevelopingNetsStructure[0].Count : CurrSP + 1); SPCnt++)// in case Struct islands have changed too, we first restructure the Internal islands, so we loop on the old Struct Population here 
+                        {
+                            List<GenNetwork[]> NewIslandsList = new List<GenNetwork[]>();
+                            for (int IICnt = 0; IICnt < NewIslands; IICnt++)
+                            {
+                                GenNetwork[] NewIsland = new GenNetwork[NewPopulation];
+                                for (int Cnt = 0; Cnt < Multiplier; Cnt++)
+                                    Array.Copy(DevelopingNetsStructure[SICnt][SPCnt][IICnt * Multiplier + Cnt], 0, NewIsland, OldPopulation * Cnt, OldPopulation);
+
+                                NewIslandsList.Add(NewIsland);
+                            }
+                            DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt] = new StatsStructureClass.StructIslandStatsClass.StructStatsClass(DevelopingNetsStructure[0].Count, NewIslands, NewPopulation, MyState.InternalGenerations);
+
+                            DevelopingNetsStructure[SICnt][SPCnt] = NewIslandsList;
+                        }
+                    }
+                }
+                else // Split
+                {
+                    int Multiplier = NewIslands / OldIslands;
+
+                    for (int SICnt = CompleteRestructure ? 0 : CurrSI; SICnt < (CompleteRestructure ? DevelopingNetsStructure.Count : CurrSI + 1); SICnt++)// in case Struct islands have changed too, we first restructure the Internal islands, so we loop on the old Struct Islands here 
+                    {
+                        for (int SPCnt = CompleteRestructure ? 0 : CurrSP; SPCnt < (CompleteRestructure ? DevelopingNetsStructure[0].Count : CurrSP + 1); SPCnt++)// in case Struct islands have changed too, we first restructure the Internal islands, so we loop on the old Struct Population here 
+                        {
+                            List<GenNetwork[]> NewIslandsList = new List<GenNetwork[]>();
+                            for (int IICnt = 0; IICnt < NewIslands; IICnt++)
+                            {
+                                GenNetwork[] NewIsland = new GenNetwork[NewPopulation];
+                                Array.Copy(DevelopingNetsStructure[SICnt][SPCnt][IICnt / Multiplier], (IICnt & (Multiplier - 1)) * NewPopulation, NewIsland, 0, NewPopulation);
+
+                                NewIslandsList.Add(NewIsland);
+                            }
+                            DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt]= new StatsStructureClass.StructIslandStatsClass.StructStatsClass(DevelopingNetsStructure[0].Count, NewIslands, NewPopulation, MyState.InternalGenerations);
+                            DevelopingNetsStructure[SICnt][SPCnt] = NewIslandsList;
+                        }
+                    }
+                }
+            }
+            else
             {
                 int OldIslands = DevelopingNetsStructure.Count;
                 int NewIslands = MyState.CurrNumberStructureIslands;
                 int OldPopulation = DevelopingNetsStructure[0].Count;
+                MyState.StructurePopulationPerIsland = MyState.TotalStructurePopulation / NewIslands;
                 int NewPopulation = MyState.StructurePopulationPerIsland;
 
                 if (NewIslands < OldIslands)// Merge
@@ -832,10 +882,10 @@ namespace GeneticNetworkTrainer
                         List<List<GenNetwork[]>> NewIsland = new List<List<GenNetwork[]>>();
                         for (int Cnt = 0; Cnt < Multiplier; Cnt++)
                             NewIsland.AddRange(DevelopingNetsStructure[SICnt * Multiplier + Cnt]);
-                        DevelopingStatsStructure.StructIslandsStats[SICnt] = new StatsStructureClass.StructIslandStatsClass(NewPopulation, MyState.InitialNumberInternalIslands, MyState.InternalPopulationPerIsland, MyState.StructureGenerations, MyState.InternalGenerations);
 
                         NewNetsStruct.Add(NewIsland);
                     }
+                    DevelopingStatsStructure = new StatsStructureClass(NewIslands, NewPopulation, MyState.InitialNumberInternalIslands, MyState.InternalPopulationPerIsland, MyState.StructureGenerations, MyState.InternalGenerations);
                     DevelopingNetsStructure = NewNetsStruct;
                 }
                 else // Split
@@ -845,66 +895,16 @@ namespace GeneticNetworkTrainer
                     for (int SICnt = 0; SICnt < DevelopingNetsStructure.Count; SICnt++)
                     {
                         List<List<GenNetwork[]>> NewIsland = new List<List<GenNetwork[]>>(DevelopingNetsStructure[SICnt / Multiplier].GetRange((SICnt & (Multiplier - 1)) * NewPopulation, NewPopulation));
-                        DevelopingStatsStructure.StructIslandsStats[SICnt] = new StatsStructureClass.StructIslandStatsClass(NewPopulation, MyState.InitialNumberInternalIslands, MyState.InternalPopulationPerIsland, MyState.StructureGenerations, MyState.InternalGenerations);
 
                         NewNetsStruct.Add(NewIsland);
                     }
+                    DevelopingStatsStructure = new StatsStructureClass(NewIslands, NewPopulation, MyState.InitialNumberInternalIslands, MyState.InternalPopulationPerIsland, MyState.StructureGenerations, MyState.InternalGenerations);
                     DevelopingNetsStructure = NewNetsStruct;
                 }
-                MyState.SettledNetsStructure = CloneNetsStruct(DevelopingNetsStructure);
+                SettledNetsStructure = CloneNetsStruct(DevelopingNetsStructure);
                 SettledStatsStructure = CloneStatsStruct(DevelopingStatsStructure);
             }
-            else
-            {
-                if (CurrInternalIslands == 0) CurrInternalIslands = MyState.InitialNumberInternalIslands;
-                int OldIslands = DevelopingNetsStructure[0][0].Count;
-                int NewIslands = CurrInternalIslands;
-                int OldPopulation = DevelopingNetsStructure[0][0][0].Length;
-                int NewPopulation = MyState.InternalPopulationPerIsland;
 
-                if (NewIslands < OldIslands)// Merge
-                {
-                    int Multiplier = OldIslands / NewIslands;
-                    for (int SICnt = 0; SICnt < DevelopingNetsStructure.Count; SICnt++)// in case Struct islands have changed too, we first restructure the Internal islands, so we loop on the old Struct Islands here 
-                    {
-                        for (int SPCnt = 0; SPCnt < DevelopingNetsStructure[0].Count; SPCnt++)// in case Struct islands have changed too, we first restructure the Internal islands, so we loop on the old Struct Population here 
-                        {
-                            List<GenNetwork[]> NewIslandsList = new List<GenNetwork[]>();
-                            for (int IICnt = 0; IICnt < NewIslands; IICnt++)
-                            {
-                                GenNetwork[] NewIsland = new GenNetwork[NewPopulation];
-                                for (int Cnt = 0; Cnt < Multiplier; Cnt++)
-                                    Array.Copy(DevelopingNetsStructure[SICnt][SPCnt][IICnt * Multiplier + Cnt], 0, NewIsland, OldPopulation * Cnt, OldPopulation);
-                                DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt] = new StatsStructureClass.StructIslandStatsClass.StructStatsClass.InternalIslandStatsClass(NewPopulation, MyState.InternalGenerations);
-
-                                NewIslandsList.Add(NewIsland);
-                            }
-                            DevelopingNetsStructure[SICnt][SPCnt] = NewIslandsList;
-                        }
-                    }
-                }
-                else // Split
-                {
-                    int Multiplier = NewIslands / OldIslands;
-
-                    for (int SICnt = 0; SICnt < DevelopingNetsStructure.Count; SICnt++)// in case Struct islands have changed too, we first restructure the Internal islands, so we loop on the old Struct Islands here 
-                    {
-                        for (int SPCnt = 0; SPCnt < DevelopingNetsStructure[0].Count; SPCnt++)// in case Struct islands have changed too, we first restructure the Internal islands, so we loop on the old Struct population here 
-                        {
-                            List<GenNetwork[]> NewIslandsList = new List<GenNetwork[]>();
-                            for (int IICnt = 0; IICnt < NewIslands; IICnt++)
-                            {
-                                GenNetwork[] NewIsland = new GenNetwork[NewPopulation];
-                                Array.Copy(DevelopingNetsStructure[SICnt][SPCnt][IICnt / Multiplier], (IICnt & (Multiplier - 1)) * NewPopulation, NewIsland, 0, NewPopulation);
-                                DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt] = new StatsStructureClass.StructIslandStatsClass.StructStatsClass.InternalIslandStatsClass(MyState.InternalPopulationPerIsland, MyState.InternalGenerations);
-
-                                NewIslandsList.Add(NewIsland);
-                            }
-                            DevelopingNetsStructure[SICnt][SPCnt] = NewIslandsList;
-                        }
-                    }
-                }
-            }
 
         }
 
@@ -913,16 +913,16 @@ namespace GeneticNetworkTrainer
         {
             Rnd = new Random();
 
-            if (MyState.InternalIslandRestructuringNeeded && MyState.SettledNetsStructure[0][0].Count != MyState.InitialNumberInternalIslands)// Don't change the order. first we reorder the internals and then the structs
+            if (MyState.InternalIslandRestructuringNeeded && SettledNetsStructure[0][0].Count != MyState.InitialNumberInternalIslands)// Don't change the order. first we reorder the internals and then the structs
             {
-                ParentFormLogging(string.Format("Restructuring Internal Islands  from ({0}, {1}) to ({2}, {3}). ", MyState.SettledNetsStructure[0][0].Count, MyState.SettledNetsStructure[0][0][0].Length, MyState.InitialNumberInternalIslands, MyState.InternalPopulationPerIsland), 0);
-                RestructureIslands(false);
+                ParentFormLogging(string.Format("Restructuring Internal Islands  from ({0}, {1}) to ({2}, {3}). ", SettledNetsStructure[0][0].Count, SettledNetsStructure[0][0][0].Length, MyState.InitialNumberInternalIslands, MyState.InternalPopulationPerIsland), 0);
+                RestructureIslands(true, true, 0, 0);
 
             }
-            if (MyState.StructIslandRestructuringNeeded && MyState.SettledNetsStructure.Count != MyState.CurrNumberStructureIslands)
+            if (MyState.StructIslandRestructuringNeeded && SettledNetsStructure.Count != MyState.CurrNumberStructureIslands)
             {
-                ParentFormLogging(string.Format("Restructuring Structure Islands from ({0}, {1}) to ({2}, {3}). ", MyState.SettledNetsStructure.Count, MyState.SettledNetsStructure[0].Count, MyState.CurrNumberStructureIslands, MyState.StructurePopulationPerIsland), 0);
-                RestructureIslands(true);
+                ParentFormLogging(string.Format("Restructuring Structure Islands from ({0}, {1}) to ({2}, {3}). ", SettledNetsStructure.Count, SettledNetsStructure[0].Count, MyState.CurrNumberStructureIslands, MyState.StructurePopulationPerIsland), 0);
+                RestructureIslands(false, false, 0, 0);
             }
             MyState.InternalIslandRestructuringNeeded = false;
             MyState.StructIslandRestructuringNeeded = false;
@@ -934,7 +934,7 @@ namespace GeneticNetworkTrainer
                 MyState.CurrStructureGeneration = 0;
                 ParentFormLogging("Resetting Structure generation To 0 ... ", 0);
             }
-            ParentFormLogging("Training Started.", 0);
+            
         }
         public void LoadState()
         {
@@ -943,10 +943,14 @@ namespace GeneticNetworkTrainer
             BinaryFormatter BF = new BinaryFormatter();
             //try
             //{
-            MyState = BF.Deserialize(MyFile) as GenTrainer.StateClass;
+            MyState = BF.Deserialize(MyFile) as StateClass;
             if (MyState.IncludeNetsInTheSave)
-                DevelopingNetsStructure = CloneNetsStruct(MyState.SettledNetsStructure);
-            else ResetStructures(true);
+            {
+                SettledNetsStructure = MyState.NetsStructureToSave;
+                DevelopingNetsStructure = CloneNetsStruct(SettledNetsStructure);
+                ResetStructures(true, true);
+            }
+            else ResetStructures(true,false);
 
             ParentFormLogging(" State Loaded Succesfully.", 0);
             MyFile.Close();
@@ -968,6 +972,14 @@ namespace GeneticNetworkTrainer
                 MyFile = File.Create(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\GenTrainingSave");
 
             BinaryFormatter BF = new BinaryFormatter();
+
+            if (MyState.IncludeNetsInTheSave)
+            {
+                SomePreps();
+                MyState.NetsStructureToSave = DevelopingNetsStructure;
+            }
+
+            else MyState.NetsStructureToSave = null;
 
             BF.Serialize(MyFile, MyState);
             MyFile.Close();

@@ -100,6 +100,7 @@ namespace GeneticNetworkTrainer
         private void SingleStructThread(object Input)
         {
             SomePreps();
+            ParentFormLogging("Training Started.", 0);
             ParentFormControlSet("LabelCurrStructure", "Text", (MyState.TotalStructurePopulation - MyThreads.Waiting()).ToString());
             ThreadsStruct.SingleThread CurrThreadData = (ThreadsStruct.SingleThread)Input;
             //try
@@ -146,7 +147,7 @@ namespace GeneticNetworkTrainer
                 PopulateStatsStructure(TrainingState.StructIslandEnded, Cnt, 0, 0, 0);
 
             PopulateStatsStructure(TrainingState.StructGenEnded, 0, 0, 0, 0);
-            MyState.SettledNetsStructure = CloneNetsStruct(DevelopingNetsStructure);
+            SettledNetsStructure = CloneNetsStruct(DevelopingNetsStructure);
             SettledStatsStructure = CloneStatsStruct(DevelopingStatsStructure);
             CheckStopConditions();
             if (MyState.ThreadingActivated && MyState.DynamicSearchMaxThreads) CalculateDynamicThreading(false);

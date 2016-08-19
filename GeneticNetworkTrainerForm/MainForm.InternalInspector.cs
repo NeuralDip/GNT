@@ -3,8 +3,9 @@ using System.Drawing;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
+using GeneticNetworkTrainer;
 
-namespace GeneticNetworkTrainer
+namespace GeneticNetworkTrainerForm
 {
     partial class MainForm
     {
@@ -74,7 +75,7 @@ namespace GeneticNetworkTrainer
         {
             try
             {
-                GenNetwork NetToSave = MyGenTrainer.MyState.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][ListViewInternalIslandsSelection][ListViewNets.CheckedIndices[0]].CloneMe(false, false, false, null);
+                GenNetwork NetToSave = MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][ListViewInternalIslandsSelection][ListViewNets.CheckedIndices[0]].CloneMe(false, false, false, null);
                 string NetFileName = DateTime.Now.ToString() + "[" + ListViewStructIslandsSelection + ", " + ListViewStructuresSelection + ", " + ListViewInternalIslandsSelection + ", " + ListViewNets.CheckedIndices[0] + " ]_I" + MyGenTrainer.MyState.InData[0].Length + "_O" + MyGenTrainer.MyState.LabelData[0].Length + "L" + NetToSave.GetLayersNumber() + "_N" + NetToSave.GetNeuronsNumber();
                 NetToSave.ExportNet(NetFileName);
                 AppendFeedback(" Net Exported Succesfully.", 0);

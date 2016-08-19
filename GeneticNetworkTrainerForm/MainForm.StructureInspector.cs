@@ -4,7 +4,7 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 
-namespace GeneticNetworkTrainer
+namespace GeneticNetworkTrainerForm
 {
     partial class MainForm
     {

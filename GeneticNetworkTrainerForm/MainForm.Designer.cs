@@ -6,7 +6,7 @@ using OxyPlot.Series;
 using OxyPlot.WindowsForms;
 
 
-namespace GeneticNetworkTrainer
+namespace GeneticNetworkTrainerForm
 {
     partial class MainForm
     {

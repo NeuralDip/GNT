@@ -8,9 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Threading;
+using GeneticNetworkTrainer;
 
 
-namespace GeneticNetworkTrainer
+namespace GeneticNetworkTrainerForm
 {
     partial class MainForm
     {
@@ -82,7 +83,7 @@ namespace GeneticNetworkTrainer
 
                     OpenFileDialog.InitialDirectory = OpenFileDialog.FileName.Substring(0, OpenFileDialog.FileName.LastIndexOf("\\"));
                     MyGenTrainer.MyState.DataToUse = MyGenTrainer.MyState.InData.Count;
-                    MyGenTrainer.ResetStructures(true);
+                    MyGenTrainer.ResetStructures(true, false);
 
                     PopulateInTextBoxes();
                     PopulateOutLabels();
@@ -202,7 +203,7 @@ namespace GeneticNetworkTrainer
                 NewValue = (NewValue - (NewValue % MyGenTrainer.MyState.InitialNumberInternalIslands));
                 MyGenTrainer.MyState.TotalInternalPopulation = NewValue;
                 MyGenTrainer.MyState.InternalPopulationPerIsland = NewValue / MyGenTrainer.MyState.InitialNumberInternalIslands;
-                MyGenTrainer.ResetStructures(false);
+                MyGenTrainer.ResetStructures(false, false);
             }
         }
         private void TextBoxInternalGenerations_TextChanged(object sender, EventArgs e)
@@ -228,7 +229,7 @@ namespace GeneticNetworkTrainer
                 NewValue = (NewValue - (NewValue % MyGenTrainer.MyState.CurrNumberStructureIslands));
                 MyGenTrainer.MyState.TotalStructurePopulation = NewValue;
                 MyGenTrainer.MyState.StructurePopulationPerIsland = NewValue / MyGenTrainer.MyState.CurrNumberStructureIslands;
-                MyGenTrainer.ResetStructures(false);
+                MyGenTrainer.ResetStructures(false, false);
             }
         }
         private void TextBoxStructureGenerations_TextChanged(object sender, EventArgs e)
@@ -457,7 +458,7 @@ namespace GeneticNetworkTrainer
                 LabelCurrInternalGen.Text = "0";
                 LabelCurrStructure.Text = "(0, 0)";
                 LabelCurrStructGen.Text = "0";
-                MyGenTrainer.ResetStructures(true);
+                MyGenTrainer.ResetStructures(true, false);
             }
             else
             {

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
+using GeneticNetworkTrainer;
 
-namespace GeneticNetworkTrainer
+namespace GeneticNetworkTrainerForm
 {
     partial class MainForm
     {
@@ -38,7 +39,7 @@ namespace GeneticNetworkTrainer
         {
             if (ListViewNets.CheckedIndices.Count > 0)
             {
-                GenNetwork NetworkSelected = MyGenTrainer.MyState.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][ListViewInternalIslandsSelection][ListViewNets.CheckedIndices[0]].CloneMe(false, false, false, null);
+                GenNetwork NetworkSelected = MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][ListViewInternalIslandsSelection][ListViewNets.CheckedIndices[0]].CloneMe(false, false, false, null);
                 float[] Input = new float[MyGenTrainer.MyState.NetInputs];
 
                 for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NetInputs; Cnt++) Input[Cnt] = float.Parse(LayoutIn.Controls[2 * Cnt + 1].Text);

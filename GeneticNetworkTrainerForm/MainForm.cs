@@ -12,10 +12,11 @@ using System.Collections;
 using OxyPlot;
 using OxyPlot.WindowsForms;
 using System.Reflection;
+using GeneticNetworkTrainer;
 
 
 
-namespace GeneticNetworkTrainer
+namespace GeneticNetworkTrainerForm
 {
     public partial class MainForm : Form
     {
