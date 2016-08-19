@@ -100,7 +100,7 @@ namespace GeneticNetworkTrainer
 
         private void SingleStructThread(object Input)
         {
-            SomePreps();
+            PreProcess();
             ParentFormLogging("Training Started.", 0);
             ParentFormControlSet("LabelCurrStructure", "Text", (MyState.TotalStructurePopulation - MyThreads.Waiting()).ToString());
             ThreadsStruct.SingleThread CurrThreadData = (ThreadsStruct.SingleThread)Input;
