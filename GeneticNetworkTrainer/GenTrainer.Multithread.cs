@@ -64,6 +64,7 @@ namespace GeneticNetworkTrainer
             Rnd = new Random();
             ParentFormControlSet("LabelCurrInternalGen", "Text", "-");
             ParentFormControlSet("LabelCurrStructGen", "Text", MyState.CurrStructureGeneration.ToString());
+            CheckIslandsUpadate(false, 0, 0, MyState.CurrStructureGeneration);
             //preparing threads
             if (MyState.ThreadingActivated && MyState.DynamicSearchMaxThreads) CalculateDynamicThreading(true);
             MyThreads = new ThreadsStruct();
@@ -108,6 +109,8 @@ namespace GeneticNetworkTrainer
             PopulateStatsStructure(TrainingState.StructStarted, CurrThreadData.StructIsland, CurrThreadData.StructIdx, 0, 0);
             for (int IntGenCnt = 0; IntGenCnt < MyState.InternalGenerations; IntGenCnt++)
             {
+                CheckAnnealingUpdate(IntGenCnt);
+                CheckIslandsUpadate(true, CurrThreadData.StructIsland, CurrThreadData.StructIdx, IntGenCnt);
                 for (int IICnt = 0; IICnt < CurrInternalIslands; IICnt++)
                 {
                     NextInternalGeneration(CurrThreadData.StructIsland, CurrThreadData.StructIdx, IICnt);// prepare generation for this Internal Island
