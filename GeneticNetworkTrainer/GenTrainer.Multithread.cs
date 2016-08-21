@@ -23,7 +23,8 @@ namespace GeneticNetworkTrainer
                 public bool Finished;
                 public int StructIsland;
                 public int StructIdx;
-                public SingleThread(int iStructIsland, int iStructIdx) { StructIsland = iStructIsland; StructIdx = iStructIdx; }
+                public int ThreadID;
+                public SingleThread(int iStructIsland, int iStructIdx, int iThreadID) { StructIsland = iStructIsland; StructIdx = iStructIdx; ThreadID = iThreadID; }
             }
 
             private List<SingleThread> NotStartedThreads = new List<SingleThread>();
@@ -47,7 +48,7 @@ namespace GeneticNetworkTrainer
 
                 return null;
             }
-            public void Add(int iStructIsland, int iStructIdx) { NotStartedThreads.Add(new SingleThread(iStructIsland, iStructIdx)); }
+            public void Add(int iStructIsland, int iStructIdx,int iThreadID) { NotStartedThreads.Add(new SingleThread(iStructIsland, iStructIdx, iThreadID)); }
             public int Running() { return RunningThreads.Count; }
             public int Waiting() { return NotStartedThreads.Count; }
         }
@@ -61,19 +62,21 @@ namespace GeneticNetworkTrainer
 
         public void LaunchNextStructGeneration(object Dummy)
         {
-            Rnd = new Random();
-            ParentFormControlSet("LabelCurrInternalGen", "Text", "-");
-            ParentFormControlSet("LabelCurrStructGen", "Text", MyState.CurrStructureGeneration.ToString());
-            CheckIslandsUpadate(false, 0, 0, MyState.CurrStructureGeneration);
             //preparing threads
             if (MyState.ThreadingActivated && MyState.DynamicSearchMaxThreads) CalculateDynamicThreading(true);
             MyThreads = new ThreadsStruct();
+            int IDs = 0;
             for (int SICnt = 0; SICnt < MyState.CurrNumberStructureIslands; SICnt++)
                 for (int SPCnt = 0; SPCnt < MyState.StructurePopulationPerIsland; SPCnt++)
-                    MyThreads.Add(SICnt, SPCnt);
+                    MyThreads.Add(SICnt, SPCnt,IDs++);
+
+            PreProcess();
+            ParentFormControlSet("LabelCurrInternalGen", "Text", "-");
+            ParentFormControlSet("LabelCurrStructGen", "Text", MyState.CurrStructureGeneration.ToString());
+            CheckIslandsUpadate(false, 0, 0, MyState.CurrStructureGeneration, 0);
 
             for (int SICnt = 0; SICnt < MyState.CurrNumberStructureIslands; SICnt++)
-                NextStructGeneration(SICnt);// prepare generation for this Structure Island
+                NextStructGeneration(SICnt, 0);// prepare generation for this Structure Island
             LaunchAnyWaitingThreads();
         }
         private void LaunchAnyWaitingThreads()
@@ -100,22 +103,23 @@ namespace GeneticNetworkTrainer
 
         private void SingleStructThread(object Input)
         {
-            PreProcess();
-            ParentFormLogging("Training Started.", 0);
-            ParentFormControlSet("LabelCurrStructure", "Text", (MyState.TotalStructurePopulation - MyThreads.Waiting()).ToString());
+            Rnd = new Random();
             ThreadsStruct.SingleThread CurrThreadData = (ThreadsStruct.SingleThread)Input;
+            
+            ParentFormControlSet("LabelCurrStructure", "Text", (MyState.TotalStructurePopulation - MyThreads.Waiting()).ToString());
+
             //try
             //{
-            PopulateStatsStructure(TrainingState.StructStarted, CurrThreadData.StructIsland, CurrThreadData.StructIdx, 0, 0);
+            PopulateStatsStructure(TrainingState.StructStarted, CurrThreadData.StructIsland, CurrThreadData.StructIdx, 0, 0, CurrThreadData.ThreadID);
             for (int IntGenCnt = 0; IntGenCnt < MyState.InternalGenerations; IntGenCnt++)
             {
-                CheckAnnealingUpdate(IntGenCnt);
-                CheckIslandsUpadate(true, CurrThreadData.StructIsland, CurrThreadData.StructIdx, IntGenCnt);
-                for (int IICnt = 0; IICnt < CurrInternalIslands; IICnt++)
+                CheckAnnealingUpdate(IntGenCnt, CurrThreadData.ThreadID);
+                CheckIslandsUpadate(true, CurrThreadData.StructIsland, CurrThreadData.StructIdx, IntGenCnt, CurrThreadData.ThreadID);
+                for (int IICnt = 0; IICnt < CurrInternalIslands[CurrThreadData.ThreadID]; IICnt++)
                 {
-                    NextInternalGeneration(CurrThreadData.StructIsland, CurrThreadData.StructIdx, IICnt);// prepare generation for this Internal Island
+                    NextInternalGeneration(CurrThreadData.StructIsland, CurrThreadData.StructIdx, IICnt, CurrThreadData.ThreadID);// prepare generation for this Internal Island
 
-                    for (int IPCnt = 0; IPCnt < MyState.InternalPopulationPerIsland; IPCnt++)
+                    for (int IPCnt = 0; IPCnt < CurrInternalPopulationPerIsland[CurrThreadData.ThreadID]; IPCnt++)
                     {
                         if (ForceStopTraining) { CurrThreadData.Running = false; CurrThreadData.Finished = true; StructWaitHandle.Set(); return; }
                         DevelopingNetsStructure[CurrThreadData.StructIsland][CurrThreadData.StructIdx][IICnt][IPCnt].ResetScores();
@@ -124,13 +128,15 @@ namespace GeneticNetworkTrainer
                             ParentFormLogging(string.Format("Scoring Calculation failed for net ({0}{1}{2}{3}). Inputs or Outputs dont match the nets IOs. ", CurrThreadData.StructIsland, CurrThreadData.StructIdx, IICnt, IPCnt), 2);
                             return;
                         }
-                        PopulateStatsStructure(TrainingState.NetEnded, CurrThreadData.StructIsland, CurrThreadData.StructIdx, IICnt, IPCnt);
+                        PopulateStatsStructure(TrainingState.NetEnded, CurrThreadData.StructIsland, CurrThreadData.StructIdx, IICnt, IPCnt, CurrThreadData.ThreadID);
                     }
-                    PopulateStatsStructure(TrainingState.InternalIslandEnded, CurrThreadData.StructIsland, CurrThreadData.StructIdx, IICnt, 0);
+                    PopulateStatsStructure(TrainingState.InternalIslandEnded, CurrThreadData.StructIsland, CurrThreadData.StructIdx, IICnt, 0, CurrThreadData.ThreadID);
                 }
-                PopulateStatsStructure(TrainingState.InternalGenEnded, CurrThreadData.StructIsland, CurrThreadData.StructIdx, 0, 0);
+                PopulateStatsStructure(TrainingState.InternalGenEnded, CurrThreadData.StructIsland, CurrThreadData.StructIdx, 0, 0, CurrThreadData.ThreadID);
             }
-            PopulateStatsStructure(TrainingState.StructEnded, CurrThreadData.StructIsland, CurrThreadData.StructIdx, 0, 0);
+            CurrInternalIslands[CurrThreadData.ThreadID] = MyState.InitialNumberInternalIslands;
+            CurrAnnealing[CurrThreadData.ThreadID] = MyState.InitialInternalAnnealing;
+            PopulateStatsStructure(TrainingState.StructEnded, CurrThreadData.StructIsland, CurrThreadData.StructIdx, 0, 0, CurrThreadData.ThreadID);
             CurrThreadData.Running = false;
             CurrThreadData.Finished = true;
 
@@ -147,9 +153,10 @@ namespace GeneticNetworkTrainer
             if (ForceStopTraining) { CallTheForm(TrainingState.TrainingStopped); StopTraining = false; ForceStopTraining = false; return; }//stop before populating STats
 
             for (int Cnt = 0; Cnt < MyState.CurrNumberStructureIslands; Cnt++)
-                PopulateStatsStructure(TrainingState.StructIslandEnded, Cnt, 0, 0, 0);
+                PopulateStatsStructure(TrainingState.StructIslandEnded, Cnt, 0, 0, 0, 0);
 
-            PopulateStatsStructure(TrainingState.StructGenEnded, 0, 0, 0, 0);
+            PopulateStatsStructure(TrainingState.StructGenEnded, 0, 0, 0, 0, 0);
+            PostProcess(0);
             SettledNetsStructure = CloneNetsStruct(DevelopingNetsStructure);
             SettledStatsStructure = CloneStatsStruct(DevelopingStatsStructure);
             CheckStopConditions();

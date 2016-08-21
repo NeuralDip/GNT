@@ -262,9 +262,11 @@ namespace GeneticNetworkTrainerForm
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.MainTabControl = new System.Windows.Forms.TabControl();
             this.TabMainControl = new System.Windows.Forms.TabPage();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.CheckBoxIncludeNetsInSave = new System.Windows.Forms.CheckBox();
             this.ButtonLoadState = new System.Windows.Forms.Button();
             this.ButtonSaveState = new System.Windows.Forms.Button();
             this.ButtonResetState = new System.Windows.Forms.Button();
@@ -490,7 +492,6 @@ namespace GeneticNetworkTrainerForm
             this.LayoutOut = new System.Windows.Forms.TableLayoutPanel();
             this.LayoutIn = new System.Windows.Forms.TableLayoutPanel();
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.CheckBoxIncludeNetsInSave = new System.Windows.Forms.CheckBox();
             this.MainTabControl.SuspendLayout();
             this.TabMainControl.SuspendLayout();
             this.groupBox9.SuspendLayout();
@@ -585,6 +586,17 @@ namespace GeneticNetworkTrainerForm
             this.groupBox9.TabIndex = 31;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "State";
+            // 
+            // CheckBoxIncludeNetsInSave
+            // 
+            this.CheckBoxIncludeNetsInSave.AutoSize = true;
+            this.CheckBoxIncludeNetsInSave.Location = new System.Drawing.Point(59, 42);
+            this.CheckBoxIncludeNetsInSave.Name = "CheckBoxIncludeNetsInSave";
+            this.CheckBoxIncludeNetsInSave.Size = new System.Drawing.Size(126, 17);
+            this.CheckBoxIncludeNetsInSave.TabIndex = 37;
+            this.CheckBoxIncludeNetsInSave.Text = "Include Nets In Save";
+            this.CheckBoxIncludeNetsInSave.UseVisualStyleBackColor = true;
+            this.CheckBoxIncludeNetsInSave.CheckedChanged += new System.EventHandler(this.CheckBoxIncludeNetsInSave_CheckedChanged);
             // 
             // ButtonLoadState
             // 
@@ -2964,17 +2976,6 @@ namespace GeneticNetworkTrainerForm
             this.OpenFileDialog.Filter = "CSV files|*.csv";
             this.OpenFileDialog.Title = "Select .csv Containing Data";
             // 
-            // CheckBoxIncludeNetsInSave
-            // 
-            this.CheckBoxIncludeNetsInSave.AutoSize = true;
-            this.CheckBoxIncludeNetsInSave.Location = new System.Drawing.Point(59, 42);
-            this.CheckBoxIncludeNetsInSave.Name = "CheckBoxIncludeNetsInSave";
-            this.CheckBoxIncludeNetsInSave.Size = new System.Drawing.Size(126, 17);
-            this.CheckBoxIncludeNetsInSave.TabIndex = 37;
-            this.CheckBoxIncludeNetsInSave.Text = "Include Nets In Save";
-            this.CheckBoxIncludeNetsInSave.UseVisualStyleBackColor = true;
-            this.CheckBoxIncludeNetsInSave.CheckedChanged += new System.EventHandler(this.CheckBoxIncludeNetsInSave_CheckedChanged);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2982,6 +2983,7 @@ namespace GeneticNetworkTrainerForm
             this.BackColor = System.Drawing.SystemColors.ControlDark;
             this.ClientSize = new System.Drawing.Size(1086, 718);
             this.Controls.Add(this.MainTabControl);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "GeneticNetworkTrainer";
             this.MainTabControl.ResumeLayout(false);

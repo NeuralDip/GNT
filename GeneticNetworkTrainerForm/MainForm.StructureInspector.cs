@@ -17,6 +17,8 @@ namespace GeneticNetworkTrainerForm
         {
             if (ListViewStructIslands.SelectedIndices.Count == 0) return;
             ListViewStructIslandsSelection = ListViewStructIslands.SelectedIndices[0];
+            NewInternalStatsReady = true;
+            NewStructStatsReady = true;
             RedrawStructIslandsPlot();
             PopulateStructs();
             RedrawStructPlot();
@@ -24,12 +26,13 @@ namespace GeneticNetworkTrainerForm
             RedrawInternalIslandsPlot();
             PopulateInternalNets();
             RedrawInternalPlot();
-            NewInternalStatsReady = true;
+            
         }
         private void ListViewStructures_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (ListViewStructures.SelectedIndices.Count == 0) return;
             ListViewStructuresSelection = ListViewStructures.SelectedIndices[0];
+            NewInternalStatsReady = true;
             RedrawStructPlot();
             PopulateInternalIslands();
             RedrawInternalIslandsPlot();
@@ -38,7 +41,6 @@ namespace GeneticNetworkTrainerForm
             LabelStructTypeLayers.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].LayersHistory.ReadLastValue().ToString();
             LabelStructTypeNeurons.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].NeuronsHistory.ReadLastValue().ToString();
             LabelStructTypeWeights.Text = MyGenTrainer.DevelopingNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][0][0].GetWeightsNumber().ToString();
-            NewInternalStatsReady = true;
         }
         private void ListViewStructures_ColumnClicked(object sender, ColumnClickEventArgs e)
         {
@@ -398,10 +400,10 @@ namespace GeneticNetworkTrainerForm
         }
         private void PopulateStructs()
         {
-            if (MainTabControl.SelectedIndex != 3) return;
-            if (NewStructStatsReady) NewStructStatsReady = false;
-            else return;
+            if (MainTabControl.SelectedIndex != 3 || !NewStructStatsReady) return;
+            NewStructStatsReady = false;
             NewInternalStatsReady = true;
+
             ListViewStructures.Items.Clear();
             for (int Cnt = 0; Cnt < MyGenTrainer.MyState.StructurePopulationPerIsland; Cnt++)
             {

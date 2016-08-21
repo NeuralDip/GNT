@@ -44,7 +44,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GeneticNetworkTrainer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="GeneticNetworkTrainer, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\GeneticNetworkTrainer.dll</HintPath>
     </Reference>

@@ -16,6 +16,7 @@ namespace GeneticNetworkTrainerForm
         {
             if (ListViewInternalIslands.SelectedIndices.Count == 0) return;
             ListViewInternalIslandsSelection = ListViewInternalIslands.SelectedIndices[0];
+            NewInternalStatsReady = true;
             RedrawInternalIslandsPlot();
             PopulateInternalNets();
             RedrawInternalPlot();
@@ -299,8 +300,8 @@ namespace GeneticNetworkTrainerForm
         private void PopulateInternalNets()
         {
             if (MainTabControl.SelectedIndex != 4 || !NewInternalStatsReady) return;
-            if (NewInternalStatsReady) NewInternalStatsReady = false;
-            else return;
+            NewInternalStatsReady = false;
+
             ListViewNets.Items.Clear();
             for (int Cnt = 0; Cnt < MyGenTrainer.MyState.InternalPopulationPerIsland; Cnt++)
             {
