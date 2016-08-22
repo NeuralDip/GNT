@@ -542,7 +542,7 @@ namespace GeneticNetworkTrainer
                     {
                         while((Child.AdjacencyObject.IDsOrder.Contains(Child.IncrementalID))) Child.IncrementalID++;// Make sure we found an unused ID
                         Child.AllLayers.Add(Child.IncrementalID, Parent2Layers[Parent2Adjacency.IDsOrder[Cnt]].CloneMe(Child.IncrementalID));
-                        Child.IncrementalID++;
+                        Child.AdjacencyObject.IDsOrder[Cnt] = Child.IncrementalID++;//in case Child.AdjacencyObject.IDsOrder[Cnt]=-1
                     }
                     else
                     {

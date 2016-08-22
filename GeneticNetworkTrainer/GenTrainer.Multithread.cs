@@ -58,7 +58,7 @@ namespace GeneticNetworkTrainer
         private object SctructLocker = new object();
         private object StructGenLocker = new object();
 
-        private static ManualResetEvent StructWaitHandle = new ManualResetEvent(false);
+        private static AutoResetEvent StructWaitHandle = new AutoResetEvent(false);
 
         public void LaunchNextStructGeneration(object JustPressedButton)
         {
@@ -97,9 +97,11 @@ namespace GeneticNetworkTrainer
                         CurrThreadData.Running = true;
                     }
                     MyThreads.Clean();
+                    ParentFormLogging("Running : "+ MyThreads.Running(), 1);
                 }
+                ParentFormLogging("Stopped with Running : " + MyThreads.Running(), 1);
                 StructWaitHandle.WaitOne();
-                StructWaitHandle.Reset();
+                //StructWaitHandle.Reset();
                 MyThreads.Clean();
                 if (MyThreads.Waiting() == 0 && MyThreads.Running() == 0)
                 { MultiTStructGenerationCompeted(); return; }
