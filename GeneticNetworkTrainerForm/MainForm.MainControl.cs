@@ -323,7 +323,7 @@ namespace GeneticNetworkTrainerForm
                     break;
                 case StartSaveState.Ready:
                     StartStopState = StartSaveState.Running;
-                    if (MyGenTrainer.MyState.ThreadingActivated) ThreadPool.QueueUserWorkItem(new WaitCallback(MyGenTrainer.LaunchNextStructGeneration));
+                    if (MyGenTrainer.MyState.ThreadingActivated) ThreadPool.QueueUserWorkItem(new WaitCallback(MyGenTrainer.LaunchNextStructGeneration),true);
                     else ThreadPool.QueueUserWorkItem(new WaitCallback(MyGenTrainer.TrainNetNotThreaded));
                     EnableRunningControls(false);
                     FixStartButtStyle();

@@ -2596,7 +2596,7 @@ namespace GeneticNetworkTrainerForm
             // columnHeader1
             // 
             this.columnHeader1.Text = "Indx";
-            this.columnHeader1.Width = 52;
+            this.columnHeader1.Width = 42;
             // 
             // columnHeader2
             // 
@@ -2847,7 +2847,7 @@ namespace GeneticNetworkTrainerForm
             // columnHeader11
             // 
             this.columnHeader11.Text = "Indx";
-            this.columnHeader11.Width = 52;
+            this.columnHeader11.Width = 45;
             // 
             // columnHeader12
             // 

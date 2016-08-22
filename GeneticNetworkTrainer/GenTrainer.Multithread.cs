@@ -60,23 +60,28 @@ namespace GeneticNetworkTrainer
 
         private static ManualResetEvent StructWaitHandle = new ManualResetEvent(false);
 
-        public void LaunchNextStructGeneration(object Dummy)
+        public void LaunchNextStructGeneration(object JustPressedButton)
         {
             //preparing threads
             if (MyState.ThreadingActivated && MyState.DynamicSearchMaxThreads) CalculateDynamicThreading(true);
+
+            
+            ParentFormControlSet("LabelCurrInternalGen", "Text", "-");
+            ParentFormControlSet("LabelCurrStructGen", "Text", MyState.CurrStructureGeneration.ToString());
+            CheckIslandsUpadate(false, 0, 0, MyState.CurrStructureGeneration, 0);
+
             MyThreads = new ThreadsStruct();
             int IDs = 0;
             for (int SICnt = 0; SICnt < MyState.CurrNumberStructureIslands; SICnt++)
                 for (int SPCnt = 0; SPCnt < MyState.StructurePopulationPerIsland; SPCnt++)
                     MyThreads.Add(SICnt, SPCnt,IDs++);
 
-            PreProcess();
-            ParentFormControlSet("LabelCurrInternalGen", "Text", "-");
-            ParentFormControlSet("LabelCurrStructGen", "Text", MyState.CurrStructureGeneration.ToString());
-            CheckIslandsUpadate(false, 0, 0, MyState.CurrStructureGeneration, 0);
+            PreProcess((bool)JustPressedButton);
 
             for (int SICnt = 0; SICnt < MyState.CurrNumberStructureIslands; SICnt++)
                 NextStructGeneration(SICnt, 0);// prepare generation for this Structure Island
+
+            
             LaunchAnyWaitingThreads();
         }
         private void LaunchAnyWaitingThreads()
@@ -165,7 +170,7 @@ namespace GeneticNetworkTrainer
 
             MyState.CurrStructureGeneration++;
             if (StopTraining) { CallTheForm(TrainingState.TrainingStopped); StopTraining = false; return; }
-            if (MyState.CurrStructureGeneration < MyState.StructureGenerations) ThreadPool.QueueUserWorkItem(new WaitCallback(LaunchNextStructGeneration));
+            if (MyState.CurrStructureGeneration < MyState.StructureGenerations) ThreadPool.QueueUserWorkItem(new WaitCallback(LaunchNextStructGeneration),false);
             else CallTheForm(TrainingState.TrainingEnded);
         }
 
