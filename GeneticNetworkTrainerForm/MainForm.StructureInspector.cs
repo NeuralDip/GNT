@@ -398,7 +398,6 @@ namespace GeneticNetworkTrainerForm
         }
         private void PopulateStructs()
         {
-            ListViewStructuresSelection = 0;
             LabelStructTypeLayers.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].LayersHistory.ReadLastValue().ToString();
             LabelStructTypeNeurons.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].NeuronsHistory.ReadLastValue().ToString();
             LabelStructTypeWeights.Text = MyGenTrainer.DevelopingNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][0][0].GetWeightsNumber().ToString();
@@ -416,7 +415,7 @@ namespace GeneticNetworkTrainerForm
                 ListViewStructures.Items[Cnt].SubItems.Add(MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[Cnt].LayersHistory.ReadLastValue().ToString());
                 ListViewStructures.Items[Cnt].SubItems.Add(MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[Cnt].NeuronsHistory.ReadLastValue().ToString());
             }
-            
+            ListViewStructuresSelection = 0;
             ListViewStructures.Items[ListViewStructuresSelection].Selected = true;
             ListViewStructures.Items[ListViewStructuresSelection].Focused = true;
         }

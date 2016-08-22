@@ -238,6 +238,24 @@ namespace GeneticNetworkTrainer
                 ToReturn.Full = Full;
                 return ToReturn;
             }
+            public bool Maximize(CircularBuffer Other)
+            { //Take the max Values from both Buffers
+                if (Buffer.Length != Other.Buffer.Length) return false;
+
+                for (int Cnt = 0; Cnt < Buffer.Length; Cnt++)
+                    if (Buffer[Cnt] < Other.Buffer[Cnt]) Buffer[Cnt] = Other.Buffer[Cnt];
+
+                return true;
+            }
+            public bool Minimize(CircularBuffer Other)
+            { //Take the min Values from both Buffers
+                if (Buffer.Length != Other.Buffer.Length) return false;
+
+                for (int Cnt = 0; Cnt > Buffer.Length; Cnt++)
+                    if (Buffer[Cnt] < Other.Buffer[Cnt]) Buffer[Cnt] = Other.Buffer[Cnt];
+
+                return true;
+            }
             private void AdvancePointer() { DataPointer++; if (DataPointer == Buffer.Length) { Full = true; DataPointer = 0; } }
         }
 
@@ -827,7 +845,6 @@ namespace GeneticNetworkTrainer
                             StatsStructureClass.StructIslandStatsClass.StructStatsClass NewStructStats = new StatsStructureClass.StructIslandStatsClass.StructStatsClass(DevelopingNetsStructure[SICnt].Count, NewIslands, NewPopulation, MyState.InternalGenerations);
                             float BestScore = int.MinValue;
                             {// Stats Restructuring
-
                                 NewStructStats.LayersHistory = DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].LayersHistory;
                                 NewStructStats.NeuronsHistory = DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].NeuronsHistory;
                                 NewStructStats.ScoreHistory = DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].ScoreHistory;
@@ -840,6 +857,11 @@ namespace GeneticNetworkTrainer
                                 {// Stats Restructuring
                                     NewIslandStats.ScoreHistory = DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt * Multiplier].ScoreHistory;
                                     NewIslandStats.TestScoreHistory = DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt * Multiplier].TestScoreHistory;
+                                    for(int Cnt=0; Cnt < Multiplier-1;Cnt++)
+                                    {
+                                        NewIslandStats.ScoreHistory.Maximize(DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt * Multiplier + Cnt].ScoreHistory);
+                                        NewIslandStats.TestScoreHistory.Maximize(DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt * Multiplier + Cnt].TestScoreHistory);
+                                    }
                                 }
                                 for (int Cnt = 0; Cnt < Multiplier; Cnt++)
                                 {
@@ -888,7 +910,6 @@ namespace GeneticNetworkTrainer
                             {
                                 GenNetwork[] NewIsland = new GenNetwork[NewPopulation];
                                 Array.Copy(DevelopingNetsStructure[SICnt][SPCnt][IICnt / Multiplier], (IICnt & (Multiplier - 1)) * NewPopulation, NewIsland, 0, NewPopulation);
-
                                 StatsStructureClass.StructIslandStatsClass.StructStatsClass.InternalIslandStatsClass NewIslandStats = new StatsStructureClass.StructIslandStatsClass.StructStatsClass.InternalIslandStatsClass(NewPopulation, MyState.InternalGenerations);
                                 {// Stats Restructuring
                                     NewIslandStats.ScoreHistory = DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt / Multiplier].ScoreHistory.CloneMe();
@@ -896,6 +917,9 @@ namespace GeneticNetworkTrainer
                                     Array.Copy(DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt / Multiplier].NetStats, (IICnt & (Multiplier - 1)) * NewPopulation, NewIslandStats.NetStats, 0, NewPopulation);
                                     Array.Copy(DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt / Multiplier].ScoreHistogramData, (IICnt & (Multiplier - 1)) * NewPopulation, NewIslandStats.ScoreHistogramData, 0, NewPopulation);
                                     Array.Copy(DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt / Multiplier].TestScoreHistogramData, (IICnt & (Multiplier - 1)) * NewPopulation, NewIslandStats.TestScoreHistogramData, 0, NewPopulation);
+                                    NewIslandStats.ScoreHistogram = ListToHistogram(NewIslandStats.ScoreHistogramData);
+                                    NewIslandStats.TestScoreHistogram = ListToHistogram(NewIslandStats.TestScoreHistogramData);
+
                                 }
                                 // Find Best internal island
                                 if (BestScore < NewIsland[0].GetScore())
@@ -946,7 +970,7 @@ namespace GeneticNetworkTrainer
                             NewIslandStats.TestScoreHistory = DevelopingStatsStructure.StructIslandsStats[SICnt * Multiplier].TestScoreHistory;
                             NewIslandStats.LayersHistory = DevelopingStatsStructure.StructIslandsStats[SICnt * Multiplier].LayersHistory;
                             NewIslandStats.NeuronsHistory = DevelopingStatsStructure.StructIslandsStats[SICnt * Multiplier].NeuronsHistory;
-                            NewIslandStats.StructStats.Clear();
+                            //NewIslandStats.StructStats.Clear();
                         }
                         for (int Cnt = 0; Cnt < Multiplier; Cnt++)
                         {
@@ -992,7 +1016,7 @@ namespace GeneticNetworkTrainer
                     {
                         List<List<GenNetwork[]>> NewIsland = new List<List<GenNetwork[]>>(DevelopingNetsStructure[SICnt / Multiplier].GetRange((SICnt & (Multiplier - 1)) * NewPopulation, NewPopulation));
                         StatsStructureClass.StructIslandStatsClass NewIslandStats = new StatsStructureClass.StructIslandStatsClass(MyState.StructurePopulationPerIsland, 0, 0, 0, 0);
-                        NewIslandStats.StructStats.Clear();
+                        //NewIslandStats.StructStats.Clear();
                         {// Stats Restructuring
                             NewIslandStats.StructStats.AddRange(DevelopingStatsStructure.StructIslandsStats[SICnt / Multiplier].StructStats);
                             Array.Copy(DevelopingStatsStructure.StructIslandsStats[SICnt / Multiplier].ScoreHistogramData, (SICnt & (Multiplier - 1)) * NewPopulation, NewIslandStats.ScoreHistogramData, 0, NewPopulation);
