@@ -27,6 +27,7 @@ namespace GeneticNetworkTrainerForm
             if (ListViewNets.CheckedIndices.Count > 0)
             {
                 LabelMessage.Text = "Fill In the input By hand or select an input from the Slider";
+                SliderHandData_Scroll(null, null);
                 ButtonEvaluate.BackColor = Color.LawnGreen;
             }
             else

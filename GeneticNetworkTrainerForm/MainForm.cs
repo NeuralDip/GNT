@@ -73,7 +73,7 @@ namespace GeneticNetworkTrainerForm
                 {
                     using (StreamWriter writer = File.AppendText(LogFileName))
                     {
-                        writer.Write(MyText);
+                        writer.WriteLine(MyText);
                         writer.Flush();
                         writer.Close();
                     }
@@ -83,6 +83,7 @@ namespace GeneticNetworkTrainerForm
                 MyBox.SelectionColor = MyColor;
                 MyBox.AppendText(MyText + "\n");
                 MyBox.SelectionColor = MyBox.ForeColor;
+                MyBox.ScrollToCaret();
             }
         }
         private delegate void SetControlPropertyThreadSafeDelegate(string ControlName, string PropertyName, object PropertyValue);
@@ -322,8 +323,12 @@ namespace GeneticNetworkTrainerForm
             TextBoxInternalIslandsStep.Text = MyGenTrainer.MyState.InternalIslandsHalvingSteps.ToString();
 
             RadioRulesOutError.Checked = MyGenTrainer.MyState.ScoreRule == GenTrainer.ScoreRules.RuleOutError;
+            RadioRules1X2.Enabled = MyGenTrainer.MyState.NetOutputs == 3;
             RadioRules1X2.Checked = MyGenTrainer.MyState.ScoreRule == GenTrainer.ScoreRules.Rule1X2;
-            TextBoxRulesOutThreshold.Text = MyGenTrainer.MyState.ThresholdOfValidOut.ToString();
+            TextBoxRulesWinThreshold.Text = MyGenTrainer.MyState.ThresholdOfWin.ToString();
+            TextBoxRulesWinThreshold.Enabled = RadioRules1X2.Checked;
+            TextBoxRulesValidThreshold.Text = MyGenTrainer.MyState.ThresholdOfValid.ToString();
+            TextBoxRulesValidThreshold.Enabled = RadioRules1X2.Checked;
 
             // HandTester
             PopulateOutLabels();

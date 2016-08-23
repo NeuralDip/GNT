@@ -76,7 +76,7 @@ namespace GeneticNetworkTrainerForm
         private void TextBoxLimitWeights_TextChanged(object sender, EventArgs e)
         {
             float NewValue;
-            if (!float.TryParse(TextBoxLimitWeights.Text, out NewValue) || NewValue < 0.01 )
+            if (!float.TryParse(TextBoxLimitWeights.Text, out NewValue) || NewValue < 0.01)
             {
                 AppendFeedback(string.Format("Invalid input. Expected {0:0.0} < Float . ", 0.01f, 1), 1);
                 TextBoxLimitWeights.Text = MyGenTrainer.MyState.WeightsLimit.ToString();
@@ -150,7 +150,7 @@ namespace GeneticNetworkTrainerForm
         {
             MyGenTrainer.MyState.InternalIslandRestructuringNeeded = true;
             int NewValue = 1 << SliderInternalIslands.Value;
-            if(MyGenTrainer.MyState.TotalInternalPopulation/NewValue<2)
+            if (MyGenTrainer.MyState.TotalInternalPopulation / NewValue < 2)
             {
                 AppendFeedback("Not Enough population to share", 1);
                 SliderInternalIslands.Value--;
@@ -180,21 +180,39 @@ namespace GeneticNetworkTrainerForm
         }
         private void RadioRulesOutError_CheckedChanged(object sender, EventArgs e)
         {
-            MyGenTrainer.MyState.ScoreRule = GenTrainer.ScoreRules.RuleOutError;
+            if (RadioRulesOutError.Checked)
+                MyGenTrainer.MyState.ScoreRule = GenTrainer.ScoreRules.RuleOutError;
+
+            TextBoxRulesWinThreshold.Enabled = !RadioRulesOutError.Checked;
+            TextBoxRulesValidThreshold.Enabled = !RadioRulesOutError.Checked;
         }
         private void RadioRules1X2_CheckedChanged(object sender, EventArgs e)
         {
-            MyGenTrainer.MyState.ScoreRule = GenTrainer.ScoreRules.Rule1X2;
+            if (RadioRules1X2.Checked)
+                MyGenTrainer.MyState.ScoreRule = GenTrainer.ScoreRules.Rule1X2;
+
+            TextBoxRulesWinThreshold.Enabled = RadioRules1X2.Checked;
+            TextBoxRulesValidThreshold.Enabled = RadioRules1X2.Checked;
         }
-        private void TextBoxRulesOutThreshold_TextChanged(object sender, EventArgs e)
+        private void TextBoxRulesValidThreshold_TextChanged(object sender, EventArgs e)
         {
             float NewValue;
-            if (!float.TryParse(TextBoxRulesOutThreshold.Text, out NewValue) || NewValue < 0)
+            if (!float.TryParse(TextBoxRulesValidThreshold.Text, out NewValue) || NewValue < 0)
             {
                 AppendFeedback(string.Format("Invalid input. Expected {0:0.0} <= Float . ", 0f, 1), 1);
-                TextBoxRulesOutThreshold.Text = MyGenTrainer.MyState.ThresholdOfValidOut.ToString();
+                TextBoxRulesValidThreshold.Text = MyGenTrainer.MyState.ThresholdOfValid.ToString();
             }
-            else MyGenTrainer.MyState.ThresholdOfValidOut = NewValue;
+            else MyGenTrainer.MyState.ThresholdOfValid = NewValue;
+        }
+        private void TextBoxRulesWinThreshold_TextChanged(object sender, EventArgs e)
+        {
+            float NewValue;
+            if (!float.TryParse(TextBoxRulesWinThreshold.Text, out NewValue) || NewValue < 0)
+            {
+                AppendFeedback(string.Format("Invalid input. Expected {0:0.0} <= Float . ", 0f, 1), 1);
+                TextBoxRulesWinThreshold.Text = MyGenTrainer.MyState.ThresholdOfWin.ToString();
+            }
+            else MyGenTrainer.MyState.ThresholdOfWin = NewValue;
         }
     }
 }

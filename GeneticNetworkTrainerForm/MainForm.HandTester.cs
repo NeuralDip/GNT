@@ -6,7 +6,7 @@ namespace GeneticNetworkTrainerForm
 {
     partial class MainForm
     {
-        private void PopulateOutLabels()
+        private void PopulateInTextBoxes()
         {
             LayoutIn.Controls.Clear();
             for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NetInputs; Cnt++)
@@ -16,13 +16,14 @@ namespace GeneticNetworkTrainerForm
                 LayoutIn.Controls[2 * Cnt + 1].TextChanged += new EventHandler(TextBox_TextChangedEvent);
             }
         }
-        private void PopulateInTextBoxes()
+        private void PopulateOutLabels()
         {
             LayoutOut.Controls.Clear();
             for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NetOutputs; Cnt++)
             {
                 LayoutOut.Controls.Add(new Label() { Text = "Out_" + Cnt + ":" }, 0, Cnt);
                 LayoutOut.Controls.Add(new Label() { Text = "-" }, 1, Cnt);
+                LayoutOut.Controls.Add(new Label() { Text = "-" }, 2, Cnt);
             }
         }
         private void TextBox_TextChangedEvent(object sender, EventArgs e)
@@ -33,6 +34,11 @@ namespace GeneticNetworkTrainerForm
             {
                 AppendFeedback(string.Format("Invalid input. Expected a float. "), 1);
                 CurrControl.Text = "0.00";
+            }
+            else
+            {// input changed expected Values are unknown, so clean them
+                for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NetOutputs; Cnt++)
+                    LayoutOut.Controls.Add(new Label() { Text = "-" }, 1, Cnt);
             }
         }
         private void ButtonEvaluate_Click(object sender, EventArgs e)
@@ -45,7 +51,7 @@ namespace GeneticNetworkTrainerForm
                 for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NetInputs; Cnt++) Input[Cnt] = float.Parse(LayoutIn.Controls[2 * Cnt + 1].Text);
                 NetworkSelected.EvaluateNet(Input);
                 float[] Output = NetworkSelected.GetNetOutput();
-                for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NetOutputs; Cnt++) LayoutOut.Controls[2 * Cnt + 1].Text = Output[Cnt].ToString();
+                for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NetOutputs; Cnt++) LayoutOut.Controls[3 * Cnt + 2].Text = Output[Cnt].ToString();
                 AppendFeedback(string.Format("Net Evaluated Succesfully."), 0);
             }
             else AppendFeedback(string.Format("Please select a Net from the 'Internal Inspector' tab."), 1);
@@ -53,7 +59,13 @@ namespace GeneticNetworkTrainerForm
         private void SliderHandData_Scroll(object sender, EventArgs e)
         {
             LabelHandData.Text = SliderHandData.Value.ToString();
-            for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NetInputs; Cnt++) LayoutIn.Controls[2 * Cnt + 1].Text = MyGenTrainer.MyState.InData[SliderHandData.Value][Cnt].ToString();
+            for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NetInputs; Cnt++)
+                LayoutIn.Controls[2 * Cnt + 1].Text = MyGenTrainer.MyState.InData[SliderHandData.Value][Cnt].ToString();
+            for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NetOutputs; Cnt++)
+            {
+                LayoutOut.Controls[3 * Cnt + 1].Text = MyGenTrainer.MyState.LabelData[SliderHandData.Value][Cnt].ToString();
+                LayoutOut.Controls[3 * Cnt + 2].Text = "-";
+            }
         }
     }
 }

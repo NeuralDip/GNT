@@ -112,7 +112,8 @@ namespace GeneticNetworkTrainer
             public int InternalIslandsHalveIn = 1;
 
             public ScoreRules ScoreRule = ScoreRules.RuleOutError;
-            public float ThresholdOfValidOut = 0.0f;
+            public float ThresholdOfWin = 0.5f;
+            public float ThresholdOfValid = 0.0f;
 
             //Net Structure That will be saved
             public List<List<List<GenNetwork[]>>> NetsStructureToSave; //Islands[Structures[Islands[Nets]]]
@@ -343,67 +344,67 @@ namespace GeneticNetworkTrainer
 
         public void TrainNetNotThreaded(object iInput)
         {
-            //try
-            //{
-            PreProcess(true);
-            for (int StrGenCnt = MyState.CurrStructureGeneration; StrGenCnt < MyState.StructureGenerations; StrGenCnt++)
+            try
             {
-                MyState.CurrStructureGeneration = StrGenCnt;
-                ParentFormControlSet("LabelCurrStructGen", "Text", StrGenCnt.ToString());
-                if (BoolSaveState) ForceSaveState();
-                if (StopTraining) { CallTheForm(TrainingState.TrainingStopped); StopTraining = false; return; }
-
-                CheckIslandsUpadate(false, 0, 0, StrGenCnt, 0);
-
-                for (int SICnt = 0; SICnt < MyState.CurrNumberStructureIslands; SICnt++)
+                PreProcess(true);
+                for (int StrGenCnt = MyState.CurrStructureGeneration; StrGenCnt < MyState.StructureGenerations; StrGenCnt++)
                 {
-                    NextStructGeneration(SICnt, 0);// prepare generation for this Structure Island
-                    for (int SPCnt = 0; SPCnt < MyState.StructurePopulationPerIsland; SPCnt++)
-                    {
-                        PopulateStatsStructure(TrainingState.StructStarted, SICnt, SPCnt, 0, 0, 0);
-                        ParentFormControlSet("LabelCurrStructure", "Text", string.Format("({0}, {1})", SICnt, SPCnt));
-                        for (int IntGenCnt = 0; IntGenCnt < MyState.InternalGenerations; IntGenCnt++)
-                        {
-                            CheckAnnealingUpdate(IntGenCnt, 0);
-                            CheckIslandsUpadate(true, SICnt, SPCnt, IntGenCnt, 0);
-                            ParentFormControlSet("LabelCurrInternalGen", "Text", IntGenCnt.ToString());
-                            for (int IICnt = 0; IICnt < CurrInternalIslands[0]; IICnt++)
-                            {
+                    MyState.CurrStructureGeneration = StrGenCnt;
+                    ParentFormControlSet("LabelCurrStructGen", "Text", StrGenCnt.ToString());
+                    if (BoolSaveState) ForceSaveState();
+                    if (StopTraining) { CallTheForm(TrainingState.TrainingStopped); StopTraining = false; return; }
 
-                                NextInternalGeneration(SICnt, SPCnt, IICnt, 0);// prepare generation for this Internal Island
-                                for (int IPCnt = 0; IPCnt < CurrInternalPopulationPerIsland[0]; IPCnt++)
+                    CheckIslandsHalving(false, 0, 0, StrGenCnt, 0);
+
+                    for (int SICnt = 0; SICnt < MyState.CurrNumberStructureIslands; SICnt++)
+                    {
+                        NextStructGeneration(SICnt, 0);// prepare generation for this Structure Island
+                        for (int SPCnt = 0; SPCnt < MyState.StructurePopulationPerIsland; SPCnt++)
+                        {
+                            PopulateStatsStructure(TrainingState.StructStarted, SICnt, SPCnt, 0, 0, 0);
+                            ParentFormControlSet("LabelCurrStructure", "Text", string.Format("({0}, {1})", SICnt, SPCnt));
+                            for (int IntGenCnt = 0; IntGenCnt < MyState.InternalGenerations; IntGenCnt++)
+                            {
+                                CheckAnnealingUpdate(IntGenCnt, 0);
+                                CheckIslandsHalving(true, SICnt, SPCnt, IntGenCnt, 0);
+                                ParentFormControlSet("LabelCurrInternalGen", "Text", IntGenCnt.ToString());
+                                for (int IICnt = 0; IICnt < CurrInternalIslands[0]; IICnt++)
                                 {
-                                    DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt].ResetScores();
-                                    if (!DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt].CalculateScores(MyState.InData, MyState.LabelData, MyState.DataToUse, MyState.HalfDataForTesting, MyState.ScoreRule, MyState.ThresholdOfValidOut))
+
+                                    NextInternalGeneration(SICnt, SPCnt, IICnt, 0);// prepare generation for this Internal Island
+                                    for (int IPCnt = 0; IPCnt < CurrInternalPopulationPerIsland[0]; IPCnt++)
                                     {
-                                        ParentFormLogging(string.Format("Scoring Calculation failed for net ({0}{1}{2}{3}). Inputs or Outputs dont match the nets IOs. ", SICnt, SPCnt, IICnt, IPCnt), 2);
-                                        return;
+                                        DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt].ResetScores();
+                                        if (!DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt].CalculateScores(MyState.InData, MyState.LabelData, MyState.DataToUse, MyState.HalfDataForTesting, MyState.ScoreRule, MyState.ThresholdOfWin, MyState.ThresholdOfValid))
+                                        {
+                                            ParentFormLogging(string.Format("Scoring Calculation failed for net ({0}{1}{2}{3}). Inputs or Outputs dont match the nets IOs. ", SICnt, SPCnt, IICnt, IPCnt), 2);
+                                            return;
+                                        }
+                                        PopulateStatsStructure(TrainingState.NetEnded, SICnt, SPCnt, IICnt, IPCnt, 0);
+                                        if (ForceStopTraining) { CallTheForm(TrainingState.TrainingStopped); StopTraining = false; ForceStopTraining = false; return; }
                                     }
-                                    PopulateStatsStructure(TrainingState.NetEnded, SICnt, SPCnt, IICnt, IPCnt, 0);
-                                    if (ForceStopTraining) { CallTheForm(TrainingState.TrainingStopped); StopTraining = false; ForceStopTraining = false; return; }
+                                    PopulateStatsStructure(TrainingState.InternalIslandEnded, SICnt, SPCnt, IICnt, 0, 0);
                                 }
-                                PopulateStatsStructure(TrainingState.InternalIslandEnded, SICnt, SPCnt, IICnt, 0, 0);
+                                PopulateStatsStructure(TrainingState.InternalGenEnded, SICnt, SPCnt, 0, 0, 0);
                             }
-                            PopulateStatsStructure(TrainingState.InternalGenEnded, SICnt, SPCnt, 0, 0, 0);
+                            CurrInternalIslands[0] = MyState.InitialNumberInternalIslands;
+                            CurrAnnealing[0] = MyState.InitialInternalAnnealing;
+                            PopulateStatsStructure(TrainingState.StructEnded, SICnt, SPCnt, 0, 0, 0);
                         }
-                        CurrInternalIslands[0] = MyState.InitialNumberInternalIslands;
-                        CurrAnnealing[0] = MyState.InitialInternalAnnealing;
-                        PopulateStatsStructure(TrainingState.StructEnded, SICnt, SPCnt, 0, 0, 0);
+                        PopulateStatsStructure(TrainingState.StructIslandEnded, SICnt, 0, 0, 0, 0);
                     }
-                    PopulateStatsStructure(TrainingState.StructIslandEnded, SICnt, 0, 0, 0, 0);
+                    PopulateStatsStructure(TrainingState.StructGenEnded, 0, 0, 0, 0, 0);
+                    PostProcess(0);
+                    SettledNetsStructure = CloneNetsStruct(DevelopingNetsStructure);
+                    SettledStatsStructure = CloneStatsStruct(DevelopingStatsStructure);
+                    CheckStopConditions();
+                    CallTheForm(TrainingState.StructGenEnded);
                 }
-                PopulateStatsStructure(TrainingState.StructGenEnded, 0, 0, 0, 0, 0);
-                PostProcess(0);
-                SettledNetsStructure = CloneNetsStruct(DevelopingNetsStructure);
-                SettledStatsStructure = CloneStatsStruct(DevelopingStatsStructure);
-                CheckStopConditions();
-                CallTheForm(TrainingState.StructGenEnded);
             }
-            //}
-            //catch (Exception Ex)
-            //{
-            //    ParentFormLogging(" Error While training. Message: " + Ex.Message + "\n Trace: " + new StackTrace(Ex, true).ToString(), 2);
-            //}
+            catch (Exception Ex)
+            {
+                ParentFormLogging(" Error While training. Message: " + Ex.Message + "\n Trace: " + new StackTrace(Ex, true).ToString(), 2);
+            }
             CallTheForm(TrainingState.TrainingEnded);
         }
 
@@ -530,106 +531,106 @@ namespace GeneticNetworkTrainer
         }
         private void PopulateStatsStructure(TrainingState CurrLevel, int SICnt, int SPCnt, int IICnt, int IPCnt, int ThreadID)
         {
-            //try
-            //{
-            
-            switch (CurrLevel)
+            try
             {
-                case TrainingState.NetEnded:
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].ScoreHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt].GetScore());
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].TestScoreHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt].GetTestScore());
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].OutErrorHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt].GetOutError());
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].TestOutErrorHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt].GetTestOutError());
 
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].ScoreHistogramData[IPCnt] = DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].ScoreHistory.ReadLastValue();
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].TestScoreHistogramData[IPCnt] = DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].TestScoreHistory.ReadLastValue();
+                switch (CurrLevel)
+                {
+                    case TrainingState.NetEnded:
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].ScoreHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt].GetScore());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].TestScoreHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt].GetTestScore());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].OutErrorHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt].GetOutError());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].TestOutErrorHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt].GetTestOutError());
 
-                    break;
-                case TrainingState.InternalIslandEnded:
-                    Array.Sort(DevelopingNetsStructure[SICnt][SPCnt][IICnt], DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats);
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].ScoreHistogramData[IPCnt] = DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].ScoreHistory.ReadLastValue();
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].TestScoreHistogramData[IPCnt] = DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].TestScoreHistory.ReadLastValue();
 
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].ScoreHistogram = ListToHistogram(DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].ScoreHistogramData);
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].TestScoreHistogram = ListToHistogram(DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].TestScoreHistogramData);
+                        break;
+                    case TrainingState.InternalIslandEnded:
+                        Array.Sort(DevelopingNetsStructure[SICnt][SPCnt][IICnt], DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats);
 
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].ScoreHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][IICnt][0].GetScore());
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].TestScoreHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][IICnt][0].GetTestScore());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].ScoreHistogram = ListToHistogram(DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].ScoreHistogramData);
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].TestScoreHistogram = ListToHistogram(DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].TestScoreHistogramData);
 
-                    float IIslandCurrScore = int.MinValue;
-                    for (int LocalCnt = 0; LocalCnt < CurrInternalIslands[ThreadID]; LocalCnt++)
-                    {
-                        if (IIslandCurrScore < DevelopingNetsStructure[SICnt][SPCnt][LocalCnt][0].GetScore())
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].ScoreHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][IICnt][0].GetScore());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].TestScoreHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][IICnt][0].GetTestScore());
+
+                        float IIslandCurrScore = int.MinValue;
+                        for (int LocalCnt = 0; LocalCnt < CurrInternalIslands[ThreadID]; LocalCnt++)
                         {
-                            DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].BestIsland = LocalCnt;
-                            IIslandCurrScore = DevelopingNetsStructure[SICnt][SPCnt][LocalCnt][0].GetScore();
+                            if (IIslandCurrScore < DevelopingNetsStructure[SICnt][SPCnt][LocalCnt][0].GetScore())
+                            {
+                                DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].BestIsland = LocalCnt;
+                                IIslandCurrScore = DevelopingNetsStructure[SICnt][SPCnt][LocalCnt][0].GetScore();
+                            }
                         }
-                    }
-                    break;
-                case TrainingState.StructStarted:
-                    for (int IICntInt = 0; IICntInt < DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats.Count; IICntInt++)// These loops are done on the unchanged limits, because islands have not yet been structured
-                    {
-                        for (int Cnt = 0; Cnt < DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICntInt].NetStats.Length; Cnt++)
+                        break;
+                    case TrainingState.StructStarted:
+                        for (int IICntInt = 0; IICntInt < DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats.Count; IICntInt++)// These loops are done on the unchanged limits, because islands have not yet been structured
                         {
-                            DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICntInt].NetStats[Cnt].ScoreHistory.Clear();
-                            DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICntInt].NetStats[Cnt].TestScoreHistory.Clear();
-                            DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICntInt].NetStats[Cnt].OutErrorHistory.Clear();
-                            DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICntInt].NetStats[Cnt].TestOutErrorHistory.Clear();
+                            for (int Cnt = 0; Cnt < DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICntInt].NetStats.Length; Cnt++)
+                            {
+                                DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICntInt].NetStats[Cnt].ScoreHistory.Clear();
+                                DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICntInt].NetStats[Cnt].TestScoreHistory.Clear();
+                                DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICntInt].NetStats[Cnt].OutErrorHistory.Clear();
+                                DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICntInt].NetStats[Cnt].TestOutErrorHistory.Clear();
 
+                            }
                         }
-                    }
-                    break;
-                case TrainingState.InternalGenEnded:
-                    break;
-                case TrainingState.StructEnded:
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].ScoreHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].BestIsland][0].GetScore());
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].TestScoreHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].BestIsland][0].GetTestScore());
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].LayersHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][0][0].GetLayersNumber());
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].NeuronsHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][0][0].GetNeuronsNumber());
+                        break;
+                    case TrainingState.InternalGenEnded:
+                        break;
+                    case TrainingState.StructEnded:
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].ScoreHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].BestIsland][0].GetScore());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].TestScoreHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].BestIsland][0].GetTestScore());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].LayersHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][0][0].GetLayersNumber());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].NeuronsHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][0][0].GetNeuronsNumber());
 
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].ScoreHistogramData[SPCnt] = (DevelopingNetsStructure[SICnt][SPCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].BestIsland][0].GetScore());
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].TestScoreHistogramData[SPCnt] = (DevelopingNetsStructure[SICnt][SPCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].BestIsland][0].GetTestScore());
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].LayersHistogramData[SPCnt] = (DevelopingNetsStructure[SICnt][SPCnt][0][0].GetLayersNumber());
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].NeuronsHistogramData[SPCnt] = (DevelopingNetsStructure[SICnt][SPCnt][0][0].GetNeuronsNumber());
-                    float StructCurrScore = int.MinValue;
-                    for (int LocalCnt = 0; LocalCnt < MyState.StructurePopulationPerIsland; LocalCnt++)
-                    {
-                        if (StructCurrScore < DevelopingNetsStructure[SICnt][LocalCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[LocalCnt].BestIsland][0].GetScore())
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].ScoreHistogramData[SPCnt] = (DevelopingNetsStructure[SICnt][SPCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].BestIsland][0].GetScore());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].TestScoreHistogramData[SPCnt] = (DevelopingNetsStructure[SICnt][SPCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].BestIsland][0].GetTestScore());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].LayersHistogramData[SPCnt] = (DevelopingNetsStructure[SICnt][SPCnt][0][0].GetLayersNumber());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].NeuronsHistogramData[SPCnt] = (DevelopingNetsStructure[SICnt][SPCnt][0][0].GetNeuronsNumber());
+                        float StructCurrScore = int.MinValue;
+                        for (int LocalCnt = 0; LocalCnt < MyState.StructurePopulationPerIsland; LocalCnt++)
                         {
-                            DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure = LocalCnt;
-                            StructCurrScore = DevelopingNetsStructure[SICnt][LocalCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[LocalCnt].BestIsland][0].GetScore();
+                            if (StructCurrScore < DevelopingNetsStructure[SICnt][LocalCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[LocalCnt].BestIsland][0].GetScore())
+                            {
+                                DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure = LocalCnt;
+                                StructCurrScore = DevelopingNetsStructure[SICnt][LocalCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[LocalCnt].BestIsland][0].GetScore();
+                            }
                         }
-                    }
-                    break;
-                case TrainingState.StructIslandEnded:
+                        break;
+                    case TrainingState.StructIslandEnded:
 
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].ScoreHistory.PutValue(DevelopingNetsStructure[SICnt][DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure].BestIsland][0].GetScore());
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].TestScoreHistory.PutValue(DevelopingNetsStructure[SICnt][DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure].BestIsland][0].GetTestScore());
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].LayersHistory.PutValue(DevelopingNetsStructure[SICnt][DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure].BestIsland][0].GetLayersNumber());
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].NeuronsHistory.PutValue(DevelopingNetsStructure[SICnt][DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure].BestIsland][0].GetNeuronsNumber());
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].ScoreHistogram = ListToHistogram(DevelopingStatsStructure.StructIslandsStats[SICnt].ScoreHistogramData);
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].TestScoreHistogram = ListToHistogram(DevelopingStatsStructure.StructIslandsStats[SICnt].TestScoreHistogramData);
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].LayersHistogram = ListToHistogram(DevelopingStatsStructure.StructIslandsStats[SICnt].LayersHistogramData);
-                    DevelopingStatsStructure.StructIslandsStats[SICnt].NeuronsHistogram = ListToHistogram(DevelopingStatsStructure.StructIslandsStats[SICnt].NeuronsHistogramData);
-                    float SIslandCurrScore = int.MinValue;
-                    for (int LocalCnt = 0; LocalCnt < MyState.CurrNumberStructureIslands; LocalCnt++)
-                    {
-                        if (SIslandCurrScore < DevelopingNetsStructure[LocalCnt][DevelopingStatsStructure.StructIslandsStats[LocalCnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[LocalCnt].StructStats[DevelopingStatsStructure.StructIslandsStats[LocalCnt].BestStructure].BestIsland][0].GetScore())
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].ScoreHistory.PutValue(DevelopingNetsStructure[SICnt][DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure].BestIsland][0].GetScore());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].TestScoreHistory.PutValue(DevelopingNetsStructure[SICnt][DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure].BestIsland][0].GetTestScore());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].LayersHistory.PutValue(DevelopingNetsStructure[SICnt][DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure].BestIsland][0].GetLayersNumber());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].NeuronsHistory.PutValue(DevelopingNetsStructure[SICnt][DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure].BestIsland][0].GetNeuronsNumber());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].ScoreHistogram = ListToHistogram(DevelopingStatsStructure.StructIslandsStats[SICnt].ScoreHistogramData);
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].TestScoreHistogram = ListToHistogram(DevelopingStatsStructure.StructIslandsStats[SICnt].TestScoreHistogramData);
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].LayersHistogram = ListToHistogram(DevelopingStatsStructure.StructIslandsStats[SICnt].LayersHistogramData);
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].NeuronsHistogram = ListToHistogram(DevelopingStatsStructure.StructIslandsStats[SICnt].NeuronsHistogramData);
+                        float SIslandCurrScore = int.MinValue;
+                        for (int LocalCnt = 0; LocalCnt < MyState.CurrNumberStructureIslands; LocalCnt++)
                         {
-                            DevelopingStatsStructure.BestIsland = LocalCnt;
-                            SIslandCurrScore = DevelopingNetsStructure[LocalCnt][DevelopingStatsStructure.StructIslandsStats[LocalCnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[LocalCnt].StructStats[DevelopingStatsStructure.StructIslandsStats[LocalCnt].BestStructure].BestIsland][0].GetScore();
+                            if (SIslandCurrScore < DevelopingNetsStructure[LocalCnt][DevelopingStatsStructure.StructIslandsStats[LocalCnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[LocalCnt].StructStats[DevelopingStatsStructure.StructIslandsStats[LocalCnt].BestStructure].BestIsland][0].GetScore())
+                            {
+                                DevelopingStatsStructure.BestIsland = LocalCnt;
+                                SIslandCurrScore = DevelopingNetsStructure[LocalCnt][DevelopingStatsStructure.StructIslandsStats[LocalCnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[LocalCnt].StructStats[DevelopingStatsStructure.StructIslandsStats[LocalCnt].BestStructure].BestIsland][0].GetScore();
+                            }
                         }
-                    }
-                    break;
-                case TrainingState.StructGenEnded:
-                    break;
-                default: ParentFormLogging(" Check Your Stats Populating... ", 2); break;
+                        break;
+                    case TrainingState.StructGenEnded:
+                        break;
+                    default: ParentFormLogging(" Check Your Stats Populating... ", 2); break;
+
+                }
 
             }
-
-            //}
-            //catch (Exception Ex)
-            //{
-            //    ParentFormLogging(" Error While training. Message: " + Ex.Message + "\n Trace: " + new StackTrace(Ex, true).ToString(), 2);
-            //}
+            catch (Exception Ex)
+            {
+                ParentFormLogging(" Error While training. Message: " + Ex.Message + "\n Trace: " + new StackTrace(Ex, true).ToString(), 2);
+            }
         }
         private float[] ListToHistogram(float[] InList)
         {
@@ -788,11 +789,11 @@ namespace GeneticNetworkTrainer
                 }
             }
         }
-        private void CheckIslandsUpadate(bool IsInternal, int CurrSI, int CurrSP, int CurrGeneration, int ThreadID)
+        private void CheckIslandsHalving(bool IsInternal, int CurrSI, int CurrSP, int CurrGeneration, int ThreadID)
         {
             if (IsInternal)
             {
-                if (MyState.HalveInternalIslands)
+                if (MyState.HalveInternalIslands && CurrInternalIslands[ThreadID] != 1)
                 {
                     if (CurrGeneration == 0) CurrInternalIslands[ThreadID] = MyState.InitialNumberInternalIslands;
                     int GenerationsStride = (int)Math.Ceiling((float)MyState.InternalGenerations / ((float)MyState.InternalIslandsHalvingSteps + 1));
@@ -808,7 +809,7 @@ namespace GeneticNetworkTrainer
             }
             else
             {
-                if (MyState.HalveStructureIslands)
+                if (MyState.HalveStructureIslands && MyState.CurrNumberStructureIslands != 1)
                 {
                     int GenerationsStride = (int)Math.Ceiling((float)MyState.StructureGenerations / ((float)MyState.StructureIslandsHalvingSteps + 1));
                     int GensRemaining = GenerationsStride - (int)Math.Ceiling(CurrGeneration % (float)GenerationsStride);
@@ -1122,25 +1123,25 @@ namespace GeneticNetworkTrainer
             FileStream MyFile;
             MyFile = File.OpenRead(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\GenTrainingSave");
             BinaryFormatter BF = new BinaryFormatter();
-            //try
-            //{
-            MyState = BF.Deserialize(MyFile) as StateClass;
-            if (MyState.IncludeNetsInTheSave)
+            try
             {
-                SettledNetsStructure = MyState.NetsStructureToSave;
-                DevelopingNetsStructure = CloneNetsStruct(SettledNetsStructure);
-                ResetStructures(true, true);
-            }
-            else ResetStructures(true, false);
+                MyState = BF.Deserialize(MyFile) as StateClass;
+                if (MyState.IncludeNetsInTheSave)
+                {
+                    SettledNetsStructure = MyState.NetsStructureToSave;
+                    DevelopingNetsStructure = CloneNetsStruct(SettledNetsStructure);
+                    ResetStructures(true, true);
+                }
+                else ResetStructures(true, false);
 
-            ParentFormLogging(" State Loaded Succesfully.", 0);
-            MyFile.Close();
-            //}
-            //catch (Exception Ex)
-            //{
-            //    ParentFormLogging(" Error While Loading... Probably file is obsolete... ", 1);
-            //    ParentFormLogging(" Message: " + Ex.Message + "\n Trace: " + new StackTrace(Ex, true).ToString(), 2);
-            //}
+                ParentFormLogging(" State Loaded Succesfully.", 0);
+                MyFile.Close();
+            }
+            catch (Exception Ex)
+            {
+                ParentFormLogging(" Error While Loading... Probably file is obsolete... ", 1);
+                ParentFormLogging(" Message: " + Ex.Message + "\n Trace: " + new StackTrace(Ex, true).ToString(), 2);
+            }
         }
         public void ForceSaveState()
         {

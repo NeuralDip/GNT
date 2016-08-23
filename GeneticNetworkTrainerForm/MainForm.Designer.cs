@@ -175,8 +175,6 @@ namespace GeneticNetworkTrainerForm
         private Label LabelStructID;
         private Label LabelIntIsland;
         private GroupBox groupBox23;
-        private TextBox TextBoxRulesOutThreshold;
-        private Label label88;
         private GroupBox groupBox13;
         private Panel InternalPlotPlaceHolder;
         private GroupBox groupBox15;
@@ -367,10 +365,12 @@ namespace GeneticNetworkTrainerForm
             this.label68 = new System.Windows.Forms.Label();
             this.TabInternalGenetics = new System.Windows.Forms.TabPage();
             this.groupBox23 = new System.Windows.Forms.GroupBox();
+            this.TextBoxRulesValidThreshold = new System.Windows.Forms.TextBox();
+            this.label24 = new System.Windows.Forms.Label();
+            this.TextBoxRulesWinThreshold = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
             this.RadioRules1X2 = new System.Windows.Forms.RadioButton();
             this.RadioRulesOutError = new System.Windows.Forms.RadioButton();
-            this.TextBoxRulesOutThreshold = new System.Windows.Forms.TextBox();
-            this.label88 = new System.Windows.Forms.Label();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.label9 = new System.Windows.Forms.Label();
             this.TextBoxInternalAnnealStep = new System.Windows.Forms.TextBox();
@@ -493,6 +493,8 @@ namespace GeneticNetworkTrainerForm
             this.LayoutOut = new System.Windows.Forms.TableLayoutPanel();
             this.LayoutIn = new System.Windows.Forms.TableLayoutPanel();
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.label37 = new System.Windows.Forms.Label();
+            this.label38 = new System.Windows.Forms.Label();
             this.MainTabControl.SuspendLayout();
             this.TabMainControl.SuspendLayout();
             this.groupBox9.SuspendLayout();
@@ -965,7 +967,7 @@ namespace GeneticNetworkTrainerForm
             // 
             this.LabelDynC.AutoSize = true;
             this.LabelDynC.Enabled = false;
-            this.LabelDynC.Location = new System.Drawing.Point(195, 85);
+            this.LabelDynC.Location = new System.Drawing.Point(219, 85);
             this.LabelDynC.Name = "LabelDynC";
             this.LabelDynC.Size = new System.Drawing.Size(29, 13);
             this.LabelDynC.TabIndex = 9;
@@ -1656,22 +1658,60 @@ namespace GeneticNetworkTrainerForm
             // 
             // groupBox23
             // 
+            this.groupBox23.Controls.Add(this.TextBoxRulesValidThreshold);
+            this.groupBox23.Controls.Add(this.label24);
+            this.groupBox23.Controls.Add(this.TextBoxRulesWinThreshold);
+            this.groupBox23.Controls.Add(this.label23);
             this.groupBox23.Controls.Add(this.RadioRules1X2);
             this.groupBox23.Controls.Add(this.RadioRulesOutError);
-            this.groupBox23.Controls.Add(this.TextBoxRulesOutThreshold);
-            this.groupBox23.Controls.Add(this.label88);
             this.groupBox23.Location = new System.Drawing.Point(6, 513);
             this.groupBox23.Name = "groupBox23";
-            this.groupBox23.Size = new System.Drawing.Size(309, 95);
+            this.groupBox23.Size = new System.Drawing.Size(309, 90);
             this.groupBox23.TabIndex = 36;
             this.groupBox23.TabStop = false;
             this.groupBox23.Text = "Score Rules";
+            // 
+            // TextBoxRulesValidThreshold
+            // 
+            this.TextBoxRulesValidThreshold.Location = new System.Drawing.Point(237, 64);
+            this.TextBoxRulesValidThreshold.Name = "TextBoxRulesValidThreshold";
+            this.TextBoxRulesValidThreshold.Size = new System.Drawing.Size(59, 20);
+            this.TextBoxRulesValidThreshold.TabIndex = 38;
+            this.TextBoxRulesValidThreshold.Text = "0.5";
+            this.TextBoxRulesValidThreshold.Leave += new System.EventHandler(this.TextBoxRulesValidThreshold_TextChanged);
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(105, 67);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(80, 13);
+            this.label24.TabIndex = 37;
+            this.label24.Text = "Valid Threshold";
+            // 
+            // TextBoxRulesWinThreshold
+            // 
+            this.TextBoxRulesWinThreshold.Location = new System.Drawing.Point(237, 42);
+            this.TextBoxRulesWinThreshold.Name = "TextBoxRulesWinThreshold";
+            this.TextBoxRulesWinThreshold.Size = new System.Drawing.Size(59, 20);
+            this.TextBoxRulesWinThreshold.TabIndex = 36;
+            this.TextBoxRulesWinThreshold.Text = "0.5";
+            this.TextBoxRulesWinThreshold.Leave += new System.EventHandler(this.TextBoxRulesWinThreshold_TextChanged);
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(105, 45);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(123, 13);
+            this.label23.TabIndex = 35;
+            this.label23.Text = "Win predicted Threshold";
             // 
             // RadioRules1X2
             // 
             this.RadioRules1X2.AutoSize = true;
             this.RadioRules1X2.Enabled = false;
-            this.RadioRules1X2.Location = new System.Drawing.Point(111, 19);
+            this.RadioRules1X2.Location = new System.Drawing.Point(20, 42);
             this.RadioRules1X2.Name = "RadioRules1X2";
             this.RadioRules1X2.Size = new System.Drawing.Size(44, 17);
             this.RadioRules1X2.TabIndex = 34;
@@ -1691,24 +1731,6 @@ namespace GeneticNetworkTrainerForm
             this.RadioRulesOutError.Text = "OutError";
             this.RadioRulesOutError.UseVisualStyleBackColor = true;
             this.RadioRulesOutError.CheckedChanged += new System.EventHandler(this.RadioRulesOutError_CheckedChanged);
-            // 
-            // TextBoxRulesOutThreshold
-            // 
-            this.TextBoxRulesOutThreshold.Location = new System.Drawing.Point(140, 58);
-            this.TextBoxRulesOutThreshold.Name = "TextBoxRulesOutThreshold";
-            this.TextBoxRulesOutThreshold.Size = new System.Drawing.Size(59, 20);
-            this.TextBoxRulesOutThreshold.TabIndex = 32;
-            this.TextBoxRulesOutThreshold.Text = "0.5";
-            this.TextBoxRulesOutThreshold.Leave += new System.EventHandler(this.TextBoxRulesOutThreshold_TextChanged);
-            // 
-            // label88
-            // 
-            this.label88.AutoSize = true;
-            this.label88.Location = new System.Drawing.Point(8, 61);
-            this.label88.Name = "label88";
-            this.label88.Size = new System.Drawing.Size(126, 13);
-            this.label88.TabIndex = 31;
-            this.label88.Text = "Threshold of valid Output";
             // 
             // groupBox8
             // 
@@ -2423,7 +2445,7 @@ namespace GeneticNetworkTrainerForm
             this.groupBox19.Controls.Add(this.label77);
             this.groupBox19.Location = new System.Drawing.Point(6, 16);
             this.groupBox19.Name = "groupBox19";
-            this.groupBox19.Size = new System.Drawing.Size(135, 155);
+            this.groupBox19.Size = new System.Drawing.Size(156, 155);
             this.groupBox19.TabIndex = 0;
             this.groupBox19.TabStop = false;
             this.groupBox19.Text = "Best Net";
@@ -2868,6 +2890,8 @@ namespace GeneticNetworkTrainerForm
             // TabHandTester
             // 
             this.TabHandTester.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.TabHandTester.Controls.Add(this.label38);
+            this.TabHandTester.Controls.Add(this.label37);
             this.TabHandTester.Controls.Add(this.LabelHandData);
             this.TabHandTester.Controls.Add(this.SliderHandData);
             this.TabHandTester.Controls.Add(this.ButtonEvaluate);
@@ -2959,15 +2983,15 @@ namespace GeneticNetworkTrainerForm
             // 
             // LayoutOut
             // 
-            this.LayoutOut.ColumnCount = 2;
-            this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 52F));
-            this.LayoutOut.Location = new System.Drawing.Point(218, 147);
+            this.LayoutOut.ColumnCount = 3;
+            this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+            this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.LayoutOut.Location = new System.Drawing.Point(143, 174);
             this.LayoutOut.Name = "LayoutOut";
             this.LayoutOut.RowCount = 1;
-            this.LayoutOut.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 656F));
-            this.LayoutOut.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 656F));
-            this.LayoutOut.Size = new System.Drawing.Size(97, 350);
+            this.LayoutOut.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.LayoutOut.Size = new System.Drawing.Size(172, 331);
             this.LayoutOut.TabIndex = 1;
             // 
             // LayoutIn
@@ -2987,6 +3011,26 @@ namespace GeneticNetworkTrainerForm
             // 
             this.OpenFileDialog.Filter = "CSV files|*.csv";
             this.OpenFileDialog.Title = "Select .csv Containing Data";
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.label37.Location = new System.Drawing.Point(251, 152);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(61, 13);
+            this.label37.TabIndex = 32;
+            this.label37.Text = "Predicted";
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.label38.Location = new System.Drawing.Point(191, 152);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(60, 13);
+            this.label38.TabIndex = 33;
+            this.label38.Text = "Expected";
             // 
             // MainForm
             // 
@@ -3162,6 +3206,12 @@ namespace GeneticNetworkTrainerForm
         private Label LabelDynA;
         private CheckBox CheckBoxIncludeNetsInSave;
         private Label LabelGlobalStopwatchElapsed;
+        private TextBox TextBoxRulesWinThreshold;
+        private Label label23;
+        private TextBox TextBoxRulesValidThreshold;
+        private Label label24;
+        private Label label38;
+        private Label label37;
     }
 }
 

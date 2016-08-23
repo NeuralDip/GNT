@@ -26,7 +26,7 @@ namespace GeneticNetworkTrainerForm
             RedrawInternalIslandsPlot();
             PopulateInternalNets();
             RedrawInternalPlot();
-            
+
         }
         private void ListViewStructures_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -406,7 +406,8 @@ namespace GeneticNetworkTrainerForm
         {
             LabelStructTypeLayers.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].LayersHistory.ReadLastValue().ToString();
             LabelStructTypeNeurons.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].NeuronsHistory.ReadLastValue().ToString();
-            LabelStructTypeWeights.Text = MyGenTrainer.DevelopingNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][0][0].GetWeightsNumber().ToString();
+            if (MyGenTrainer.SettledNetsStructure.Count != 0)
+                LabelStructTypeWeights.Text = MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][0][0].GetWeightsNumber().ToString();
 
             if (MainTabControl.SelectedIndex != 3 || !NewStructStatsReady) return;
             NewStructStatsReady = false;

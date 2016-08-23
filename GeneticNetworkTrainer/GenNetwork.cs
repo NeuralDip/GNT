@@ -267,7 +267,8 @@ namespace GeneticNetworkTrainer
                 Score = 0;
             }
             TempNetwork.ActionHistory = new List<string>(ActionHistory);
-            TempNetwork.ActionHistory.Add("Cloning...");
+            if (TempNetwork.ActionHistory[TempNetwork.ActionHistory.Count - 1] != "Cloning...")
+                TempNetwork.ActionHistory.Add("Cloning...");
             return TempNetwork;
         }
 
@@ -343,8 +344,8 @@ namespace GeneticNetworkTrainer
             }
             return GetNetOutput();
         }
-        public void ResetScores() { Score = float.MinValue; TestScore = float.MinValue; OutError = 0; TestOutError = 0; }
-        public bool CalculateScores(List<float[]> InData, List<float[]> Labels, int DataToUse, bool Test, GenTrainer.ScoreRules ScoreRule, float ValidOutThresh)
+        public void ResetScores() { Score = 0; TestScore = 0; OutError = 0; TestOutError = 0; }
+        public bool CalculateScores(List<float[]> InData, List<float[]> Labels, int DataToUse, bool Test, GenTrainer.ScoreRules ScoreRule, float WinThresh, float ValidThreshold)
         {
             // CalculateScores Calculates the scores and the Outerrors for all Data 
             float[] Output = GetNetOutput();
@@ -371,9 +372,9 @@ namespace GeneticNetworkTrainer
                 {
                     for (int OutCnt = 0; OutCnt < Labels[Cnt].Length; OutCnt++)
                         if ((Cnt & 1) == 1 && Test)
-                            TestScore += Get1X2Score(InData[Cnt][InData[Cnt].Length - 1], Output[OutCnt], Labels[Cnt][OutCnt], ValidOutThresh);
+                            TestScore += Get1X2Score(InData[Cnt][InData[Cnt].Length - 1], Output[OutCnt], Labels[Cnt][OutCnt], WinThresh, ValidThreshold);
                         else
-                            Score += Get1X2Score(InData[Cnt][InData[Cnt].Length - 1], Output[OutCnt], Labels[Cnt][OutCnt], ValidOutThresh);
+                            Score += Get1X2Score(InData[Cnt][InData[Cnt].Length - 1], Output[OutCnt], Labels[Cnt][OutCnt], WinThresh, ValidThreshold);
                 }
             }
 
@@ -535,12 +536,12 @@ namespace GeneticNetworkTrainer
             for (int Cnt = 0; Cnt < Child.AdjacencyObject.IDsOrder.Count; Cnt++)//put the layers
             {
                 if (LayerSelector[Cnt] == 0 && Child.AdjacencyObject.IDsOrder[Cnt] != -1)//take the Layer from Parent1
-                        Child.AllLayers.Add(Child.AdjacencyObject.IDsOrder[Cnt], Parent1Layers[Child.AdjacencyObject.IDsOrder[Cnt]].CloneMe());
+                    Child.AllLayers.Add(Child.AdjacencyObject.IDsOrder[Cnt], Parent1Layers[Child.AdjacencyObject.IDsOrder[Cnt]].CloneMe());
                 else//take the Layer from Parent2
                 {
-                    if (Child.AdjacencyObject.IDsOrder.Contains(Parent2Adjacency.IDsOrder[Cnt]))
+                    if (Child.AllLayers.Keys.Contains(Parent2Adjacency.IDsOrder[Cnt]))
                     {
-                        while((Child.AdjacencyObject.IDsOrder.Contains(Child.IncrementalID))) Child.IncrementalID++;// Make sure we found an unused ID
+                        while ((Child.AdjacencyObject.IDsOrder.Contains(Child.IncrementalID))) Child.IncrementalID++;// Make sure we found an unused ID
                         Child.AllLayers.Add(Child.IncrementalID, Parent2Layers[Parent2Adjacency.IDsOrder[Cnt]].CloneMe(Child.IncrementalID));
                         Child.AdjacencyObject.IDsOrder[Cnt] = Child.IncrementalID++;//in case Child.AdjacencyObject.IDsOrder[Cnt]=-1
                     }
@@ -552,13 +553,13 @@ namespace GeneticNetworkTrainer
                     }
                 }
                 Child.AllLayers[Child.AdjacencyObject.IDsOrder[Cnt]].Clear();//Will be connected afterwards
-                
+
             }
 
             for (int CntVert = 0; CntVert < Child.AdjacencyObject.IDsOrder.Count; CntVert++)//Connect the layers
                 for (int CntHor = 0; CntHor < Child.AdjacencyObject.IDsOrder.Count; CntHor++)
                     if (Child.AdjacencyObject.AdjacencyMatrix[CntVert, CntHor] == 1)
-                        AddConnection(Child.AdjacencyObject.IDsOrder[CntVert], Child.AdjacencyObject.IDsOrder[CntHor]);
+                        Child.AddConnection(Child.AdjacencyObject.IDsOrder[CntVert], Child.AdjacencyObject.IDsOrder[CntHor]);
 
             Child.AdjacencyObject.EvalOrder();
 
@@ -588,7 +589,7 @@ namespace GeneticNetworkTrainer
             List<int> ToRemoveList = AllLayers[iID].GetInList();
             for (int Cnt = ToRemoveList.Count - 1; Cnt >= 0; Cnt--) RemoveConnection(ToRemoveList[Cnt], iID);
             ToRemoveList = AllLayers[iID].GetOutList();
-            for (int Cnt = ToRemoveList.Count - 1; Cnt >= 0; Cnt--) RemoveConnection(ToRemoveList[Cnt], iID);
+            for (int Cnt = ToRemoveList.Count - 1; Cnt >= 0; Cnt--) RemoveConnection(iID, ToRemoveList[Cnt]);
             AdjacencyObject.RemoveNode(iID);
             AllLayers.Remove(iID);
             ActionHistory.Add("Layer Removed");
@@ -664,13 +665,13 @@ namespace GeneticNetworkTrainer
                 TotalNeurons += CurrLayer.GetOutput().Length;
             return TotalNeurons;
         }
-        private float Get1X2Score(float In, float Prediction, float Expected, float ValidOutThresh)
+        private float Get1X2Score(float In, float Prediction, float Expected, float WinThresh, float ValidThreshold)
         {
-            if (Prediction < ValidOutThresh) return 0;
-
-            if (Expected == 0)//We lost the bet
-                return -In;
-            else return 1;
+            if (Prediction < ValidThreshold) return 0;// Prediction is not taken into consideration
+            else if (Expected == 1 && Prediction > WinThresh)
+                return 1 / In;//We Won the bet. we get the odd value
+            else
+                return -1;//We lost the bet
         }
 
         // Comparers

@@ -33,31 +33,31 @@ namespace GeneticNetworkTrainerForm
         private StartSaveState StartStopState = StartSaveState.NotReady;
         private StartSaveState SaveStateState = StartSaveState.NotReady;
 
-        private void ReadFromFileToData(string[] AllLines, int InputDimention, int OutDimention)
+        private void ReadFromFileToData(string[] AllLines)
         {
             MyGenTrainer.MyState.InData = new List<float[]>();
             MyGenTrainer.MyState.LabelData = new List<float[]>();
 
             for (int CntLines = 0; CntLines < AllLines.Length; CntLines++)
             {
-                MyGenTrainer.MyState.InData.Add(new float[InputDimention]);
-                MyGenTrainer.MyState.LabelData.Add(new float[OutDimention]);
+                MyGenTrainer.MyState.InData.Add(new float[MyGenTrainer.MyState.NetInputs]);
+                MyGenTrainer.MyState.LabelData.Add(new float[MyGenTrainer.MyState.NetOutputs]);
 
                 float[] CurrData = Array.ConvertAll(AllLines[CntLines].Split(','), Single.Parse);
-                Buffer.BlockCopy(CurrData, 0, MyGenTrainer.MyState.InData[CntLines], 0, sizeof(float) * InputDimention);
-                Buffer.BlockCopy(CurrData, sizeof(float) * (CurrData.Length - InputDimention), MyGenTrainer.MyState.LabelData[CntLines], 0, sizeof(float) * OutDimention);
+                Buffer.BlockCopy(CurrData, 0, MyGenTrainer.MyState.InData[CntLines], 0, sizeof(float) * MyGenTrainer.MyState.NetInputs);
+                Buffer.BlockCopy(CurrData, sizeof(float) * (CurrData.Length - MyGenTrainer.MyState.NetOutputs), MyGenTrainer.MyState.LabelData[CntLines], 0, sizeof(float) * MyGenTrainer.MyState.NetOutputs);
             }
         }
         private void ButtonSelectData_Click(object sender, EventArgs e)
         {
             if (OpenFileDialog.ShowDialog() == DialogResult.OK)
             {
-                //try
-                //{
+                try
+                {
                     string[] AllLines = File.ReadAllLines(OpenFileDialog.FileName);
-                    int InputDimention = AllLines[0].Split(',').Length - 1;
+                    MyGenTrainer.MyState.NetInputs = AllLines[0].Split(',').Length - MyGenTrainer.MyState.NetOutputs;
 
-                    ReadFromFileToData(AllLines, InputDimention, 1);
+                    ReadFromFileToData(AllLines);
 
                     AppendFeedback(" Data Succesfully Loaded. ", 0);
 
@@ -66,10 +66,10 @@ namespace GeneticNetworkTrainerForm
                     LabelDataToUse.Text = AllLines.Length.ToString();
                     LabelTotalData.Text = AllLines.Length.ToString();
 
-                    TextBoxNetInput.Text = InputDimention.ToString();
-                    TextBoxNetOutput.Text = "1";
-                    MyGenTrainer.MyState.NetInputs = InputDimention;
-                    MyGenTrainer.MyState.NetOutputs = 1;
+                    TextBoxNetInput.Text = MyGenTrainer.MyState.NetInputs.ToString();
+                    TextBoxNetOutput.Text = MyGenTrainer.MyState.NetOutputs.ToString();
+                    //MyGenTrainer.MyState.NetInputs = InputDimention;
+                    //MyGenTrainer.MyState.NetOutputs = 1;
 
                     ButtonSelectData.Text = OpenFileDialog.FileName;
                     MyGenTrainer.MyState.DataLoadedCorrectly = true;
@@ -90,11 +90,11 @@ namespace GeneticNetworkTrainerForm
 
                     PopulateInTextBoxes();
                     PopulateOutLabels();
-                //}
-                //catch (Exception Ex)
-                //{
-                //    AppendFeedback(" Did not Load Data. Message: " + Ex.Message + "\n Trace: " + GetTrace(Ex), 2);
-                //}
+                }
+                catch (Exception Ex)
+                {
+                    AppendFeedback(" Did not Load Data. Message: " + Ex.Message + "\n Trace: " + GetTrace(Ex), 2);
+                }
             }
         }
         private void SliderDataToUse_Scroll(object sender, EventArgs e)
@@ -134,16 +134,15 @@ namespace GeneticNetworkTrainerForm
             }
             else
             {
-                PopulateOutLabels();
-                int OutDimention = AllIOs - NewIn;
-
                 try
                 {
-                    ReadFromFileToData(AllLines, NewIn, OutDimention);
-                    TextBoxNetInput.Text = NewIn.ToString();
-                    TextBoxNetOutput.Text = OutDimention.ToString();
                     MyGenTrainer.MyState.NetInputs = NewIn;
-                    MyGenTrainer.MyState.NetOutputs = OutDimention;
+                    MyGenTrainer.MyState.NetOutputs = AllIOs - NewIn;
+                    TextBoxNetInput.Text = NewIn.ToString();
+                    TextBoxNetOutput.Text = MyGenTrainer.MyState.NetOutputs.ToString();
+                    ReadFromFileToData(AllLines);
+                    MyGenTrainer.ResetStructures(true, false);
+                    PopulateOutLabels();
                 }
                 catch (Exception Ex)
                 {
@@ -166,16 +165,15 @@ namespace GeneticNetworkTrainerForm
             }
             else
             {
-                PopulateInTextBoxes();
-                int InDimention = AllIOs - NewOut;
-
                 try
                 {
-                    ReadFromFileToData(AllLines, InDimention, NewOut);
-                    TextBoxNetInput.Text = InDimention.ToString();
-                    TextBoxNetOutput.Text = NewOut.ToString();
-                    MyGenTrainer.MyState.NetInputs = InDimention;
+                    MyGenTrainer.MyState.NetInputs = AllIOs - NewOut;
                     MyGenTrainer.MyState.NetOutputs = NewOut;
+                    TextBoxNetInput.Text = MyGenTrainer.MyState.NetInputs.ToString();
+                    TextBoxNetOutput.Text = NewOut.ToString();
+
+                    ReadFromFileToData(AllLines);
+                    MyGenTrainer.ResetStructures(true, false);
 
                     if (NewOut == 3)
                         RadioRules1X2.Enabled = true;
@@ -185,6 +183,7 @@ namespace GeneticNetworkTrainerForm
                         RadioRulesOutError.Checked = true;
                         MyGenTrainer.MyState.ScoreRule = GenTrainer.ScoreRules.RuleOutError;
                     }
+                    PopulateInTextBoxes();
                 }
                 catch (Exception Ex)
                 {
@@ -326,7 +325,7 @@ namespace GeneticNetworkTrainerForm
                     break;
                 case StartSaveState.Ready:
                     StartStopState = StartSaveState.Running;
-                    if (MyGenTrainer.MyState.ThreadingActivated) ThreadPool.QueueUserWorkItem(new WaitCallback(MyGenTrainer.LaunchNextStructGeneration),true);
+                    if (MyGenTrainer.MyState.ThreadingActivated) ThreadPool.QueueUserWorkItem(new WaitCallback(MyGenTrainer.LaunchNextStructGeneration), true);
                     else ThreadPool.QueueUserWorkItem(new WaitCallback(MyGenTrainer.TrainNetNotThreaded));
                     EnableRunningControls(false);
                     FixStartButtStyle();
