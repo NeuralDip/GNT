@@ -265,6 +265,7 @@ namespace GeneticNetworkTrainerForm
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.MainTabControl = new System.Windows.Forms.TabControl();
             this.TabMainControl = new System.Windows.Forms.TabPage();
+            this.LabelGlobalStopwatchElapsed = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.CheckBoxIncludeNetsInSave = new System.Windows.Forms.CheckBox();
             this.ButtonLoadState = new System.Windows.Forms.Button();
@@ -558,6 +559,7 @@ namespace GeneticNetworkTrainerForm
             // TabMainControl
             // 
             this.TabMainControl.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.TabMainControl.Controls.Add(this.LabelGlobalStopwatchElapsed);
             this.TabMainControl.Controls.Add(this.groupBox9);
             this.TabMainControl.Controls.Add(this.groupBox6);
             this.TabMainControl.Controls.Add(this.CheckBoxLog);
@@ -573,6 +575,16 @@ namespace GeneticNetworkTrainerForm
             this.TabMainControl.Size = new System.Drawing.Size(1054, 668);
             this.TabMainControl.TabIndex = 0;
             this.TabMainControl.Text = "Main Control";
+            // 
+            // LabelGlobalStopwatchElapsed
+            // 
+            this.LabelGlobalStopwatchElapsed.AutoSize = true;
+            this.LabelGlobalStopwatchElapsed.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.LabelGlobalStopwatchElapsed.ForeColor = System.Drawing.Color.DarkGreen;
+            this.LabelGlobalStopwatchElapsed.Location = new System.Drawing.Point(242, 215);
+            this.LabelGlobalStopwatchElapsed.Name = "LabelGlobalStopwatchElapsed";
+            this.LabelGlobalStopwatchElapsed.Size = new System.Drawing.Size(0, 15);
+            this.LabelGlobalStopwatchElapsed.TabIndex = 37;
             // 
             // groupBox9
             // 
@@ -1129,7 +1141,7 @@ namespace GeneticNetworkTrainerForm
             // 
             this.ButtonStartStop.BackColor = System.Drawing.Color.Silver;
             this.ButtonStartStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            this.ButtonStartStop.Location = new System.Drawing.Point(173, 210);
+            this.ButtonStartStop.Location = new System.Drawing.Point(124, 210);
             this.ButtonStartStop.Name = "ButtonStartStop";
             this.ButtonStartStop.Size = new System.Drawing.Size(95, 23);
             this.ButtonStartStop.TabIndex = 28;
@@ -3149,6 +3161,7 @@ namespace GeneticNetworkTrainerForm
         private Label LabelDynB;
         private Label LabelDynA;
         private CheckBox CheckBoxIncludeNetsInSave;
+        private Label LabelGlobalStopwatchElapsed;
     }
 }
 

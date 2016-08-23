@@ -20,6 +20,9 @@ namespace GeneticNetworkTrainerForm
         private bool MouseDownStarted2 = false;
         Stopwatch MyStopwatch2 = new Stopwatch();
 
+        Stopwatch MyGlobalStopWatch = new Stopwatch();
+        System.Windows.Forms.Timer MyGlobalTimer = new System.Windows.Forms.Timer();
+
         private enum StartSaveState
         {
             NotReady,
@@ -219,16 +222,16 @@ namespace GeneticNetworkTrainerForm
         private void TextBoxStructurePopulation_TextChanged(object sender, EventArgs e)
         {
             int NewValue;
-            if (!int.TryParse(TextBoxStructurePopulation.Text, out NewValue) || NewValue < 2 * MyGenTrainer.MyState.CurrNumberStructureIslands)
+            if (!int.TryParse(TextBoxStructurePopulation.Text, out NewValue) || NewValue < 2 * MyGenTrainer.MyState.InitialNumberStructureIslands)
             {
-                AppendFeedback(string.Format("Invalid input. Expected {0}(2*NumIslands-1) < Integer. ", 2 * MyGenTrainer.MyState.CurrNumberStructureIslands - 1), 1);
+                AppendFeedback(string.Format("Invalid input. Expected {0}(2*NumIslands-1) < Integer. ", 2 * MyGenTrainer.MyState.InitialNumberStructureIslands - 1), 1);
                 TextBoxStructurePopulation.Text = MyGenTrainer.MyState.TotalStructurePopulation.ToString();
             }
             else//Number has to be divisible by the number of islands
             {
-                NewValue = (NewValue - (NewValue % MyGenTrainer.MyState.CurrNumberStructureIslands));
+                NewValue = (NewValue - (NewValue % MyGenTrainer.MyState.InitialNumberStructureIslands));
                 MyGenTrainer.MyState.TotalStructurePopulation = NewValue;
-                MyGenTrainer.MyState.StructurePopulationPerIsland = NewValue / MyGenTrainer.MyState.CurrNumberStructureIslands;
+                MyGenTrainer.MyState.StructurePopulationPerIsland = NewValue / MyGenTrainer.MyState.InitialNumberStructureIslands;
                 MyGenTrainer.ResetStructures(false, false);
             }
         }
@@ -330,6 +333,7 @@ namespace GeneticNetworkTrainerForm
                     FixLoadButtStyle();
                     FixSaveButtStyle();
                     FixResetButtStyle();
+                    MyGlobalStopWatch.Restart();
                     break;
                 case StartSaveState.Running:
                     StartStopState = StartSaveState.Waiting;
@@ -466,6 +470,10 @@ namespace GeneticNetworkTrainerForm
             }
         }
 
+        private void UpdateGlobalStopWatch(object sender, EventArgs e)
+        {
+            LabelGlobalStopwatchElapsed.Text = MyGlobalStopWatch.Elapsed.ToString("h\\:mm\\:ss");
+        }
         private void FixLoadButtStyle()
         {
             if (MyGenTrainer.StateFileExists)

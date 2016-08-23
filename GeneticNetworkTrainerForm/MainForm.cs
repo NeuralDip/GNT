@@ -45,6 +45,10 @@ namespace GeneticNetworkTrainerForm
             FromTrainerToForm();
 
             MyGenTrainer.CallTheForm += new GenTrainer.SomethingHappenedDelegate(GenTrainerJustCalled);
+
+            MyGlobalTimer.Interval = (1000); 
+            MyGlobalTimer.Tick += new EventHandler(UpdateGlobalStopWatch);
+            MyGlobalTimer.Start();
         }
 
         public void AppendFeedback(string ToPrint, int Type)
@@ -350,6 +354,7 @@ namespace GeneticNetworkTrainerForm
                         FixSaveButtStyle();
                         FixResetButtStyle();
                         FixStartButtStyle();
+                        MyGlobalStopWatch.Stop();
                         break;
                     case GenTrainer.TrainingState.TrainingStopped:
                         AppendFeedback(string.Format("Training stopped at Generation ({0},{1}).", MyGenTrainer.MyState.CurrStructureGeneration, 0), 0);
@@ -361,6 +366,7 @@ namespace GeneticNetworkTrainerForm
                         FixSaveButtStyle();
                         FixResetButtStyle();
                         FixStartButtStyle();
+                        MyGlobalStopWatch.Stop();
                         break;
                     case GenTrainer.TrainingState.StructGenEnded:
                         NewInternalStatsReady = true;

@@ -64,10 +64,7 @@ namespace GeneticNetworkTrainer
         {
             //preparing threads
             if (MyState.ThreadingActivated && MyState.DynamicSearchMaxThreads) CalculateDynamicThreading(true);
-
             
-            ParentFormControlSet("LabelCurrInternalGen", "Text", "-");
-            ParentFormControlSet("LabelCurrStructGen", "Text", MyState.CurrStructureGeneration.ToString());
             CheckIslandsUpadate(false, 0, 0, MyState.CurrStructureGeneration, 0);
 
             MyThreads = new ThreadsStruct();
@@ -77,6 +74,9 @@ namespace GeneticNetworkTrainer
                     MyThreads.Add(SICnt, SPCnt,IDs++);
 
             PreProcess((bool)JustPressedButton);
+
+            ParentFormControlSet("LabelCurrInternalGen", "Text", "-");
+            ParentFormControlSet("LabelCurrStructGen", "Text", MyState.CurrStructureGeneration.ToString());
 
             for (int SICnt = 0; SICnt < MyState.CurrNumberStructureIslands; SICnt++)
                 NextStructGeneration(SICnt, 0);// prepare generation for this Structure Island

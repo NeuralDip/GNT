@@ -111,6 +111,8 @@ namespace GeneticNetworkTrainerForm
         {
             if (RadioStructIslandSeries.Checked)// Series
             {
+                if (ListViewStructIslandsSelection >= MyGenTrainer.SettledStatsStructure.StructIslandsStats.Count)
+                    ListViewStructIslandsSelection = 0;
                 PlotStructureIslandsSeries.Model.Series.Clear();
                 if (RadioStructIslandScore.Checked)
                 {
@@ -297,6 +299,10 @@ namespace GeneticNetworkTrainerForm
         }
         private void RedrawStructPlot()
         {
+            if (ListViewStructIslandsSelection >= MyGenTrainer.SettledStatsStructure.StructIslandsStats.Count)
+                ListViewStructIslandsSelection = 0;
+            if (ListViewStructuresSelection >= MyGenTrainer.SettledStatsStructure.StructIslandsStats[0].StructStats.Count)
+                ListViewStructuresSelection = 0;
             PlotStructureSeries.Model.Series.Clear();
             if (RadioStructScore.Checked)
             {
