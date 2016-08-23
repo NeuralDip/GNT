@@ -2960,8 +2960,8 @@ namespace GeneticNetworkTrainerForm
             // LayoutOut
             // 
             this.LayoutOut.ColumnCount = 2;
-            this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 57F));
+            this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 45F));
+            this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 52F));
             this.LayoutOut.Location = new System.Drawing.Point(218, 147);
             this.LayoutOut.Name = "LayoutOut";
             this.LayoutOut.RowCount = 1;

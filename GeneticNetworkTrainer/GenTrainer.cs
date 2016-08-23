@@ -211,6 +211,7 @@ namespace GeneticNetworkTrainer
             private int DataPointer = 0;
             private bool Full = false;
             public CircularBuffer(int Dimension) { Buffer = new float[Dimension]; }
+            public int Size() { return Buffer.Length; }
             public void PutValue(float NewValue) { Buffer[DataPointer] = NewValue; AdvancePointer(); }
             public float ReadLastValue() { int ReadPointer = DataPointer - 1; if (ReadPointer == -1) { ReadPointer = Buffer.Length - 1; } return Buffer[ReadPointer]; }
             public float[] GetData()
