@@ -531,18 +531,28 @@ namespace GeneticNetworkTrainer
             // Create Net
 
             Child.AllLayers = new Dictionary<int, GenLayer>();
-            Child.IncrementalID = 0;
+            Child.IncrementalID = Math.Max(Child.AdjacencyObject.IDsOrder.Max(), Parent2Adjacency.IDsOrder.Max()) + 1;
             for (int Cnt = 0; Cnt < Child.AdjacencyObject.IDsOrder.Count; Cnt++)//put the layers
             {
                 if (LayerSelector[Cnt] == 0 && Child.AdjacencyObject.IDsOrder[Cnt] != -1)//take the Layer from Parent1
-                    Child.AllLayers.Add(Child.AdjacencyObject.IDsOrder[Cnt], Parent1Layers[Child.AdjacencyObject.IDsOrder[Cnt]]);
+                        Child.AllLayers.Add(Child.AdjacencyObject.IDsOrder[Cnt], Parent1Layers[Child.AdjacencyObject.IDsOrder[Cnt]].CloneMe());
                 else//take the Layer from Parent2
                 {
-                    Child.AllLayers.Add(Parent2Adjacency.IDsOrder[Cnt], Parent2Layers[Parent2Adjacency.IDsOrder[Cnt]]);
-                    Child.AdjacencyObject.IDsOrder[Cnt] = Parent2Adjacency.IDsOrder[Cnt];//in case it is -1
+                    if (Child.AdjacencyObject.IDsOrder.Contains(Parent2Adjacency.IDsOrder[Cnt]))
+                    {
+                        while((Child.AdjacencyObject.IDsOrder.Contains(Child.IncrementalID))) Child.IncrementalID++;// Make sure we found an unused ID
+                        Child.AllLayers.Add(Child.IncrementalID, Parent2Layers[Parent2Adjacency.IDsOrder[Cnt]].CloneMe(Child.IncrementalID));
+                        Child.IncrementalID++;
+                    }
+                    else
+                    {
+                        Child.AllLayers.Add(Parent2Adjacency.IDsOrder[Cnt], Parent2Layers[Parent2Adjacency.IDsOrder[Cnt]].CloneMe());
+                        Child.AdjacencyObject.IDsOrder[Cnt] = Parent2Adjacency.IDsOrder[Cnt];//in case Child.AdjacencyObject.IDsOrder[Cnt]=-1
+                        if (Child.IncrementalID <= Child.AdjacencyObject.IDsOrder[Cnt]) Child.IncrementalID = Child.AdjacencyObject.IDsOrder[Cnt] + 1;
+                    }
                 }
                 Child.AllLayers[Child.AdjacencyObject.IDsOrder[Cnt]].Clear();//Will be connected afterwards
-                if (Child.IncrementalID <= Child.AdjacencyObject.IDsOrder[Cnt]) Child.IncrementalID = Child.AdjacencyObject.IDsOrder[Cnt] + 1;
+                
             }
 
             for (int CntVert = 0; CntVert < Child.AdjacencyObject.IDsOrder.Count; CntVert++)//Connect the layers

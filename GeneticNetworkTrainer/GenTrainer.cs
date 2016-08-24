@@ -118,6 +118,61 @@ namespace GeneticNetworkTrainer
             public List<List<List<GenNetwork[]>>> NetsStructureToSave; //Islands[Structures[Islands[Nets]]]
         }
         [Serializable]
+        public class CircularBuffer
+        {
+            private float[] Buffer;
+            private int DataPointer = 0;
+            private bool Full = false;
+            public CircularBuffer(int Dimension) { Buffer = new float[Dimension]; }
+            public int Size() { return Buffer.Length; }
+            public void PutValue(float NewValue) { Buffer[DataPointer] = NewValue; AdvancePointer(); }
+            public float ReadLastValue() { int ReadPointer = DataPointer - 1; if (ReadPointer == -1) { ReadPointer = Buffer.Length - 1; } return Buffer[ReadPointer]; }
+            public float[] GetData()
+            {
+                float[] ToReturn = null;
+                if (Full)
+                {
+                    ToReturn = new float[Buffer.Length];
+                    Array.Copy(Buffer, DataPointer, ToReturn, 0, Buffer.Length - DataPointer);
+                    Array.Copy(Buffer, 0, ToReturn, Buffer.Length - DataPointer, DataPointer);
+                }
+                else
+                {
+                    ToReturn = new float[DataPointer];
+                    Array.Copy(Buffer, 0, ToReturn, 0, DataPointer);
+                }
+                return ToReturn;
+            }
+            public void Clear() { Buffer = new float[Buffer.Length]; DataPointer = 0; Full = false; }
+            public CircularBuffer CloneMe()
+            {
+                CircularBuffer ToReturn = new CircularBuffer(Buffer.Length);
+                Array.Copy(Buffer, 0, ToReturn.Buffer, 0, Buffer.Length);
+                ToReturn.DataPointer = DataPointer;
+                ToReturn.Full = Full;
+                return ToReturn;
+            }
+            public bool Maximize(CircularBuffer Other)
+            { //Take the max Values from both Buffers
+                if (Buffer.Length != Other.Buffer.Length) return false;
+
+                for (int Cnt = 0; Cnt < Buffer.Length; Cnt++)
+                    if (Buffer[Cnt] < Other.Buffer[Cnt]) Buffer[Cnt] = Other.Buffer[Cnt];
+
+                return true;
+            }
+            public bool Minimize(CircularBuffer Other)
+            { //Take the min Values from both Buffers
+                if (Buffer.Length != Other.Buffer.Length) return false;
+
+                for (int Cnt = 0; Cnt > Buffer.Length; Cnt++)
+                    if (Buffer[Cnt] < Other.Buffer[Cnt]) Buffer[Cnt] = Other.Buffer[Cnt];
+
+                return true;
+            }
+            private void AdvancePointer() { DataPointer++; if (DataPointer == Buffer.Length) { Full = true; DataPointer = 0; } }
+        }
+        [Serializable]
         public class StatsStructureClass
         {
             public class StructIslandStatsClass
@@ -204,61 +259,7 @@ namespace GeneticNetworkTrainer
             public StatsStructureClass(int StructIslands, int StructPopulation, int InternalIslandsNumber, int NetPopulation, int StructGenerations, int InternalGenerations)
             { for (int Cnt = 0; Cnt < StructIslands; Cnt++) StructIslandsStats.Add(new StructIslandStatsClass(StructPopulation, InternalIslandsNumber, NetPopulation, StructGenerations, InternalGenerations)); }
         }
-        [Serializable]
-        public class CircularBuffer
-        {
-            private float[] Buffer;
-            private int DataPointer = 0;
-            private bool Full = false;
-            public CircularBuffer(int Dimension) { Buffer = new float[Dimension]; }
-            public int Size() { return Buffer.Length; }
-            public void PutValue(float NewValue) { Buffer[DataPointer] = NewValue; AdvancePointer(); }
-            public float ReadLastValue() { int ReadPointer = DataPointer - 1; if (ReadPointer == -1) { ReadPointer = Buffer.Length - 1; } return Buffer[ReadPointer]; }
-            public float[] GetData()
-            {
-                float[] ToReturn = null;
-                if (Full)
-                {
-                    ToReturn = new float[Buffer.Length];
-                    Array.Copy(Buffer, DataPointer, ToReturn, 0, Buffer.Length - DataPointer);
-                    Array.Copy(Buffer, 0, ToReturn, Buffer.Length - DataPointer, DataPointer);
-                }
-                else
-                {
-                    ToReturn = new float[DataPointer];
-                    Array.Copy(Buffer, 0, ToReturn, 0, DataPointer);
-                }
-                return ToReturn;
-            }
-            public void Clear() { Buffer = new float[Buffer.Length]; DataPointer = 0; Full = false; }
-            public CircularBuffer CloneMe()
-            {
-                CircularBuffer ToReturn = new CircularBuffer(Buffer.Length);
-                Array.Copy(Buffer, 0, ToReturn.Buffer, 0, Buffer.Length);
-                ToReturn.DataPointer = DataPointer;
-                ToReturn.Full = Full;
-                return ToReturn;
-            }
-            public bool Maximize(CircularBuffer Other)
-            { //Take the max Values from both Buffers
-                if (Buffer.Length != Other.Buffer.Length) return false;
 
-                for (int Cnt = 0; Cnt < Buffer.Length; Cnt++)
-                    if (Buffer[Cnt] < Other.Buffer[Cnt]) Buffer[Cnt] = Other.Buffer[Cnt];
-
-                return true;
-            }
-            public bool Minimize(CircularBuffer Other)
-            { //Take the min Values from both Buffers
-                if (Buffer.Length != Other.Buffer.Length) return false;
-
-                for (int Cnt = 0; Cnt > Buffer.Length; Cnt++)
-                    if (Buffer[Cnt] < Other.Buffer[Cnt]) Buffer[Cnt] = Other.Buffer[Cnt];
-
-                return true;
-            }
-            private void AdvancePointer() { DataPointer++; if (DataPointer == Buffer.Length) { Full = true; DataPointer = 0; } }
-        }
 
         // interaction with environment
         public Action<string, int> ParentFormLogging;// string: Message, int: 0=info, 1=Warning, 2=Error

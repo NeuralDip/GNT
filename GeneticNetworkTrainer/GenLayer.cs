@@ -55,6 +55,16 @@ namespace GeneticNetworkTrainer
             Array.Copy(Biases, 0, ToReturn.Biases, 0, Biases.Length);
             return ToReturn;
         }
+        public GenLayer CloneMe(int NewID)
+        {
+            GenLayer ToReturn = new GenLayer(Weights.GetLength(0), Weights.GetLength(1), IsInLayer, IsOutLayer, MyActivation, NewID);
+
+            ToReturn.ListOfOutLayers = new List<int>(ListOfOutLayers);
+            ToReturn.ListOfInLayers = new List<int>(ListOfInLayers);
+            Array.Copy(Weights, 0, ToReturn.Weights, 0, Weights.Length);
+            Array.Copy(Biases, 0, ToReturn.Biases, 0, Biases.Length);
+            return ToReturn;
+        }
 
         // Getters Setters
         public int GetID() { return ID; }
