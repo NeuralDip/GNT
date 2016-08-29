@@ -407,8 +407,10 @@ namespace GeneticNetworkTrainerForm
             LabelStructTypeLayers.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].LayersHistory.ReadLastValue().ToString();
             LabelStructTypeNeurons.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].NeuronsHistory.ReadLastValue().ToString();
             if (MyGenTrainer.SettledNetsStructure.Count != 0)
+            {
                 LabelStructTypeWeights.Text = MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][0][0].GetWeightsNumber().ToString();
-
+                LabelStructTypeConnections.Text = MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][0][0].GetConnectionsNumber().ToString();
+            }
             if (MainTabControl.SelectedIndex != 3 || !NewStructStatsReady) return;
             NewStructStatsReady = false;
             NewInternalStatsReady = true;

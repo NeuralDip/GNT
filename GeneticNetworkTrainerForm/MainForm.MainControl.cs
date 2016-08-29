@@ -88,8 +88,7 @@ namespace GeneticNetworkTrainerForm
                     MyGenTrainer.MyState.DataToUse = MyGenTrainer.MyState.InData.Count;
                     MyGenTrainer.ResetStructures(true, false);
 
-                    PopulateInTextBoxes();
-                    PopulateOutLabels();
+                    ResetHandTester();
                 }
                 catch (Exception Ex)
                 {
@@ -142,7 +141,7 @@ namespace GeneticNetworkTrainerForm
                     TextBoxNetOutput.Text = MyGenTrainer.MyState.NetOutputs.ToString();
                     ReadFromFileToData(AllLines);
                     MyGenTrainer.ResetStructures(true, false);
-                    PopulateOutLabels();
+                    ResetHandTester();
                 }
                 catch (Exception Ex)
                 {
@@ -183,7 +182,7 @@ namespace GeneticNetworkTrainerForm
                         RadioRulesOutError.Checked = true;
                         MyGenTrainer.MyState.ScoreRule = GenTrainer.ScoreRules.RuleOutError;
                     }
-                    PopulateInTextBoxes();
+                    ResetHandTester();
                 }
                 catch (Exception Ex)
                 {

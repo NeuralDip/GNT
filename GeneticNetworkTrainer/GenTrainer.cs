@@ -113,7 +113,6 @@ namespace GeneticNetworkTrainer
 
             public ScoreRules ScoreRule = ScoreRules.RuleOutError;
             public float ThresholdOfWin = 0.5f;
-            public float ThresholdOfValid = 0.0f;
 
             //Net Structure That will be saved
             public List<List<List<GenNetwork[]>>> NetsStructureToSave; //Islands[Structures[Islands[Nets]]]
@@ -266,25 +265,38 @@ namespace GeneticNetworkTrainer
         public Action<string, int> ParentFormLogging;// string: Message, int: 0=info, 1=Warning, 2=Error
         public Action<string, string, object> ParentFormControlSet;// string: ControlName, string: ProperyName, object: NewValue
         public Func<string, string, object> ParentFormControlGet;// string: ControlName, string: ProperyName, object: NewValue
+        private void ParentFormLoggingSafe(string Arg1, int Arg2)//Safe versions in case delegates are null
+        {
+            ParentFormLogging?.Invoke(Arg1, Arg2);
+        }
+        private void ParentFormControlSetSafe(string Arg1, string Arg2, object Arg3)
+        {
+            ParentFormControlSet?.Invoke(Arg1, Arg2, Arg3);
+        }
+        private object ParentFormControlGetSafe(string Arg1, string Arg2)
+        {
+            if (ParentFormControlGet != null) return ParentFormControlGet(Arg1, Arg2);
+            else return null;
+        }
 
         public delegate void SomethingHappenedDelegate(TrainingState WhatHappened);
         public event SomethingHappenedDelegate CallTheForm;
 
         public StateClass MyState;
         //Ststs and net Structures that are not saved
-        public List<List<List<GenNetwork[]>>> DevelopingNetsStructure; //Islands[Structures[Islands[Nets]]]
+        private List<List<List<GenNetwork[]>>> DevelopingNetsStructure; //Islands[Structures[Islands[Nets]]]
         public List<List<List<GenNetwork[]>>> SettledNetsStructure; //Islands[Structures[Islands[Nets]]]
 
+        private StatsStructureClass DevelopingStatsStructure;
         public StatsStructureClass SettledStatsStructure;
-        public StatsStructureClass DevelopingStatsStructure;
 
-        public int HistogramsBins;
+        public int HistogramsBins=5;
         public bool StateFileExists = false;
         private bool ForceStopTraining = false;
         private bool StopTraining = false;
         private bool BoolSaveState = false;
         [ThreadStatic]
-        public static Random Rnd = new Random();
+        private static Random Rnd = new Random();
         private Stopwatch MyGlobalWatch = new Stopwatch();
         private int TestScoreDecreasedFor = 0;
         private float PrevTestScore = float.MinValue;
@@ -342,7 +354,7 @@ namespace GeneticNetworkTrainer
 
         }
 
-        public void TrainNetNotThreaded(object iInput)
+        public void TrainNetNotThreaded(object Dummy)
         {
             try
             {
@@ -350,7 +362,7 @@ namespace GeneticNetworkTrainer
                 for (int StrGenCnt = MyState.CurrStructureGeneration; StrGenCnt < MyState.StructureGenerations; StrGenCnt++)
                 {
                     MyState.CurrStructureGeneration = StrGenCnt;
-                    ParentFormControlSet("LabelCurrStructGen", "Text", StrGenCnt.ToString());
+                    ParentFormControlSetSafe("LabelCurrStructGen", "Text", StrGenCnt.ToString());
                     if (BoolSaveState) ForceSaveState();
                     if (StopTraining) { CallTheForm(TrainingState.TrainingStopped); StopTraining = false; return; }
 
@@ -362,12 +374,12 @@ namespace GeneticNetworkTrainer
                         for (int SPCnt = 0; SPCnt < MyState.StructurePopulationPerIsland; SPCnt++)
                         {
                             PopulateStatsStructure(TrainingState.StructStarted, SICnt, SPCnt, 0, 0, 0);
-                            ParentFormControlSet("LabelCurrStructure", "Text", string.Format("({0}, {1})", SICnt, SPCnt));
+                            ParentFormControlSetSafe("LabelCurrStructure", "Text", string.Format("({0}, {1})", SICnt, SPCnt));
                             for (int IntGenCnt = 0; IntGenCnt < MyState.InternalGenerations; IntGenCnt++)
                             {
                                 CheckAnnealingUpdate(IntGenCnt, 0);
                                 CheckIslandsHalving(true, SICnt, SPCnt, IntGenCnt, 0);
-                                ParentFormControlSet("LabelCurrInternalGen", "Text", IntGenCnt.ToString());
+                                ParentFormControlSetSafe("LabelCurrInternalGen", "Text", IntGenCnt.ToString());
                                 for (int IICnt = 0; IICnt < CurrInternalIslands[0]; IICnt++)
                                 {
 
@@ -375,9 +387,9 @@ namespace GeneticNetworkTrainer
                                     for (int IPCnt = 0; IPCnt < CurrInternalPopulationPerIsland[0]; IPCnt++)
                                     {
                                         DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt].ResetScores();
-                                        if (!DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt].CalculateScores(MyState.InData, MyState.LabelData, MyState.DataToUse, MyState.HalfDataForTesting, MyState.ScoreRule, MyState.ThresholdOfWin, MyState.ThresholdOfValid))
+                                        if (!DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt].CalculateScores(MyState.InData, MyState.LabelData, MyState.DataToUse, MyState.HalfDataForTesting, MyState.ScoreRule, MyState.ThresholdOfWin))
                                         {
-                                            ParentFormLogging(string.Format("Scoring Calculation failed for net ({0}{1}{2}{3}). Inputs or Outputs dont match the nets IOs. ", SICnt, SPCnt, IICnt, IPCnt), 2);
+                                            ParentFormLoggingSafe(string.Format("Scoring Calculation failed for net ({0}{1}{2}{3}). Inputs or Outputs dont match the nets IOs. ", SICnt, SPCnt, IICnt, IPCnt), 2);
                                             return;
                                         }
                                         PopulateStatsStructure(TrainingState.NetEnded, SICnt, SPCnt, IICnt, IPCnt, 0);
@@ -403,7 +415,7 @@ namespace GeneticNetworkTrainer
             }
             catch (Exception Ex)
             {
-                ParentFormLogging(" Error While training. Message: " + Ex.Message + "\n Trace: " + new StackTrace(Ex, true).ToString(), 2);
+                ParentFormLoggingSafe(" Error While training. Message: " + Ex.Message + "\n Trace: " + new StackTrace(Ex, true).ToString(), 2);
             }
             CallTheForm(TrainingState.TrainingEnded);
         }
@@ -622,14 +634,14 @@ namespace GeneticNetworkTrainer
                         break;
                     case TrainingState.StructGenEnded:
                         break;
-                    default: ParentFormLogging(" Check Your Stats Populating... ", 2); break;
+                    default: ParentFormLoggingSafe(" Check Your Stats Populating... ", 2); break;
 
                 }
 
             }
             catch (Exception Ex)
             {
-                ParentFormLogging(" Error While training. Message: " + Ex.Message + "\n Trace: " + new StackTrace(Ex, true).ToString(), 2);
+                ParentFormLoggingSafe(" Error While training. Message: " + Ex.Message + "\n Trace: " + new StackTrace(Ex, true).ToString(), 2);
             }
         }
         private float[] ListToHistogram(float[] InList)
@@ -663,7 +675,7 @@ namespace GeneticNetworkTrainer
                 if (TestScoreDecreasedFor == MyState.TestingToStopOn)
                 {
                     TestScoreDecreasedFor = 0;
-                    ParentFormLogging(" Training Stopping because of Test Decrease Condition. ", 1);
+                    ParentFormLoggingSafe(" Training Stopping because of Test Decrease Condition. ", 1);
                     Stop(false);
                     return;
                 }
@@ -672,7 +684,7 @@ namespace GeneticNetworkTrainer
             {
                 if (SettledStatsStructure.StructIslandsStats[SettledStatsStructure.BestIsland].StructStats[SettledStatsStructure.StructIslandsStats[SettledStatsStructure.BestIsland].BestStructure].InternalIslandsStats[SettledStatsStructure.StructIslandsStats[SettledStatsStructure.BestIsland].StructStats[SettledStatsStructure.StructIslandsStats[SettledStatsStructure.BestIsland].BestStructure].BestIsland].ScoreHistory.ReadLastValue() >= MyState.ScoreToStopOn)
                 {
-                    ParentFormLogging(" Training Stopping because of Score Condition. ", 1);
+                    ParentFormLoggingSafe(" Training Stopping because of Score Condition. ", 1);
                     Stop(false);
                     return;
                 }
@@ -681,7 +693,7 @@ namespace GeneticNetworkTrainer
             {
                 if (MyGlobalWatch.Elapsed > MyState.TimeToStopOn)
                 {
-                    ParentFormLogging(" Training Stopping because of Time Condition. ", 1);
+                    ParentFormLoggingSafe(" Training Stopping because of Time Condition. ", 1);
                     Stop(false);
                     return;
                 }
@@ -814,7 +826,7 @@ namespace GeneticNetworkTrainer
                     int GenerationsStride = (int)Math.Ceiling((float)MyState.StructureGenerations / ((float)MyState.StructureIslandsHalvingSteps + 1));
                     int GensRemaining = GenerationsStride - (int)Math.Ceiling(CurrGeneration % (float)GenerationsStride);
 
-                    ParentFormControlSet("LabelStructureHalveIn", "Text", GensRemaining.ToString());
+                    ParentFormControlSetSafe("LabelStructureHalveIn", "Text", GensRemaining.ToString());
                     if (CurrGeneration > 0 && CurrGeneration % GenerationsStride == 0)
                     {
                         MyState.CurrNumberStructureIslands /= 2;
@@ -824,7 +836,7 @@ namespace GeneticNetworkTrainer
                 }
             }
         }
-        public void RestructureIslands(bool IsInternal, bool CompleteRestructure, int CurrSI, int CurrSP, int ThreadID)
+        private void RestructureIslands(bool IsInternal, bool CompleteRestructure, int CurrSI, int CurrSP, int ThreadID)
         {
             if (IsInternal)
             {
@@ -946,8 +958,8 @@ namespace GeneticNetworkTrainer
                 else if (MyState.CurrNumberStructureIslands == 8) SliderValue = 3;
                 else /*if (MyState.NumberStructureIslands == 16)*/ SliderValue = 4;
 
-                ParentFormControlSet("SliderStructureIslands", "Value", SliderValue);
-                ParentFormControlSet("LabelStructureIslands", "Text", MyState.CurrNumberStructureIslands.ToString());
+                ParentFormControlSetSafe("SliderStructureIslands", "Value", SliderValue);
+                ParentFormControlSetSafe("LabelStructureIslands", "Text", MyState.CurrNumberStructureIslands.ToString());
 
                 int OldIslands = DevelopingNetsStructure.Count;
                 int NewIslands = MyState.CurrNumberStructureIslands;
@@ -1101,10 +1113,10 @@ namespace GeneticNetworkTrainer
                 if (MyState.CurrStructureGeneration >= MyState.StructureGenerations - 1)
                 {
                     MyState.CurrStructureGeneration = 0;
-                    ParentFormLogging("Resetting Structure generation To 0 ... ", 0);
+                    ParentFormLoggingSafe("Resetting Structure generation To 0 ... ", 0);
                 }
                 else if (MyState.CurrStructureGeneration == 0)
-                    ParentFormLogging("Training Started.", 0);
+                    ParentFormLoggingSafe("Training Started.", 0);
             }
 
         }
@@ -1120,66 +1132,66 @@ namespace GeneticNetworkTrainer
         }
         public void LoadState()
         {
-            FileStream MyFile;
-            MyFile = File.OpenRead(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\GenTrainingSave");
-            BinaryFormatter BF = new BinaryFormatter();
-            try
+            using (FileStream MyFile = File.OpenRead(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\GenTrainingSave.state"))
             {
-                MyState = BF.Deserialize(MyFile) as StateClass;
-                if (MyState.IncludeNetsInTheSave)
+                BinaryFormatter BF = new BinaryFormatter();
+                try
                 {
-                    SettledNetsStructure = MyState.NetsStructureToSave;
-                    DevelopingNetsStructure = CloneNetsStruct(SettledNetsStructure);
-                    ResetStructures(true, true);
-                }
-                else ResetStructures(true, false);
+                    MyState = BF.Deserialize(MyFile) as StateClass;
+                    if (MyState.IncludeNetsInTheSave)
+                    {
+                        SettledNetsStructure = MyState.NetsStructureToSave;
+                        DevelopingNetsStructure = CloneNetsStruct(SettledNetsStructure);
+                        ResetStructures(true, true);
+                    }
+                    else ResetStructures(true, false);
 
-                ParentFormLogging(" State Loaded Succesfully.", 0);
-                MyFile.Close();
-            }
-            catch (Exception Ex)
-            {
-                ParentFormLogging(" Error While Loading... Probably file is obsolete... ", 1);
-                ParentFormLogging(" Message: " + Ex.Message + "\n Trace: " + new StackTrace(Ex, true).ToString(), 2);
+                    ParentFormLoggingSafe(" State Loaded Succesfully.", 0);
+                    MyFile.Close();
+                }
+                catch (Exception Ex)
+                {
+                    ParentFormLoggingSafe(" Error While Loading... Probably file is obsolete... ", 1);
+                    ParentFormLoggingSafe(" Message: " + Ex.Message + "\n Trace: " + new StackTrace(Ex, true).ToString(), 2);
+                }
             }
         }
         public void ForceSaveState()
         {
             BoolSaveState = false;
 
-            FileStream MyFile;
-            if (StateFileExists)
-                MyFile = File.OpenWrite(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\GenTrainingSave");
-            else
-                MyFile = File.Create(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\GenTrainingSave");
-
-            BinaryFormatter BF = new BinaryFormatter();
-
-            if (MyState.IncludeNetsInTheSave)
+            using (FileStream MyFile = StateFileExists ?
+                File.OpenWrite(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\GenTrainingSave.state") :
+                File.Create(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\GenTrainingSave.state"))
             {
-                PreProcess(false);
-                MyState.NetsStructureToSave = DevelopingNetsStructure;
+                BinaryFormatter BF = new BinaryFormatter();
+
+                if (MyState.IncludeNetsInTheSave)
+                {
+                    PreProcess(false);
+                    MyState.NetsStructureToSave = DevelopingNetsStructure;
+                }
+
+                else MyState.NetsStructureToSave = null;
+
+                BF.Serialize(MyFile, MyState);
+                MyFile.Close();
             }
-
-            else MyState.NetsStructureToSave = null;
-
-            BF.Serialize(MyFile, MyState);
-            MyFile.Close();
-            ParentFormLogging(" State Saved Succesfully.", 0);
+            ParentFormLoggingSafe(" State Saved Succesfully.", 0);
             StateFileExists = true;
         }
         public void SaveState()
         {
             BoolSaveState = true;
 
-            ParentFormLogging(string.Format("State will be saved at Generation ({0},{1}). Press again to Cancel. Hold Down to Force Save now.", MyState.CurrStructureGeneration + 1, 0), 0);
+            ParentFormLoggingSafe(string.Format("State will be saved at Generation ({0},{1}). Press again to Cancel. Hold Down to Force Save now.", MyState.CurrStructureGeneration + 1, 0), 0);
         }
         public void ForceStop() { ForceStopTraining = true; StopTraining = false; }
         public void Stop(bool Undo)
         {
             StopTraining = !Undo;
             if (!Undo)
-                ParentFormLogging(string.Format("Training Will be stopped at Generation ({0},{1}). Press again to Cancel. Hold Down to Force Stop now.", MyState.CurrStructureGeneration + 1, 0), 0);
+                ParentFormLoggingSafe(string.Format("Training Will be stopped at Generation ({0},{1}). Press again to Cancel. Hold Down to Force Stop now.", MyState.CurrStructureGeneration + 1, 0), 0);
         }
     }
 }

@@ -220,10 +220,6 @@ namespace GeneticNetworkTrainer
         private float OutError = 0;
         private float TestOutError = 0;
 
-        // GA Variables
-        private int MaxLayers;
-        private int MaxNeurons;
-
         private GenNetwork() { AdjacencyObject = new Adjacency(0); AllLayers = new Dictionary<int, GenLayer>(); }
         public GenNetwork(int InDimention, int InNeurons, int OutNeurons, params int[] HiddenDimentions)// each integer in the array represents the number of neurons in each hidden layer. Layers are initially connected in series.
         {
@@ -254,8 +250,6 @@ namespace GeneticNetworkTrainer
             }
             TempNetwork.IncrementalID++;
             TempNetwork.AdjacencyObject = AdjacencyObject.CloneMe();
-            TempNetwork.MaxLayers = MaxLayers;
-            TempNetwork.MaxNeurons = MaxNeurons;
             TempNetwork.Score = Score;
             if (Reset)
             {
@@ -272,10 +266,6 @@ namespace GeneticNetworkTrainer
             return TempNetwork;
         }
 
-        public int GetMaxLayers() { return MaxLayers; }
-        public void SetMaxLayers(int NewMax) { MaxLayers = NewMax; }
-        public int GetMaxNeurons() { return MaxNeurons; }
-        public void SetMaxNeurons(int NewMax) { MaxNeurons = NewMax; }
         public float GetScore() { return Score; }
         public float GetTestScore() { return TestScore; }
         public float GetOutError() { return OutError; }
@@ -345,14 +335,14 @@ namespace GeneticNetworkTrainer
             return GetNetOutput();
         }
         public void ResetScores() { Score = 0; TestScore = 0; OutError = 0; TestOutError = 0; }
-        public bool CalculateScores(List<float[]> InData, List<float[]> Labels, int DataToUse, bool Test, GenTrainer.ScoreRules ScoreRule, float WinThresh, float ValidThreshold)
+        public bool CalculateScores(List<float[]> InData, List<float[]> Labels, int DataToUse, bool Test, GenTrainer.ScoreRules ScoreRule, float WinThresh)
         {
             // CalculateScores Calculates the scores and the Outerrors for all Data 
             float[] Output = GetNetOutput();
-            //if (InData[0].Length != AllLayers[AdjacencyObject.IDsOrder[0]].GetInDim() ||
-            //    Labels[0].Length != AllLayers[AdjacencyObject.IDsOrder.Count - 1].GetOutDim() ||
-            //    InData.Count != Labels.Count)
-            //    return false;
+            if (InData[0].Length != AllLayers[AdjacencyObject.IDsOrder[0]].GetInDim() ||
+                Labels[0].Length != AllLayers[AdjacencyObject.IDsOrder.Count - 1].GetOutDim() ||
+                InData.Count != Labels.Count)
+                return false;
             for (int Cnt = 0; Cnt < DataToUse; Cnt++)
             {
                 EvaluateNet(InData[Cnt]);
@@ -372,9 +362,9 @@ namespace GeneticNetworkTrainer
                 {
                     for (int OutCnt = 0; OutCnt < Labels[Cnt].Length; OutCnt++)
                         if ((Cnt & 1) == 1 && Test)
-                            TestScore += Get1X2Score(InData[Cnt][InData[Cnt].Length - 1], Output[OutCnt], Labels[Cnt][OutCnt], WinThresh, ValidThreshold);
+                            TestScore += Get1X2Score(InData[Cnt][InData[Cnt].Length - 1], Output[OutCnt], Labels[Cnt][OutCnt], WinThresh);
                         else
-                            Score += Get1X2Score(InData[Cnt][InData[Cnt].Length - 1], Output[OutCnt], Labels[Cnt][OutCnt], WinThresh, ValidThreshold);
+                            Score += Get1X2Score(InData[Cnt][InData[Cnt].Length - 1], Output[OutCnt], Labels[Cnt][OutCnt], WinThresh);
                 }
             }
 
@@ -417,12 +407,16 @@ namespace GeneticNetworkTrainer
             GenNetwork Child = CloneMe(false, false, false, null);
             int[] Mutations = GetMutations(MutationStength, Costs, Rnd);
             // Create or destroy Layers
-            float PenaltyThreashold = PenaltyBools[0] ? 1 - (PenaltyValues[0] - Child.GetLayersNumber()) / PenaltyValues[0] : 0.5f;
+            float PenaltyThreashold;
+            if (PenaltyBools[0] && PenaltyValues[0] < Child.GetLayersNumber())
+                PenaltyThreashold = 0.5f - (PenaltyValues[0] - Child.GetLayersNumber()) / PenaltyValues[0];
+            else PenaltyThreashold = 0.5f;
+
             for (int Cnt = 0; Cnt < Mutations[0]; Cnt++)
             {
-                if (Rnd.NextDouble() > PenaltyThreashold)
+                if (Rnd.NextDouble() > PenaltyThreashold)//create
                     Child.AddLayer(new GenLayer(0, 1, false, false, GenLayer.ActivationFunction.Linear, Child.IncrementalID));
-                else
+                else//destroy
                 {
                     int LayerID = Child.AdjacencyObject.IDsOrder[Rnd.Next(1, Child.AllLayers.Count - 1)];
                     if (!Child.AdjacencyObject.IsInMainPath(LayerID, 0, true))
@@ -435,7 +429,10 @@ namespace GeneticNetworkTrainer
                 Child.AllLayers[Child.AdjacencyObject.IDsOrder[Rnd.Next(Child.AllLayers.Count)]].SetActivationFunc((GenLayer.ActivationFunction)(Rnd.Next(Enum.GetValues(typeof(GenLayer.ActivationFunction)).Length)));
 
             // Change the number of neurons to one of the layers
-            PenaltyThreashold = PenaltyBools[1] ? 1 - (PenaltyValues[1] - Child.GetNeuronsNumber()) / PenaltyValues[1] : 0.5f;
+            if (PenaltyBools[1] && PenaltyValues[1] < Child.GetLayersNumber())
+                PenaltyThreashold = 0.5f - (PenaltyValues[1] - Child.GetNeuronsNumber()) / PenaltyValues[1];
+            else PenaltyThreashold = 0.5f;
+
             for (int Cnt = 0; Cnt < Mutations[2]; Cnt++)
             {
                 int ChildIDToChange = Child.AdjacencyObject.IDsOrder[Rnd.Next(Child.AllLayers.Count)];
@@ -457,7 +454,10 @@ namespace GeneticNetworkTrainer
                 }
             }
             // Add or remove a connection
-            PenaltyThreashold = PenaltyBools[2] ? 1 - (PenaltyValues[2] - Child.GetNeuronsNumber()) / PenaltyValues[2] : 0.5f;
+            if (PenaltyBools[2] && PenaltyValues[2] < Child.GetLayersNumber())
+                PenaltyThreashold = 0.5f - (PenaltyValues[2] - Child.GetConnectionsNumber()) / PenaltyValues[2];
+            else PenaltyThreashold = 0.5f;
+
             for (int Cnt = 0; Cnt < Mutations[3]; Cnt++)
             {
                 GenLayer LayerSelected = Child.AllLayers[Child.AdjacencyObject.IDsOrder[Rnd.Next(Child.AllLayers.Count)]];
@@ -665,9 +665,9 @@ namespace GeneticNetworkTrainer
                 TotalNeurons += CurrLayer.GetOutput().Length;
             return TotalNeurons;
         }
-        private float Get1X2Score(float In, float Prediction, float Expected, float WinThresh, float ValidThreshold)
+        private float Get1X2Score(float In, float Prediction, float Expected, float WinThresh)
         {
-            if (Prediction < ValidThreshold) return 0;// Prediction is not taken into consideration
+            if (Prediction < WinThresh) return 0;// Prediction is not taken into consideration
             else if (Expected == 1 && Prediction > WinThresh)
                 return 1 / In;//We Won the bet. we get the odd value
             else
@@ -682,24 +682,26 @@ namespace GeneticNetworkTrainer
         //Import export
         public void ExportNet(string NetFileName)
         {
-            FileStream MyFile;
-            MyFile = File.Create(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + NetFileName);
+            string ToTheFile = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + NetFileName + ".gnet";
+            using (FileStream MyFile = File.Create(ToTheFile))
+            {
+                BinaryFormatter BF = new BinaryFormatter();
 
-            BinaryFormatter BF = new BinaryFormatter();
-
-            BF.Serialize(MyFile, this);
-            MyFile.Close();
+                BF.Serialize(MyFile, this);
+                MyFile.Close();
+            }
         }
         public static GenNetwork ImportNet(string NetFileName)
         {
-            FileStream MyFile;
-            MyFile = File.OpenRead(NetFileName);
-            BinaryFormatter BF = new BinaryFormatter();
+            using (FileStream MyFile = File.OpenRead(NetFileName))
+            {
+                BinaryFormatter BF = new BinaryFormatter();
+                GenNetwork NetworkRead = BF.Deserialize(MyFile) as GenNetwork;
 
-            GenNetwork NetworkRead = BF.Deserialize(MyFile) as GenNetwork;
-
-            MyFile.Close();
-            return NetworkRead;
+                MyFile.Close();
+                return NetworkRead;
+            }
+            
         }
     }
 }

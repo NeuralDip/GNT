@@ -365,10 +365,8 @@ namespace GeneticNetworkTrainerForm
             this.label68 = new System.Windows.Forms.Label();
             this.TabInternalGenetics = new System.Windows.Forms.TabPage();
             this.groupBox23 = new System.Windows.Forms.GroupBox();
-            this.TextBoxRulesValidThreshold = new System.Windows.Forms.TextBox();
             this.label24 = new System.Windows.Forms.Label();
             this.TextBoxRulesWinThreshold = new System.Windows.Forms.TextBox();
-            this.label23 = new System.Windows.Forms.Label();
             this.RadioRules1X2 = new System.Windows.Forms.RadioButton();
             this.RadioRulesOutError = new System.Windows.Forms.RadioButton();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
@@ -483,6 +481,8 @@ namespace GeneticNetworkTrainerForm
             this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader12 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.TabHandTester = new System.Windows.Forms.TabPage();
+            this.label38 = new System.Windows.Forms.Label();
+            this.label37 = new System.Windows.Forms.Label();
             this.LabelHandData = new System.Windows.Forms.Label();
             this.SliderHandData = new System.Windows.Forms.TrackBar();
             this.ButtonEvaluate = new System.Windows.Forms.Button();
@@ -493,8 +493,8 @@ namespace GeneticNetworkTrainerForm
             this.LayoutOut = new System.Windows.Forms.TableLayoutPanel();
             this.LayoutIn = new System.Windows.Forms.TableLayoutPanel();
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.label37 = new System.Windows.Forms.Label();
-            this.label38 = new System.Windows.Forms.Label();
+            this.LabelStructTypeConnections = new System.Windows.Forms.Label();
+            this.label39 = new System.Windows.Forms.Label();
             this.MainTabControl.SuspendLayout();
             this.TabMainControl.SuspendLayout();
             this.groupBox9.SuspendLayout();
@@ -1658,32 +1658,21 @@ namespace GeneticNetworkTrainerForm
             // 
             // groupBox23
             // 
-            this.groupBox23.Controls.Add(this.TextBoxRulesValidThreshold);
             this.groupBox23.Controls.Add(this.label24);
             this.groupBox23.Controls.Add(this.TextBoxRulesWinThreshold);
-            this.groupBox23.Controls.Add(this.label23);
             this.groupBox23.Controls.Add(this.RadioRules1X2);
             this.groupBox23.Controls.Add(this.RadioRulesOutError);
             this.groupBox23.Location = new System.Drawing.Point(6, 513);
             this.groupBox23.Name = "groupBox23";
-            this.groupBox23.Size = new System.Drawing.Size(309, 90);
+            this.groupBox23.Size = new System.Drawing.Size(309, 78);
             this.groupBox23.TabIndex = 36;
             this.groupBox23.TabStop = false;
             this.groupBox23.Text = "Score Rules";
             // 
-            // TextBoxRulesValidThreshold
-            // 
-            this.TextBoxRulesValidThreshold.Location = new System.Drawing.Point(237, 64);
-            this.TextBoxRulesValidThreshold.Name = "TextBoxRulesValidThreshold";
-            this.TextBoxRulesValidThreshold.Size = new System.Drawing.Size(59, 20);
-            this.TextBoxRulesValidThreshold.TabIndex = 38;
-            this.TextBoxRulesValidThreshold.Text = "0.5";
-            this.TextBoxRulesValidThreshold.Leave += new System.EventHandler(this.TextBoxRulesValidThreshold_TextChanged);
-            // 
             // label24
             // 
             this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(105, 67);
+            this.label24.Location = new System.Drawing.Point(117, 46);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(80, 13);
             this.label24.TabIndex = 37;
@@ -1691,21 +1680,12 @@ namespace GeneticNetworkTrainerForm
             // 
             // TextBoxRulesWinThreshold
             // 
-            this.TextBoxRulesWinThreshold.Location = new System.Drawing.Point(237, 42);
+            this.TextBoxRulesWinThreshold.Location = new System.Drawing.Point(215, 43);
             this.TextBoxRulesWinThreshold.Name = "TextBoxRulesWinThreshold";
             this.TextBoxRulesWinThreshold.Size = new System.Drawing.Size(59, 20);
             this.TextBoxRulesWinThreshold.TabIndex = 36;
             this.TextBoxRulesWinThreshold.Text = "0.5";
             this.TextBoxRulesWinThreshold.Leave += new System.EventHandler(this.TextBoxRulesWinThreshold_TextChanged);
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(105, 45);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(123, 13);
-            this.label23.TabIndex = 35;
-            this.label23.Text = "Win predicted Threshold";
             // 
             // RadioRules1X2
             // 
@@ -2156,6 +2136,8 @@ namespace GeneticNetworkTrainerForm
             // 
             // GroupBoxStructType
             // 
+            this.GroupBoxStructType.Controls.Add(this.LabelStructTypeConnections);
+            this.GroupBoxStructType.Controls.Add(this.label39);
             this.GroupBoxStructType.Controls.Add(this.LabelStructTypeWeights);
             this.GroupBoxStructType.Controls.Add(this.label31);
             this.GroupBoxStructType.Controls.Add(this.LabelStructTypeLayers);
@@ -2173,7 +2155,7 @@ namespace GeneticNetworkTrainerForm
             // 
             this.LabelStructTypeWeights.AutoSize = true;
             this.LabelStructTypeWeights.ForeColor = System.Drawing.Color.DarkGreen;
-            this.LabelStructTypeWeights.Location = new System.Drawing.Point(79, 73);
+            this.LabelStructTypeWeights.Location = new System.Drawing.Point(79, 46);
             this.LabelStructTypeWeights.Name = "LabelStructTypeWeights";
             this.LabelStructTypeWeights.Size = new System.Drawing.Size(10, 13);
             this.LabelStructTypeWeights.TabIndex = 36;
@@ -2182,7 +2164,7 @@ namespace GeneticNetworkTrainerForm
             // label31
             // 
             this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(24, 73);
+            this.label31.Location = new System.Drawing.Point(24, 46);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(46, 13);
             this.label31.TabIndex = 35;
@@ -2192,7 +2174,7 @@ namespace GeneticNetworkTrainerForm
             // 
             this.LabelStructTypeLayers.AutoSize = true;
             this.LabelStructTypeLayers.ForeColor = System.Drawing.Color.DarkGreen;
-            this.LabelStructTypeLayers.Location = new System.Drawing.Point(79, 22);
+            this.LabelStructTypeLayers.Location = new System.Drawing.Point(80, 20);
             this.LabelStructTypeLayers.Name = "LabelStructTypeLayers";
             this.LabelStructTypeLayers.Size = new System.Drawing.Size(10, 13);
             this.LabelStructTypeLayers.TabIndex = 34;
@@ -2202,7 +2184,7 @@ namespace GeneticNetworkTrainerForm
             // 
             this.LabelStructTypeNeurons.AutoSize = true;
             this.LabelStructTypeNeurons.ForeColor = System.Drawing.Color.DarkGreen;
-            this.LabelStructTypeNeurons.Location = new System.Drawing.Point(79, 48);
+            this.LabelStructTypeNeurons.Location = new System.Drawing.Point(80, 33);
             this.LabelStructTypeNeurons.Name = "LabelStructTypeNeurons";
             this.LabelStructTypeNeurons.Size = new System.Drawing.Size(10, 13);
             this.LabelStructTypeNeurons.TabIndex = 33;
@@ -2211,7 +2193,7 @@ namespace GeneticNetworkTrainerForm
             // label93
             // 
             this.label93.AutoSize = true;
-            this.label93.Location = new System.Drawing.Point(24, 48);
+            this.label93.Location = new System.Drawing.Point(25, 33);
             this.label93.Name = "label93";
             this.label93.Size = new System.Drawing.Size(47, 13);
             this.label93.TabIndex = 30;
@@ -2220,7 +2202,7 @@ namespace GeneticNetworkTrainerForm
             // label95
             // 
             this.label95.AutoSize = true;
-            this.label95.Location = new System.Drawing.Point(33, 22);
+            this.label95.Location = new System.Drawing.Point(34, 20);
             this.label95.Name = "label95";
             this.label95.Size = new System.Drawing.Size(38, 13);
             this.label95.TabIndex = 28;
@@ -2907,6 +2889,26 @@ namespace GeneticNetworkTrainerForm
             this.TabHandTester.TabIndex = 5;
             this.TabHandTester.Text = "Hand Tester";
             // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.label38.Location = new System.Drawing.Point(191, 152);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(60, 13);
+            this.label38.TabIndex = 33;
+            this.label38.Text = "Expected";
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.label37.Location = new System.Drawing.Point(251, 152);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(61, 13);
+            this.label37.TabIndex = 32;
+            this.label37.Text = "Predicted";
+            // 
             // LabelHandData
             // 
             this.LabelHandData.AutoSize = true;
@@ -2986,7 +2988,7 @@ namespace GeneticNetworkTrainerForm
             this.LayoutOut.ColumnCount = 3;
             this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 62F));
             this.LayoutOut.Location = new System.Drawing.Point(143, 174);
             this.LayoutOut.Name = "LayoutOut";
             this.LayoutOut.RowCount = 1;
@@ -3012,25 +3014,24 @@ namespace GeneticNetworkTrainerForm
             this.OpenFileDialog.Filter = "CSV files|*.csv";
             this.OpenFileDialog.Title = "Select .csv Containing Data";
             // 
-            // label37
+            // LabelStructTypeConnections
             // 
-            this.label37.AutoSize = true;
-            this.label37.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            this.label37.Location = new System.Drawing.Point(251, 152);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(61, 13);
-            this.label37.TabIndex = 32;
-            this.label37.Text = "Predicted";
+            this.LabelStructTypeConnections.AutoSize = true;
+            this.LabelStructTypeConnections.ForeColor = System.Drawing.Color.DarkGreen;
+            this.LabelStructTypeConnections.Location = new System.Drawing.Point(80, 59);
+            this.LabelStructTypeConnections.Name = "LabelStructTypeConnections";
+            this.LabelStructTypeConnections.Size = new System.Drawing.Size(10, 13);
+            this.LabelStructTypeConnections.TabIndex = 38;
+            this.LabelStructTypeConnections.Text = "-";
             // 
-            // label38
+            // label39
             // 
-            this.label38.AutoSize = true;
-            this.label38.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            this.label38.Location = new System.Drawing.Point(191, 152);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(60, 13);
-            this.label38.TabIndex = 33;
-            this.label38.Text = "Expected";
+            this.label39.AutoSize = true;
+            this.label39.Location = new System.Drawing.Point(10, 59);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(66, 13);
+            this.label39.TabIndex = 37;
+            this.label39.Text = "Connections";
             // 
             // MainForm
             // 
@@ -3207,11 +3208,11 @@ namespace GeneticNetworkTrainerForm
         private CheckBox CheckBoxIncludeNetsInSave;
         private Label LabelGlobalStopwatchElapsed;
         private TextBox TextBoxRulesWinThreshold;
-        private Label label23;
-        private TextBox TextBoxRulesValidThreshold;
         private Label label24;
         private Label label38;
         private Label label37;
+        private Label LabelStructTypeConnections;
+        private Label label39;
     }
 }
 

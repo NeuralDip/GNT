@@ -184,7 +184,6 @@ namespace GeneticNetworkTrainerForm
                 MyGenTrainer.MyState.ScoreRule = GenTrainer.ScoreRules.RuleOutError;
 
             TextBoxRulesWinThreshold.Enabled = !RadioRulesOutError.Checked;
-            TextBoxRulesValidThreshold.Enabled = !RadioRulesOutError.Checked;
         }
         private void RadioRules1X2_CheckedChanged(object sender, EventArgs e)
         {
@@ -192,17 +191,6 @@ namespace GeneticNetworkTrainerForm
                 MyGenTrainer.MyState.ScoreRule = GenTrainer.ScoreRules.Rule1X2;
 
             TextBoxRulesWinThreshold.Enabled = RadioRules1X2.Checked;
-            TextBoxRulesValidThreshold.Enabled = RadioRules1X2.Checked;
-        }
-        private void TextBoxRulesValidThreshold_TextChanged(object sender, EventArgs e)
-        {
-            float NewValue;
-            if (!float.TryParse(TextBoxRulesValidThreshold.Text, out NewValue) || NewValue < 0)
-            {
-                AppendFeedback(string.Format("Invalid input. Expected {0:0.0} <= Float . ", 0f, 1), 1);
-                TextBoxRulesValidThreshold.Text = MyGenTrainer.MyState.ThresholdOfValid.ToString();
-            }
-            else MyGenTrainer.MyState.ThresholdOfValid = NewValue;
         }
         private void TextBoxRulesWinThreshold_TextChanged(object sender, EventArgs e)
         {

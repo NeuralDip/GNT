@@ -36,11 +36,12 @@ namespace GeneticNetworkTrainerForm
         {
             InitializeComponent();
             MyInitialize();
-            MyGenTrainer = new GenTrainer(AppendFeedback, SetControlPropertyThreadSafe, GetControlPropertyThreadSafe);
+            //MyGenTrainer = new GenTrainer(AppendFeedback, SetControlPropertyThreadSafe, GetControlPropertyThreadSafe);
+            MyGenTrainer = new GenTrainer(null,null,null);
 
             LogFileName = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\Log.txt";
             OpenFileDialog.InitialDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            MyGenTrainer.StateFileExists = File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\GenTrainingSave");
+            MyGenTrainer.StateFileExists = File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\GenTrainingSave.state");
             MyGenTrainer.HistogramsBins = HistogramsBins;
             FromTrainerToForm();
 
@@ -327,16 +328,9 @@ namespace GeneticNetworkTrainerForm
             RadioRules1X2.Checked = MyGenTrainer.MyState.ScoreRule == GenTrainer.ScoreRules.Rule1X2;
             TextBoxRulesWinThreshold.Text = MyGenTrainer.MyState.ThresholdOfWin.ToString();
             TextBoxRulesWinThreshold.Enabled = RadioRules1X2.Checked;
-            TextBoxRulesValidThreshold.Text = MyGenTrainer.MyState.ThresholdOfValid.ToString();
-            TextBoxRulesValidThreshold.Enabled = RadioRules1X2.Checked;
 
             // HandTester
-            PopulateOutLabels();
-            PopulateInTextBoxes();
-            SliderHandData.Maximum = MyGenTrainer.MyState.InData == null ? 0 : MyGenTrainer.MyState.InData.Count - 1;
-            SliderHandData.Value = 0;
-            if (MyGenTrainer.MyState.InData != null)
-                for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NetInputs; Cnt++) LayoutIn.Controls[2 * Cnt + 1].Text = MyGenTrainer.MyState.InData[SliderHandData.Value][Cnt].ToString();
+            ResetHandTester();
 
         }
 

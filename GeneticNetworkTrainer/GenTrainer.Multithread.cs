@@ -75,8 +75,8 @@ namespace GeneticNetworkTrainer
 
             PreProcess((bool)JustPressedButton);
 
-            ParentFormControlSet("LabelCurrInternalGen", "Text", "-");
-            ParentFormControlSet("LabelCurrStructGen", "Text", MyState.CurrStructureGeneration.ToString());
+            ParentFormControlSetSafe("LabelCurrInternalGen", "Text", "-");
+            ParentFormControlSetSafe("LabelCurrStructGen", "Text", MyState.CurrStructureGeneration.ToString());
 
             for (int SICnt = 0; SICnt < MyState.CurrNumberStructureIslands; SICnt++)
                 NextStructGeneration(SICnt, 0);// prepare generation for this Structure Island
@@ -113,7 +113,7 @@ namespace GeneticNetworkTrainer
             Rnd = new Random();
             ThreadsStruct.SingleThread CurrThreadData = (ThreadsStruct.SingleThread)Input;
 
-            ParentFormControlSet("LabelCurrStructure", "Text", (MyState.TotalStructurePopulation - MyThreads.Waiting()).ToString());
+            ParentFormControlSetSafe("LabelCurrStructure", "Text", (MyState.TotalStructurePopulation - MyThreads.Waiting()).ToString());
 
             try
             {
@@ -130,9 +130,9 @@ namespace GeneticNetworkTrainer
                         {
                             if (ForceStopTraining) { CurrThreadData.Running = false; CurrThreadData.Finished = true; StructWaitHandle.Set(); return; }
                             DevelopingNetsStructure[CurrThreadData.StructIsland][CurrThreadData.StructIdx][IICnt][IPCnt].ResetScores();
-                            if (!DevelopingNetsStructure[CurrThreadData.StructIsland][CurrThreadData.StructIdx][IICnt][IPCnt].CalculateScores(MyState.InData, MyState.LabelData, MyState.DataToUse, MyState.HalfDataForTesting, MyState.ScoreRule, MyState.ThresholdOfWin, MyState.ThresholdOfValid))
+                            if (!DevelopingNetsStructure[CurrThreadData.StructIsland][CurrThreadData.StructIdx][IICnt][IPCnt].CalculateScores(MyState.InData, MyState.LabelData, MyState.DataToUse, MyState.HalfDataForTesting, MyState.ScoreRule, MyState.ThresholdOfWin))
                             {
-                                ParentFormLogging(string.Format("Scoring Calculation failed for net ({0}{1}{2}{3}). Inputs or Outputs dont match the nets IOs. ", CurrThreadData.StructIsland, CurrThreadData.StructIdx, IICnt, IPCnt), 2);
+                                ParentFormLoggingSafe(string.Format("Scoring Calculation failed for net ({0}{1}{2}{3}). Inputs or Outputs dont match the nets IOs. ", CurrThreadData.StructIsland, CurrThreadData.StructIdx, IICnt, IPCnt), 2);
                                 return;
                             }
                             PopulateStatsStructure(TrainingState.NetEnded, CurrThreadData.StructIsland, CurrThreadData.StructIdx, IICnt, IPCnt, CurrThreadData.ThreadID);
@@ -151,7 +151,7 @@ namespace GeneticNetworkTrainer
             }
             catch (Exception Ex)
             {
-                ParentFormLogging(" Error While training. Message: " + Ex.Message + "\n Trace: " + new StackTrace(Ex, true).ToString(), 2);
+                ParentFormLoggingSafe(" Error While training. Message: " + Ex.Message + "\n Trace: " + new StackTrace(Ex, true).ToString(), 2);
             }
         }
 
@@ -188,7 +188,7 @@ namespace GeneticNetworkTrainer
                 else if (Timings.Length == 1 || MyState.MaxThreadsinParallel == 1)
                 {
                     MyState.MaxThreadsinParallel++;
-                    ParentFormControlSet("TextBoxThreadsInParallel", "Text", MyState.MaxThreadsinParallel.ToString());
+                    ParentFormControlSetSafe("TextBoxThreadsInParallel", "Text", MyState.MaxThreadsinParallel.ToString());
                 }
                 else // Do the true calculations here
                 {
@@ -198,13 +198,13 @@ namespace GeneticNetworkTrainer
                     if (CurrIdx == 0 || ThrInP[CurrIdx - 1] >= MyState.MaxThreadsinParallel) MyState.MaxThreadsinParallel++;
                     else MyState.MaxThreadsinParallel--;
 
-                    ParentFormControlSet("TextBoxThreadsInParallel", "Text", MyState.MaxThreadsinParallel.ToString());
+                    ParentFormControlSetSafe("TextBoxThreadsInParallel", "Text", MyState.MaxThreadsinParallel.ToString());
                 }
             }
             else
             {
                 DynamicThreadingWatch.Stop();
-                ParentFormControlSet("LabelDynB", "Text", (DynamicThreadingWatch.Elapsed).ToString("h\\:mm\\:ss"));
+                ParentFormControlSetSafe("LabelDynB", "Text", (DynamicThreadingWatch.Elapsed).ToString("h\\:mm\\:ss"));
 
                 Last5StructGenTimings.PutValue(DynamicThreadingWatch.ElapsedMilliseconds);
                 Last5ThreadsinParallel.PutValue(MyState.MaxThreadsinParallel);

@@ -38,7 +38,7 @@ namespace GeneticNetworkTrainerForm
             else
             {// input changed expected Values are unknown, so clean them
                 for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NetOutputs; Cnt++)
-                    LayoutOut.Controls.Add(new Label() { Text = "-" }, 1, Cnt);
+                    LayoutOut.Controls[3 * Cnt + 1].Text = "-";
             }
         }
         private void ButtonEvaluate_Click(object sender, EventArgs e)
@@ -66,6 +66,16 @@ namespace GeneticNetworkTrainerForm
                 LayoutOut.Controls[3 * Cnt + 1].Text = MyGenTrainer.MyState.LabelData[SliderHandData.Value][Cnt].ToString();
                 LayoutOut.Controls[3 * Cnt + 2].Text = "-";
             }
+        }
+        private void ResetHandTester()
+        {
+            PopulateOutLabels();
+            PopulateInTextBoxes();
+            SliderHandData.Maximum = MyGenTrainer.MyState.InData == null ? 0 : MyGenTrainer.MyState.InData.Count - 1;
+            SliderHandData.Value = 0;
+            if (MyGenTrainer.MyState.InData != null)
+                SliderHandData_Scroll(null, null);
+
         }
     }
 }
