@@ -36,8 +36,7 @@ namespace GeneticNetworkTrainerForm
         {
             InitializeComponent();
             MyInitialize();
-            //MyGenTrainer = new GenTrainer(AppendFeedback, SetControlPropertyThreadSafe, GetControlPropertyThreadSafe);
-            MyGenTrainer = new GenTrainer(null,null,null);
+            MyGenTrainer = new GenTrainer(AppendFeedback, SetControlPropertyThreadSafe, GetControlPropertyThreadSafe);
 
             LogFileName = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\Log.txt";
             OpenFileDialog.InitialDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
@@ -47,7 +46,7 @@ namespace GeneticNetworkTrainerForm
 
             MyGenTrainer.CallTheForm += new GenTrainer.SomethingHappenedDelegate(GenTrainerJustCalled);
 
-            MyGlobalTimer.Interval = (1000); 
+            MyGlobalTimer.Interval = (1000);
             MyGlobalTimer.Tick += new EventHandler(UpdateGlobalStopWatch);
             MyGlobalTimer.Start();
         }
