@@ -367,7 +367,6 @@ namespace GeneticNetworkTrainer
                             Score += Get1X2Score(InData[Cnt][InData[Cnt].Length - 1], Output[OutCnt], Labels[Cnt][OutCnt], WinThresh);
                 }
             }
-
             return true;
         }
 
