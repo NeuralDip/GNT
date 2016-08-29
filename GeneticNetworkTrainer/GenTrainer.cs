@@ -290,6 +290,7 @@ namespace GeneticNetworkTrainer
         private StatsStructureClass DevelopingStatsStructure;
         public StatsStructureClass SettledStatsStructure;
 
+
         public int HistogramsBins=5;
         public bool StateFileExists = false;
         private bool ForceStopTraining = false;
