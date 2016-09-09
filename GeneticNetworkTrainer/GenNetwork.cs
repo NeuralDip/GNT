@@ -281,7 +281,9 @@ namespace GeneticNetworkTrainer
                     TotatConnections += AdjacencyObject.AdjacencyMatrix[CntY, CntX];
             return TotatConnections;
         }
-        public float[] GetNetOutput() { return AllLayers[AdjacencyObject.IDsOrder[AdjacencyObject.IDsOrder.Count - 1]].GetOutput(); }
+        public int GetNetInDimention() { return AllLayers[0].GetInDim(); }
+        public int GetNetOutDimention() { return AllLayers[1].GetOutDim(); }
+        public float[] GetNetOutput() { return AllLayers[1].GetOutput(); }
         private float[] GetOutputByID(int ID) { return AllLayers[ID].GetOutput(); }
         public string LogMeDesciption()
         {
@@ -361,10 +363,12 @@ namespace GeneticNetworkTrainer
                 else
                 {
                     for (int OutCnt = 0; OutCnt < Labels[Cnt].Length; OutCnt++)
+                    {
                         if ((Cnt & 1) == 1 && Test)
                             TestScore += Get1X2Score(InData[Cnt][InData[Cnt].Length - 1], Output[OutCnt], Labels[Cnt][OutCnt], WinThresh);
                         else
                             Score += Get1X2Score(InData[Cnt][InData[Cnt].Length - 1], Output[OutCnt], Labels[Cnt][OutCnt], WinThresh);
+                    }
                 }
             }
             return true;
