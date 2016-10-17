@@ -133,6 +133,9 @@ namespace GeneticNetworkTrainer
                             if (!DevelopingNetsStructure[CurrThreadData.StructIsland][CurrThreadData.StructIdx][IICnt][IPCnt].CalculateScores(MyState.InData, MyState.LabelData, MyState.DataToUse, MyState.HalfDataForTesting, MyState.ScoreRule, MyState.ThresholdOfWin))
                             {
                                 ParentFormLoggingSafe(string.Format("Scoring Calculation failed for net ({0}{1}{2}{3}). Inputs or Outputs dont match the nets IOs. ", CurrThreadData.StructIsland, CurrThreadData.StructIdx, IICnt, IPCnt), 2);
+                                CurrThreadData.Running = false;
+                                CurrThreadData.Finished = true;
+                                StructWaitHandle.Set();
                                 return;
                             }
                             PopulateStatsStructure(TrainingState.NetEnded, CurrThreadData.StructIsland, CurrThreadData.StructIdx, IICnt, IPCnt, CurrThreadData.ThreadID);

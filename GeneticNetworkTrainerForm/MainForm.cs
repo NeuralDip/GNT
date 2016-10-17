@@ -223,6 +223,13 @@ namespace GeneticNetworkTrainerForm
             TextBoxNetInput.Enabled = MyGenTrainer.MyState.DataLoadedCorrectly && (OpenFileDialog.FileName != "");
             TextBoxNetOutput.Enabled = MyGenTrainer.MyState.DataLoadedCorrectly && (OpenFileDialog.FileName != "");
 
+            CheckBoxFixOutAct.Checked = MyGenTrainer.MyState.FixOutActivation;
+            DropDownFixOutAct.Enabled = MyGenTrainer.MyState.FixOutActivation;
+            DropDownFixOutAct.SelectedIndex = MyGenTrainer.MyState.FixedOutActivation;
+            CheckBoxFixHidAct.Checked = MyGenTrainer.MyState.FixHiddenActivation;
+            DropDownFixHidAct.Enabled = MyGenTrainer.MyState.FixHiddenActivation;
+            DropDownFixHidAct.SelectedIndex = MyGenTrainer.MyState.FixedHiddenActivation;
+
             CheckBoxHalfForTesting.Checked = MyGenTrainer.MyState.HalfDataForTesting;
 
 
@@ -307,6 +314,8 @@ namespace GeneticNetworkTrainerForm
             CheckBoxMutateBiases.Checked = MyGenTrainer.MyState.MutateBiases;
             SliderInternalCopy.Value = (int)(MyGenTrainer.MyState.InternalCopy * 100);
             LabelInternalCopy.Text = MyGenTrainer.MyState.InternalCopy.ToString();
+            SliderInternalNew.Value = (int)(MyGenTrainer.MyState.InternalNew * 100);
+            LabelInternalNew.Text = MyGenTrainer.MyState.InternalNew.ToString();
 
             SliderAnnealing.Value = (int)(MyGenTrainer.MyState.InitialInternalAnnealing * 100);
             LabelAnnealing.Text = MyGenTrainer.MyState.InitialInternalAnnealing.ToString();

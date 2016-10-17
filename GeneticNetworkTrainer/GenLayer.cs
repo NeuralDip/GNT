@@ -32,7 +32,7 @@ namespace GeneticNetworkTrainer
         }
 
         // Constructor
-        public GenLayer(int InConnections, int NumberNeurons, bool iIsInLayer, bool iIsOutLayer, ActivationFunction iActivation, int iID)
+        public GenLayer(int InConnections, int NumberNeurons, bool iIsInLayer, bool iIsOutLayer, int iID, ActivationFunction iActivation)
         {
             ID = iID;
             IsOutLayer = iIsOutLayer;
@@ -47,7 +47,7 @@ namespace GeneticNetworkTrainer
         }
         public GenLayer CloneMe()
         {
-            GenLayer ToReturn = new GenLayer(Weights.GetLength(0), Weights.GetLength(1), IsInLayer, IsOutLayer, MyActivation, ID);
+            GenLayer ToReturn = new GenLayer(Weights.GetLength(0), Weights.GetLength(1), IsInLayer, IsOutLayer, ID, MyActivation);
 
             ToReturn.ListOfOutLayers = new List<int>(ListOfOutLayers);
             ToReturn.ListOfInLayers = new List<int>(ListOfInLayers);
@@ -57,7 +57,7 @@ namespace GeneticNetworkTrainer
         }
         public GenLayer CloneMe(int NewID)
         {
-            GenLayer ToReturn = new GenLayer(Weights.GetLength(0), Weights.GetLength(1), IsInLayer, IsOutLayer, MyActivation, NewID);
+            GenLayer ToReturn = new GenLayer(Weights.GetLength(0), Weights.GetLength(1), IsInLayer, IsOutLayer, NewID, MyActivation);
 
             ToReturn.ListOfOutLayers = new List<int>(ListOfOutLayers);
             ToReturn.ListOfInLayers = new List<int>(ListOfInLayers);
@@ -253,13 +253,13 @@ namespace GeneticNetworkTrainer
         public float[] Evaluate(float[] Input)
         {
             if (Input.Length == 0)// Layer is not In Connected
-                for (int B = 0; B < Weights.GetLength(1); B++)
+                for (int B = 0; B < Biases.Length; B++)
                     Output[B] = 0;
             else
-                for (int B = 0; B < Weights.GetLength(1); B++)
+                for (int B = 0; B < Biases.Length; B++)
                 {
                     Output[B] = 0;
-                    for (int A = 0; A < Weights.GetLength(0); A++)
+                    for (int A = 0; A < Input.Length; A++)
                         Output[B] += Weights[A, B] * Input[A];
                     Output[B] += Biases[B];
                 }
@@ -279,9 +279,17 @@ namespace GeneticNetworkTrainer
                     for (int B = 0; B < Weights.GetLength(1); B++)
                         if (Output[B] < 0) Output[B] = 0;
                     break;
+                case ActivationFunction.SoftSign:
+                    for (int B = 0; B < Weights.GetLength(1); B++)
+                        Output[B] = (float)(Output[B] / (1 + Math.Abs(Output[B])));
+                    break;
                 case ActivationFunction.Sigmoid:
                     for (int B = 0; B < Weights.GetLength(1); B++)
                         Output[B] = (float)(1 / (1 + Math.Exp(-Output[B])));
+                    break;
+                case ActivationFunction.Tanh:
+                    for (int B = 0; B < Weights.GetLength(1); B++)
+                        Output[B] = (float)Math.Tanh(Output[B]);
                     break;
                 case ActivationFunction.SoftMax:
                     double ExpSum = 0;
@@ -289,14 +297,6 @@ namespace GeneticNetworkTrainer
                         ExpSum += Math.Exp(Output[B]);
                     for (int B = 0; B < Weights.GetLength(1); B++)
                         Output[B] = (float)(Math.Exp(Output[B]) / ExpSum);
-                    break;
-                case ActivationFunction.SoftSign:
-                    for (int B = 0; B < Weights.GetLength(1); B++)
-                        Output[B] = (float)(Output[B] / (1 + Math.Abs(Output[B])));
-                    break;
-                case ActivationFunction.Tanh:
-                    for (int B = 0; B < Weights.GetLength(1); B++)
-                        Output[B] = (float)Math.Tanh(Output[B]);
                     break;
                 default:
                     break;

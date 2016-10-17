@@ -84,7 +84,7 @@ namespace GeneticNetworkTrainerForm
                     for (int Cnt = 0; Cnt < ListViewNets.CheckedIndices.Count; Cnt++)
                     {
                         GenNetwork NetToSave = MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][ListViewInternalIslandsSelection][ListViewNets.CheckedIndices[Cnt]].CloneMe(false, false, false, null);
-                        string NetFileName = "\\" + DateTime.Now.ToString() + "[" + ListViewStructIslandsSelection + "_" + ListViewStructuresSelection + "_" + ListViewInternalIslandsSelection + "_" + ListViewNets.CheckedIndices[Cnt] + " ]_I" + MyGenTrainer.MyState.InData[0].Length + "O" + MyGenTrainer.MyState.LabelData[0].Length + "_L" + NetToSave.GetLayersNumber() + "N" + NetToSave.GetNeuronsNumber();
+                        string NetFileName = "\\I" + MyGenTrainer.MyState.InData[0].Length + "O" + MyGenTrainer.MyState.LabelData[0].Length + "_L" + NetToSave.GetLayersNumber() + "N" + NetToSave.GetNeuronsNumber() + "_D" + DateTime.Now.ToString("dd.MM.yy") + "[" + ListViewStructIslandsSelection + "_" + ListViewStructuresSelection + "_" + ListViewInternalIslandsSelection + "_" + ListViewNets.CheckedIndices[Cnt] + " ]";
                         NetToSave.ExportNet(NetFileName.Replace(":", "."));
                         AppendFeedback(" Net " + "[" + ListViewStructIslandsSelection + "_" + ListViewStructuresSelection + "_" + ListViewInternalIslandsSelection + "_" + ListViewNets.CheckedIndices[Cnt] + " ] Exported Succesfully.", 0);
                     }

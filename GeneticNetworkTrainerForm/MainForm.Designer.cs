@@ -294,6 +294,13 @@ namespace GeneticNetworkTrainerForm
             this.TextBoxStructureGenerations = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.label40 = new System.Windows.Forms.Label();
+            this.label41 = new System.Windows.Forms.Label();
+            this.DropDownFixHidAct = new System.Windows.Forms.ComboBox();
+            this.CheckBoxFixHidAct = new System.Windows.Forms.CheckBox();
+            this.DropDownFixOutAct = new System.Windows.Forms.ComboBox();
+            this.CheckBoxFixOutAct = new System.Windows.Forms.CheckBox();
             this.TextBoxNetOutput = new System.Windows.Forms.TextBox();
             this.TextBoxNetInput = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -385,6 +392,9 @@ namespace GeneticNetworkTrainerForm
             this.SliderInternalIslands = new System.Windows.Forms.TrackBar();
             this.label21 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.LabelInternalNew = new System.Windows.Forms.Label();
+            this.SliderInternalNew = new System.Windows.Forms.TrackBar();
+            this.label42 = new System.Windows.Forms.Label();
             this.TextBoxLimitBiases = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.CheckBoxMutateWeights = new System.Windows.Forms.CheckBox();
@@ -409,6 +419,8 @@ namespace GeneticNetworkTrainerForm
             this.label13 = new System.Windows.Forms.Label();
             this.TabStructureInspector = new System.Windows.Forms.TabPage();
             this.GroupBoxStructType = new System.Windows.Forms.GroupBox();
+            this.LabelStructTypeConnections = new System.Windows.Forms.Label();
+            this.label39 = new System.Windows.Forms.Label();
             this.LabelStructTypeWeights = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.LabelStructTypeLayers = new System.Windows.Forms.Label();
@@ -433,7 +445,11 @@ namespace GeneticNetworkTrainerForm
             this.RadioStructIslandScore = new System.Windows.Forms.RadioButton();
             this.StructIslandPlotPlaceHolder = new System.Windows.Forms.Panel();
             this.GroupBoxGlobalStats = new System.Windows.Forms.GroupBox();
+            this.ButtonStatsBestTestScore = new System.Windows.Forms.Button();
+            this.ButtonStatsBestScore = new System.Windows.Forms.Button();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
+            this.LabelStatsBestType = new System.Windows.Forms.Label();
+            this.label44 = new System.Windows.Forms.Label();
             this.LabelStatTestScore = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.LabelStatScore = new System.Windows.Forms.Label();
@@ -493,8 +509,6 @@ namespace GeneticNetworkTrainerForm
             this.LayoutOut = new System.Windows.Forms.TableLayoutPanel();
             this.LayoutIn = new System.Windows.Forms.TableLayoutPanel();
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.LabelStructTypeConnections = new System.Windows.Forms.Label();
-            this.label39 = new System.Windows.Forms.Label();
             this.MainTabControl.SuspendLayout();
             this.TabMainControl.SuspendLayout();
             this.groupBox9.SuspendLayout();
@@ -520,6 +534,7 @@ namespace GeneticNetworkTrainerForm
             this.groupBox7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SliderInternalIslands)).BeginInit();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.SliderInternalNew)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SliderInternalCrossover)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SliderInternalMutationStrength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SliderInternalMutation)).BeginInit();
@@ -583,7 +598,7 @@ namespace GeneticNetworkTrainerForm
             this.LabelGlobalStopwatchElapsed.AutoSize = true;
             this.LabelGlobalStopwatchElapsed.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
             this.LabelGlobalStopwatchElapsed.ForeColor = System.Drawing.Color.DarkGreen;
-            this.LabelGlobalStopwatchElapsed.Location = new System.Drawing.Point(242, 215);
+            this.LabelGlobalStopwatchElapsed.Location = new System.Drawing.Point(188, 259);
             this.LabelGlobalStopwatchElapsed.Name = "LabelGlobalStopwatchElapsed";
             this.LabelGlobalStopwatchElapsed.Size = new System.Drawing.Size(0, 15);
             this.LabelGlobalStopwatchElapsed.TabIndex = 37;
@@ -594,9 +609,9 @@ namespace GeneticNetworkTrainerForm
             this.groupBox9.Controls.Add(this.ButtonLoadState);
             this.groupBox9.Controls.Add(this.ButtonSaveState);
             this.groupBox9.Controls.Add(this.ButtonResetState);
-            this.groupBox9.Location = new System.Drawing.Point(124, 139);
+            this.groupBox9.Location = new System.Drawing.Point(144, 139);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(191, 63);
+            this.groupBox9.Size = new System.Drawing.Size(171, 88);
             this.groupBox9.TabIndex = 31;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "State";
@@ -604,7 +619,7 @@ namespace GeneticNetworkTrainerForm
             // CheckBoxIncludeNetsInSave
             // 
             this.CheckBoxIncludeNetsInSave.AutoSize = true;
-            this.CheckBoxIncludeNetsInSave.Location = new System.Drawing.Point(59, 42);
+            this.CheckBoxIncludeNetsInSave.Location = new System.Drawing.Point(20, 65);
             this.CheckBoxIncludeNetsInSave.Name = "CheckBoxIncludeNetsInSave";
             this.CheckBoxIncludeNetsInSave.Size = new System.Drawing.Size(126, 17);
             this.CheckBoxIncludeNetsInSave.TabIndex = 37;
@@ -628,7 +643,7 @@ namespace GeneticNetworkTrainerForm
             // 
             this.ButtonSaveState.BackColor = System.Drawing.Color.Silver;
             this.ButtonSaveState.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            this.ButtonSaveState.Location = new System.Drawing.Point(107, 15);
+            this.ButtonSaveState.Location = new System.Drawing.Point(92, 15);
             this.ButtonSaveState.Name = "ButtonSaveState";
             this.ButtonSaveState.Size = new System.Drawing.Size(75, 21);
             this.ButtonSaveState.TabIndex = 37;
@@ -642,7 +657,7 @@ namespace GeneticNetworkTrainerForm
             // 
             this.ButtonResetState.BackColor = System.Drawing.Color.Yellow;
             this.ButtonResetState.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            this.ButtonResetState.Location = new System.Drawing.Point(6, 38);
+            this.ButtonResetState.Location = new System.Drawing.Point(57, 38);
             this.ButtonResetState.Name = "ButtonResetState";
             this.ButtonResetState.Size = new System.Drawing.Size(53, 21);
             this.ButtonResetState.TabIndex = 38;
@@ -661,7 +676,7 @@ namespace GeneticNetworkTrainerForm
             this.groupBox6.Controls.Add(this.TextBoxStopCondScore);
             this.groupBox6.Controls.Add(this.label20);
             this.groupBox6.Controls.Add(this.CheckBoxStopCondScore);
-            this.groupBox6.Location = new System.Drawing.Point(6, 377);
+            this.groupBox6.Location = new System.Drawing.Point(6, 418);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(309, 124);
             this.groupBox6.TabIndex = 36;
@@ -779,7 +794,7 @@ namespace GeneticNetworkTrainerForm
             this.groupBox5.Controls.Add(this.label29);
             this.groupBox5.Controls.Add(this.TextBoxStructureGenerations);
             this.groupBox5.Controls.Add(this.label17);
-            this.groupBox5.Location = new System.Drawing.Point(6, 239);
+            this.groupBox5.Location = new System.Drawing.Point(6, 280);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(309, 132);
             this.groupBox5.TabIndex = 31;
@@ -902,20 +917,106 @@ namespace GeneticNetworkTrainerForm
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.label23);
+            this.groupBox3.Controls.Add(this.label40);
+            this.groupBox3.Controls.Add(this.label41);
+            this.groupBox3.Controls.Add(this.DropDownFixHidAct);
+            this.groupBox3.Controls.Add(this.CheckBoxFixHidAct);
+            this.groupBox3.Controls.Add(this.DropDownFixOutAct);
+            this.groupBox3.Controls.Add(this.CheckBoxFixOutAct);
             this.groupBox3.Controls.Add(this.TextBoxNetOutput);
             this.groupBox3.Controls.Add(this.TextBoxNetInput);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Location = new System.Drawing.Point(6, 139);
+            this.groupBox3.Location = new System.Drawing.Point(6, 127);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(112, 94);
+            this.groupBox3.Size = new System.Drawing.Size(132, 147);
             this.groupBox3.TabIndex = 30;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Network";
             // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(8, 77);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(119, 13);
+            this.label23.TabIndex = 24;
+            this.label23.Text = "Fix Activation Functions";
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(6, 97);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(27, 13);
+            this.label40.TabIndex = 25;
+            this.label40.Text = "Out:";
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.Location = new System.Drawing.Point(3, 124);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(29, 13);
+            this.label41.TabIndex = 26;
+            this.label41.Text = "Hid.:";
+            // 
+            // DropDownFixHidAct
+            // 
+            this.DropDownFixHidAct.FormattingEnabled = true;
+            this.DropDownFixHidAct.Items.AddRange(new object[] {
+            "Linear",
+            "ReLU",
+            "SoftSign",
+            "Sigmoid",
+            "Tanh",
+            "SoftMax"});
+            this.DropDownFixHidAct.Location = new System.Drawing.Point(54, 120);
+            this.DropDownFixHidAct.Name = "DropDownFixHidAct";
+            this.DropDownFixHidAct.Size = new System.Drawing.Size(72, 21);
+            this.DropDownFixHidAct.TabIndex = 41;
+            this.DropDownFixHidAct.SelectedIndexChanged += new System.EventHandler(this.DropDownFixHidAct_SelectedIndexChanged);
+            // 
+            // CheckBoxFixHidAct
+            // 
+            this.CheckBoxFixHidAct.AutoSize = true;
+            this.CheckBoxFixHidAct.Location = new System.Drawing.Point(33, 123);
+            this.CheckBoxFixHidAct.Name = "CheckBoxFixHidAct";
+            this.CheckBoxFixHidAct.Size = new System.Drawing.Size(15, 14);
+            this.CheckBoxFixHidAct.TabIndex = 42;
+            this.CheckBoxFixHidAct.UseVisualStyleBackColor = true;
+            this.CheckBoxFixHidAct.CheckedChanged += new System.EventHandler(this.CheckBoxFixHidAct_CheckedChanged);
+            // 
+            // DropDownFixOutAct
+            // 
+            this.DropDownFixOutAct.FormattingEnabled = true;
+            this.DropDownFixOutAct.Items.AddRange(new object[] {
+            "Linear",
+            "ReLU",
+            "SoftSign",
+            "Sigmoid",
+            "Tanh",
+            "SoftMax"});
+            this.DropDownFixOutAct.Location = new System.Drawing.Point(54, 93);
+            this.DropDownFixOutAct.Name = "DropDownFixOutAct";
+            this.DropDownFixOutAct.Size = new System.Drawing.Size(72, 21);
+            this.DropDownFixOutAct.TabIndex = 38;
+            this.DropDownFixOutAct.SelectedIndexChanged += new System.EventHandler(this.DropDownFixOutAct_SelectedIndexChanged);
+            // 
+            // CheckBoxFixOutAct
+            // 
+            this.CheckBoxFixOutAct.AutoSize = true;
+            this.CheckBoxFixOutAct.Location = new System.Drawing.Point(33, 96);
+            this.CheckBoxFixOutAct.Name = "CheckBoxFixOutAct";
+            this.CheckBoxFixOutAct.Size = new System.Drawing.Size(15, 14);
+            this.CheckBoxFixOutAct.TabIndex = 40;
+            this.CheckBoxFixOutAct.UseVisualStyleBackColor = true;
+            this.CheckBoxFixOutAct.CheckedChanged += new System.EventHandler(this.CheckBoxFixOutAct_CheckedChanged);
+            // 
             // TextBoxNetOutput
             // 
-            this.TextBoxNetOutput.Location = new System.Drawing.Point(47, 57);
+            this.TextBoxNetOutput.Location = new System.Drawing.Point(47, 47);
             this.TextBoxNetOutput.Name = "TextBoxNetOutput";
             this.TextBoxNetOutput.Size = new System.Drawing.Size(59, 20);
             this.TextBoxNetOutput.TabIndex = 4;
@@ -932,7 +1033,7 @@ namespace GeneticNetworkTrainerForm
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 60);
+            this.label4.Location = new System.Drawing.Point(6, 50);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(42, 13);
             this.label4.TabIndex = 2;
@@ -956,7 +1057,7 @@ namespace GeneticNetworkTrainerForm
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.CheckBoxParallelThreadsDS);
             this.groupBox2.Controls.Add(this.CheckBoxActivateThreading);
-            this.groupBox2.Location = new System.Drawing.Point(6, 507);
+            this.groupBox2.Location = new System.Drawing.Point(6, 548);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(309, 114);
             this.groupBox2.TabIndex = 30;
@@ -1047,7 +1148,7 @@ namespace GeneticNetworkTrainerForm
             this.groupBox1.Controls.Add(this.ButtonSelectData);
             this.groupBox1.Location = new System.Drawing.Point(6, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(309, 125);
+            this.groupBox1.Size = new System.Drawing.Size(309, 115);
             this.groupBox1.TabIndex = 29;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Data";
@@ -1143,7 +1244,7 @@ namespace GeneticNetworkTrainerForm
             // 
             this.ButtonStartStop.BackColor = System.Drawing.Color.Silver;
             this.ButtonStartStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            this.ButtonStartStop.Location = new System.Drawing.Point(124, 210);
+            this.ButtonStartStop.Location = new System.Drawing.Point(173, 233);
             this.ButtonStartStop.Name = "ButtonStartStop";
             this.ButtonStartStop.Size = new System.Drawing.Size(95, 23);
             this.ButtonStartStop.TabIndex = 28;
@@ -1662,7 +1763,7 @@ namespace GeneticNetworkTrainerForm
             this.groupBox23.Controls.Add(this.TextBoxRulesWinThreshold);
             this.groupBox23.Controls.Add(this.RadioRules1X2);
             this.groupBox23.Controls.Add(this.RadioRulesOutError);
-            this.groupBox23.Location = new System.Drawing.Point(6, 513);
+            this.groupBox23.Location = new System.Drawing.Point(6, 584);
             this.groupBox23.Name = "groupBox23";
             this.groupBox23.Size = new System.Drawing.Size(309, 78);
             this.groupBox23.TabIndex = 36;
@@ -1721,7 +1822,7 @@ namespace GeneticNetworkTrainerForm
             this.groupBox8.Controls.Add(this.SliderAnnealing);
             this.groupBox8.Controls.Add(this.label34);
             this.groupBox8.Controls.Add(this.label35);
-            this.groupBox8.Location = new System.Drawing.Point(6, 287);
+            this.groupBox8.Location = new System.Drawing.Point(6, 358);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(309, 102);
             this.groupBox8.TabIndex = 33;
@@ -1803,7 +1904,7 @@ namespace GeneticNetworkTrainerForm
             this.groupBox7.Controls.Add(this.LabelInternalIslands);
             this.groupBox7.Controls.Add(this.SliderInternalIslands);
             this.groupBox7.Controls.Add(this.label21);
-            this.groupBox7.Location = new System.Drawing.Point(6, 395);
+            this.groupBox7.Location = new System.Drawing.Point(6, 466);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Size = new System.Drawing.Size(309, 112);
             this.groupBox7.TabIndex = 32;
@@ -1871,6 +1972,9 @@ namespace GeneticNetworkTrainerForm
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.LabelInternalNew);
+            this.groupBox4.Controls.Add(this.SliderInternalNew);
+            this.groupBox4.Controls.Add(this.label42);
             this.groupBox4.Controls.Add(this.TextBoxLimitBiases);
             this.groupBox4.Controls.Add(this.label8);
             this.groupBox4.Controls.Add(this.CheckBoxMutateWeights);
@@ -1895,10 +1999,41 @@ namespace GeneticNetworkTrainerForm
             this.groupBox4.Controls.Add(this.label13);
             this.groupBox4.Location = new System.Drawing.Point(6, 6);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(309, 275);
+            this.groupBox4.Size = new System.Drawing.Size(309, 346);
             this.groupBox4.TabIndex = 30;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Main";
+            // 
+            // LabelInternalNew
+            // 
+            this.LabelInternalNew.AutoSize = true;
+            this.LabelInternalNew.ForeColor = System.Drawing.Color.DarkGreen;
+            this.LabelInternalNew.Location = new System.Drawing.Point(246, 287);
+            this.LabelInternalNew.Name = "LabelInternalNew";
+            this.LabelInternalNew.Size = new System.Drawing.Size(10, 13);
+            this.LabelInternalNew.TabIndex = 34;
+            this.LabelInternalNew.Text = "-";
+            // 
+            // SliderInternalNew
+            // 
+            this.SliderInternalNew.LargeChange = 20;
+            this.SliderInternalNew.Location = new System.Drawing.Point(65, 275);
+            this.SliderInternalNew.Maximum = 100;
+            this.SliderInternalNew.Name = "SliderInternalNew";
+            this.SliderInternalNew.Size = new System.Drawing.Size(169, 45);
+            this.SliderInternalNew.SmallChange = 5;
+            this.SliderInternalNew.TabIndex = 33;
+            this.SliderInternalNew.Value = 100;
+            this.SliderInternalNew.Scroll += new System.EventHandler(this.SliderInternalNew_Scroll);
+            // 
+            // label42
+            // 
+            this.label42.AutoSize = true;
+            this.label42.Location = new System.Drawing.Point(5, 287);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(29, 13);
+            this.label42.TabIndex = 32;
+            this.label42.Text = "New";
             // 
             // TextBoxLimitBiases
             // 
@@ -2150,6 +2285,25 @@ namespace GeneticNetworkTrainerForm
             this.GroupBoxStructType.TabIndex = 44;
             this.GroupBoxStructType.TabStop = false;
             this.GroupBoxStructType.Text = "Structure Type";
+            // 
+            // LabelStructTypeConnections
+            // 
+            this.LabelStructTypeConnections.AutoSize = true;
+            this.LabelStructTypeConnections.ForeColor = System.Drawing.Color.DarkGreen;
+            this.LabelStructTypeConnections.Location = new System.Drawing.Point(80, 59);
+            this.LabelStructTypeConnections.Name = "LabelStructTypeConnections";
+            this.LabelStructTypeConnections.Size = new System.Drawing.Size(10, 13);
+            this.LabelStructTypeConnections.TabIndex = 38;
+            this.LabelStructTypeConnections.Text = "-";
+            // 
+            // label39
+            // 
+            this.label39.AutoSize = true;
+            this.label39.Location = new System.Drawing.Point(10, 59);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(66, 13);
+            this.label39.TabIndex = 37;
+            this.label39.Text = "Connections";
             // 
             // LabelStructTypeWeights
             // 
@@ -2405,6 +2559,8 @@ namespace GeneticNetworkTrainerForm
             // 
             // GroupBoxGlobalStats
             // 
+            this.GroupBoxGlobalStats.Controls.Add(this.ButtonStatsBestTestScore);
+            this.GroupBoxGlobalStats.Controls.Add(this.ButtonStatsBestScore);
             this.GroupBoxGlobalStats.Controls.Add(this.groupBox19);
             this.GroupBoxGlobalStats.Location = new System.Drawing.Point(133, 6);
             this.GroupBoxGlobalStats.Name = "GroupBoxGlobalStats";
@@ -2413,8 +2569,30 @@ namespace GeneticNetworkTrainerForm
             this.GroupBoxGlobalStats.TabStop = false;
             this.GroupBoxGlobalStats.Text = "Global Stats";
             // 
+            // ButtonStatsBestTestScore
+            // 
+            this.ButtonStatsBestTestScore.Location = new System.Drawing.Point(168, 54);
+            this.ButtonStatsBestTestScore.Name = "ButtonStatsBestTestScore";
+            this.ButtonStatsBestTestScore.Size = new System.Drawing.Size(112, 23);
+            this.ButtonStatsBestTestScore.TabIndex = 2;
+            this.ButtonStatsBestTestScore.Text = "Best Test Score";
+            this.ButtonStatsBestTestScore.UseVisualStyleBackColor = true;
+            this.ButtonStatsBestTestScore.Click += new System.EventHandler(this.ButtonStatsBestTestScore_Click);
+            // 
+            // ButtonStatsBestScore
+            // 
+            this.ButtonStatsBestScore.Location = new System.Drawing.Point(168, 28);
+            this.ButtonStatsBestScore.Name = "ButtonStatsBestScore";
+            this.ButtonStatsBestScore.Size = new System.Drawing.Size(112, 23);
+            this.ButtonStatsBestScore.TabIndex = 1;
+            this.ButtonStatsBestScore.Text = "Best Score";
+            this.ButtonStatsBestScore.UseVisualStyleBackColor = true;
+            this.ButtonStatsBestScore.Click += new System.EventHandler(this.ButtonStatsBestScore_Click);
+            // 
             // groupBox19
             // 
+            this.groupBox19.Controls.Add(this.LabelStatsBestType);
+            this.groupBox19.Controls.Add(this.label44);
             this.groupBox19.Controls.Add(this.LabelStatTestScore);
             this.groupBox19.Controls.Add(this.label16);
             this.groupBox19.Controls.Add(this.LabelStatScore);
@@ -2432,11 +2610,31 @@ namespace GeneticNetworkTrainerForm
             this.groupBox19.TabStop = false;
             this.groupBox19.Text = "Best Net";
             // 
+            // LabelStatsBestType
+            // 
+            this.LabelStatsBestType.AutoSize = true;
+            this.LabelStatsBestType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.LabelStatsBestType.ForeColor = System.Drawing.Color.DarkGreen;
+            this.LabelStatsBestType.Location = new System.Drawing.Point(73, 17);
+            this.LabelStatsBestType.Name = "LabelStatsBestType";
+            this.LabelStatsBestType.Size = new System.Drawing.Size(40, 13);
+            this.LabelStatsBestType.TabIndex = 40;
+            this.LabelStatsBestType.Text = "Score";
+            // 
+            // label44
+            // 
+            this.label44.AutoSize = true;
+            this.label44.Location = new System.Drawing.Point(39, 17);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(28, 13);
+            this.label44.TabIndex = 39;
+            this.label44.Text = "Best";
+            // 
             // LabelStatTestScore
             // 
             this.LabelStatTestScore.AutoSize = true;
             this.LabelStatTestScore.ForeColor = System.Drawing.Color.DarkGreen;
-            this.LabelStatTestScore.Location = new System.Drawing.Point(79, 119);
+            this.LabelStatTestScore.Location = new System.Drawing.Point(73, 135);
             this.LabelStatTestScore.Name = "LabelStatTestScore";
             this.LabelStatTestScore.Size = new System.Drawing.Size(10, 13);
             this.LabelStatTestScore.TabIndex = 38;
@@ -2445,7 +2643,7 @@ namespace GeneticNetworkTrainerForm
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(14, 119);
+            this.label16.Location = new System.Drawing.Point(8, 135);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(59, 13);
             this.label16.TabIndex = 37;
@@ -2455,7 +2653,7 @@ namespace GeneticNetworkTrainerForm
             // 
             this.LabelStatScore.AutoSize = true;
             this.LabelStatScore.ForeColor = System.Drawing.Color.DarkGreen;
-            this.LabelStatScore.Location = new System.Drawing.Point(79, 100);
+            this.LabelStatScore.Location = new System.Drawing.Point(73, 116);
             this.LabelStatScore.Name = "LabelStatScore";
             this.LabelStatScore.Size = new System.Drawing.Size(10, 13);
             this.LabelStatScore.TabIndex = 36;
@@ -2464,7 +2662,7 @@ namespace GeneticNetworkTrainerForm
             // label84
             // 
             this.label84.AutoSize = true;
-            this.label84.Location = new System.Drawing.Point(38, 100);
+            this.label84.Location = new System.Drawing.Point(32, 116);
             this.label84.Name = "label84";
             this.label84.Size = new System.Drawing.Size(35, 13);
             this.label84.TabIndex = 35;
@@ -2474,7 +2672,7 @@ namespace GeneticNetworkTrainerForm
             // 
             this.LabelStatsStructIsland.AutoSize = true;
             this.LabelStatsStructIsland.ForeColor = System.Drawing.Color.DarkGreen;
-            this.LabelStatsStructIsland.Location = new System.Drawing.Point(79, 22);
+            this.LabelStatsStructIsland.Location = new System.Drawing.Point(73, 38);
             this.LabelStatsStructIsland.Name = "LabelStatsStructIsland";
             this.LabelStatsStructIsland.Size = new System.Drawing.Size(10, 13);
             this.LabelStatsStructIsland.TabIndex = 34;
@@ -2484,7 +2682,7 @@ namespace GeneticNetworkTrainerForm
             // 
             this.LabelStructID.AutoSize = true;
             this.LabelStructID.ForeColor = System.Drawing.Color.DarkGreen;
-            this.LabelStructID.Location = new System.Drawing.Point(79, 48);
+            this.LabelStructID.Location = new System.Drawing.Point(73, 64);
             this.LabelStructID.Name = "LabelStructID";
             this.LabelStructID.Size = new System.Drawing.Size(10, 13);
             this.LabelStructID.TabIndex = 33;
@@ -2494,7 +2692,7 @@ namespace GeneticNetworkTrainerForm
             // 
             this.LabelIntIsland.AutoSize = true;
             this.LabelIntIsland.ForeColor = System.Drawing.Color.DarkGreen;
-            this.LabelIntIsland.Location = new System.Drawing.Point(79, 74);
+            this.LabelIntIsland.Location = new System.Drawing.Point(73, 90);
             this.LabelIntIsland.Name = "LabelIntIsland";
             this.LabelIntIsland.Size = new System.Drawing.Size(10, 13);
             this.LabelIntIsland.TabIndex = 31;
@@ -2503,7 +2701,7 @@ namespace GeneticNetworkTrainerForm
             // label78
             // 
             this.label78.AutoSize = true;
-            this.label78.Location = new System.Drawing.Point(20, 48);
+            this.label78.Location = new System.Drawing.Point(14, 64);
             this.label78.Name = "label78";
             this.label78.Size = new System.Drawing.Size(58, 13);
             this.label78.TabIndex = 30;
@@ -2512,7 +2710,7 @@ namespace GeneticNetworkTrainerForm
             // label75
             // 
             this.label75.AutoSize = true;
-            this.label75.Location = new System.Drawing.Point(23, 74);
+            this.label75.Location = new System.Drawing.Point(17, 90);
             this.label75.Name = "label75";
             this.label75.Size = new System.Drawing.Size(50, 13);
             this.label75.TabIndex = 24;
@@ -2521,7 +2719,7 @@ namespace GeneticNetworkTrainerForm
             // label77
             // 
             this.label77.AutoSize = true;
-            this.label77.Location = new System.Drawing.Point(12, 22);
+            this.label77.Location = new System.Drawing.Point(6, 38);
             this.label77.Name = "label77";
             this.label77.Size = new System.Drawing.Size(66, 13);
             this.label77.TabIndex = 28;
@@ -2893,7 +3091,7 @@ namespace GeneticNetworkTrainerForm
             // 
             this.label38.AutoSize = true;
             this.label38.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            this.label38.Location = new System.Drawing.Point(191, 152);
+            this.label38.Location = new System.Drawing.Point(168, 152);
             this.label38.Name = "label38";
             this.label38.Size = new System.Drawing.Size(60, 13);
             this.label38.TabIndex = 33;
@@ -2987,8 +3185,8 @@ namespace GeneticNetworkTrainerForm
             // 
             this.LayoutOut.ColumnCount = 3;
             this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 62F));
+            this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.LayoutOut.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 82F));
             this.LayoutOut.Location = new System.Drawing.Point(143, 174);
             this.LayoutOut.Name = "LayoutOut";
             this.LayoutOut.RowCount = 1;
@@ -3013,25 +3211,6 @@ namespace GeneticNetworkTrainerForm
             // 
             this.OpenFileDialog.Filter = "CSV files|*.csv";
             this.OpenFileDialog.Title = "Select .csv Containing Data";
-            // 
-            // LabelStructTypeConnections
-            // 
-            this.LabelStructTypeConnections.AutoSize = true;
-            this.LabelStructTypeConnections.ForeColor = System.Drawing.Color.DarkGreen;
-            this.LabelStructTypeConnections.Location = new System.Drawing.Point(80, 59);
-            this.LabelStructTypeConnections.Name = "LabelStructTypeConnections";
-            this.LabelStructTypeConnections.Size = new System.Drawing.Size(10, 13);
-            this.LabelStructTypeConnections.TabIndex = 38;
-            this.LabelStructTypeConnections.Text = "-";
-            // 
-            // label39
-            // 
-            this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(10, 59);
-            this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(66, 13);
-            this.label39.TabIndex = 37;
-            this.label39.Text = "Connections";
             // 
             // MainForm
             // 
@@ -3082,6 +3261,7 @@ namespace GeneticNetworkTrainerForm
             ((System.ComponentModel.ISupportInitialize)(this.SliderInternalIslands)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.SliderInternalNew)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SliderInternalCrossover)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SliderInternalMutationStrength)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SliderInternalMutation)).EndInit();
@@ -3213,6 +3393,20 @@ namespace GeneticNetworkTrainerForm
         private Label label37;
         private Label LabelStructTypeConnections;
         private Label label39;
+        private Label label23;
+        private Label label40;
+        private Label label41;
+        private ComboBox DropDownFixHidAct;
+        private CheckBox CheckBoxFixHidAct;
+        private ComboBox DropDownFixOutAct;
+        private CheckBox CheckBoxFixOutAct;
+        private TrackBar SliderInternalNew;
+        private Label label42;
+        private Label LabelInternalNew;
+        private Button ButtonStatsBestTestScore;
+        private Button ButtonStatsBestScore;
+        private Label LabelStatsBestType;
+        private Label label44;
     }
 }
 

@@ -13,6 +13,80 @@ namespace GeneticNetworkTrainerForm
         private int ListViewStructuresSelection = 0;
         private bool NewStructStatsReady = false;
 
+        private void ButtonStatsBestScore_Click(object sender, EventArgs e)
+        {
+            if (MyGenTrainer.SettledNetsStructure.Count == 0) return;
+            int BestStructIsland = int.MinValue;
+            int BestStruct = int.MinValue;
+            int BestInternalIsland = int.MinValue;
+            float BestScore = float.MinValue;
+            float BestTestScore = float.MinValue;
+
+            for (int SICnt = 0; SICnt < MyGenTrainer.MyState.InitialNumberStructureIslands; SICnt++)
+            {
+                for (int SPCnt = 0; SPCnt < MyGenTrainer.MyState.StructurePopulationPerIsland; SPCnt++)
+                {
+                    for (int IICnt = 0; IICnt < MyGenTrainer.MyState.InitialNumberInternalIslands; IICnt++)
+                    {
+                        for (int IPCnt = 0; IPCnt < MyGenTrainer.MyState.InternalPopulationPerIsland; IPCnt++)
+                        {
+                           if( MyGenTrainer.SettledStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].ScoreHistory.ReadLastValue()> BestScore)
+                            {
+                                BestStructIsland = SICnt;
+                                BestStruct = SPCnt;
+                                BestInternalIsland = IICnt;
+                                BestScore = MyGenTrainer.SettledStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].ScoreHistory.ReadLastValue();
+                                BestTestScore = MyGenTrainer.SettledStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].TestScoreHistory.ReadLastValue();
+                            }
+                        }
+                    }
+                }
+            }
+            LabelStatsBestType.Text = "Score";
+            LabelStatsStructIsland.Text = BestStructIsland.ToString();
+            LabelStructID.Text = BestStruct.ToString();
+            LabelIntIsland.Text = BestInternalIsland.ToString();
+            LabelStatScore.Text = BestScore.ToString("0.0000");
+            LabelStatTestScore.Text = BestTestScore.ToString("0.0000");
+        }
+
+        private void ButtonStatsBestTestScore_Click(object sender, EventArgs e)
+        {
+            if (MyGenTrainer.SettledNetsStructure.Count == 0) return;
+            int BestStructIsland = int.MinValue;
+            int BestStruct = int.MinValue;
+            int BestInternalIsland = int.MinValue;
+            float BestScore = float.MinValue;
+            float BestTestScore = float.MinValue;
+
+            for (int SICnt = 0; SICnt < MyGenTrainer.MyState.InitialNumberStructureIslands; SICnt++)
+            {
+                for (int SPCnt = 0; SPCnt < MyGenTrainer.MyState.StructurePopulationPerIsland; SPCnt++)
+                {
+                    for (int IICnt = 0; IICnt < MyGenTrainer.MyState.InitialNumberInternalIslands; IICnt++)
+                    {
+                        for (int IPCnt = 0; IPCnt < MyGenTrainer.MyState.InternalPopulationPerIsland; IPCnt++)
+                        {
+                            if (MyGenTrainer.SettledStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].TestScoreHistory.ReadLastValue() > BestTestScore)
+                            {
+                                BestStructIsland = SICnt;
+                                BestStruct = SPCnt;
+                                BestInternalIsland = IICnt;
+                                BestScore = MyGenTrainer.SettledStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].ScoreHistory.ReadLastValue();
+                                BestTestScore = MyGenTrainer.SettledStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].TestScoreHistory.ReadLastValue();
+                            }
+                        }
+                    }
+                }
+            }
+            LabelStatsBestType.Text = "Test Score";
+            LabelStatsStructIsland.Text = BestStructIsland.ToString();
+            LabelStructID.Text = BestStruct.ToString();
+            LabelIntIsland.Text = BestInternalIsland.ToString();
+            LabelStatScore.Text = BestScore.ToString("0.0000");
+            LabelStatTestScore.Text = BestTestScore.ToString("0.0000");
+        }
+
         private void ListViewStructIslands_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (ListViewStructIslands.SelectedIndices.Count == 0) return;

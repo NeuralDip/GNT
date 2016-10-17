@@ -51,7 +51,7 @@ namespace GeneticNetworkTrainerForm
                 for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NetInputs; Cnt++) Input[Cnt] = float.Parse(LayoutIn.Controls[2 * Cnt + 1].Text);
                 NetworkSelected.EvaluateNet(Input);
                 float[] Output = NetworkSelected.GetNetOutput();
-                for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NetOutputs; Cnt++) LayoutOut.Controls[3 * Cnt + 2].Text = Output[Cnt].ToString();
+                for (int Cnt = 0; Cnt < MyGenTrainer.MyState.NetOutputs; Cnt++) LayoutOut.Controls[3 * Cnt + 2].Text = Output[Cnt].ToString("E3");
                 AppendFeedback(string.Format("Net Evaluated Succesfully."), 0);
             }
             else AppendFeedback(string.Format("Please select a Net from the 'Internal Inspector' tab."), 1);

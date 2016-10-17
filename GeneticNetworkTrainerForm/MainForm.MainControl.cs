@@ -23,6 +23,8 @@ namespace GeneticNetworkTrainerForm
         Stopwatch MyGlobalStopWatch = new Stopwatch();
         System.Windows.Forms.Timer MyGlobalTimer = new System.Windows.Forms.Timer();
 
+        private bool StructNeedsReset = false;
+
         private enum StartSaveState
         {
             NotReady,
@@ -191,6 +193,26 @@ namespace GeneticNetworkTrainerForm
                 }
             }
         }
+        private void CheckBoxFixOutAct_CheckedChanged(object sender, EventArgs e)
+        {
+            MyGenTrainer.MyState.FixOutActivation = CheckBoxFixOutAct.Checked;
+            DropDownFixOutAct.Enabled = MyGenTrainer.MyState.FixOutActivation;
+        }
+        private void CheckBoxFixHidAct_CheckedChanged(object sender, EventArgs e)
+        {
+            MyGenTrainer.MyState.FixHiddenActivation = CheckBoxFixHidAct.Checked;
+            DropDownFixHidAct.Enabled = MyGenTrainer.MyState.FixHiddenActivation;
+        }
+        private void DropDownFixOutAct_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            MyGenTrainer.MyState.FixedOutActivation = DropDownFixOutAct.SelectedIndex;
+        }
+
+        private void DropDownFixHidAct_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            MyGenTrainer.MyState.FixedHiddenActivation = DropDownFixHidAct.SelectedIndex;
+        }
+
         private void TextBoxInternalPopulation_TextChanged(object sender, EventArgs e)
         {
             int NewValue;

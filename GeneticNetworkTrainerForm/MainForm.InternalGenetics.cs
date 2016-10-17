@@ -9,60 +9,53 @@ namespace GeneticNetworkTrainerForm
 {
     partial class MainForm
     {
+        private enum ScrolType { New, Copy, Crossover, Mutation };
         private void SliderInternalCrossover_Scroll(object sender, EventArgs e)
         {
             float NewValue = (float)SliderInternalCrossover.Value / 100;
 
+            if (NewValue > MyGenTrainer.MyState.InternalCrossover)// increasing
+                CalculateInternalScrolls(NewValue - MyGenTrainer.MyState.InternalCrossover, ScrolType.Crossover);
+            else// decreasing
+                MyGenTrainer.MyState.InternalNew += (MyGenTrainer.MyState.InternalCrossover - NewValue);
+
+            MyGenTrainer.MyState.InternalNew = (float)Math.Round(MyGenTrainer.MyState.InternalNew, 2);
+            MyGenTrainer.MyState.InternalCopy = (float)Math.Round(MyGenTrainer.MyState.InternalCopy, 2);
+            MyGenTrainer.MyState.InternalCrossover = (float)Math.Round(MyGenTrainer.MyState.InternalCrossover, 2);
+            MyGenTrainer.MyState.InternalMutation = (float)Math.Round(MyGenTrainer.MyState.InternalMutation, 2);
+
+            LabelInternalNew.Text = MyGenTrainer.MyState.InternalNew.ToString();
+            SliderInternalNew.Value = (int)(MyGenTrainer.MyState.InternalNew * 100);
+            LabelInternalCopy.Text = MyGenTrainer.MyState.InternalCopy.ToString();
+            SliderInternalCopy.Value = (int)(MyGenTrainer.MyState.InternalCopy * 100);
+            LabelInternalMutation.Text = MyGenTrainer.MyState.InternalMutation.ToString();
+            SliderInternalMutation.Value = (int)(MyGenTrainer.MyState.InternalMutation * 100);
+
             LabelInternalCrossover.Text = NewValue.ToString();
-
-            if (NewValue > MyGenTrainer.MyState.InternalCrossover)
-            {
-                if (MyGenTrainer.MyState.InternalCopy >= NewValue - MyGenTrainer.MyState.InternalCrossover)
-                    SliderInternalCopy.Value = 100 - SliderInternalMutation.Value - SliderInternalCrossover.Value;
-                else if (MyGenTrainer.MyState.InternalCopy > 0)// Get Value from Copy
-                {
-                    SliderInternalMutation.Value = 100 - SliderInternalCrossover.Value;
-                    SliderInternalCopy.Value = 0;
-                }
-                else // get it from Mutation
-                    SliderInternalMutation.Value = 100 - SliderInternalCrossover.Value;
-            }
-            else
-                SliderInternalCopy.Value = 100 - SliderInternalMutation.Value - SliderInternalCrossover.Value;
-
-            LabelInternalCopy.Text = ((float)SliderInternalCopy.Value / 100).ToString();
-            MyGenTrainer.MyState.InternalCopy = (float)SliderInternalCopy.Value / 100;
-            LabelInternalMutation.Text = ((float)SliderInternalMutation.Value / 100).ToString();
-            MyGenTrainer.MyState.InternalMutation = (float)SliderInternalMutation.Value / 100;
-
             MyGenTrainer.MyState.InternalCrossover = NewValue;
         }
         private void SliderInternalMutation_Scroll(object sender, EventArgs e)
         {
             float NewValue = (float)SliderInternalMutation.Value / 100;
 
+            if (NewValue > MyGenTrainer.MyState.InternalMutation)// increasing
+                CalculateInternalScrolls(NewValue - MyGenTrainer.MyState.InternalMutation, ScrolType.Mutation);
+            else// descrease
+                MyGenTrainer.MyState.InternalNew += (MyGenTrainer.MyState.InternalMutation - NewValue);
+
+            MyGenTrainer.MyState.InternalNew = (float)Math.Round(MyGenTrainer.MyState.InternalNew, 2);
+            MyGenTrainer.MyState.InternalCopy = (float)Math.Round(MyGenTrainer.MyState.InternalCopy, 2);
+            MyGenTrainer.MyState.InternalCrossover = (float)Math.Round(MyGenTrainer.MyState.InternalCrossover, 2);
+            MyGenTrainer.MyState.InternalMutation = (float)Math.Round(MyGenTrainer.MyState.InternalMutation, 2);
+
+            LabelInternalNew.Text = MyGenTrainer.MyState.InternalNew.ToString();
+            SliderInternalNew.Value = (int)(MyGenTrainer.MyState.InternalNew * 100);
+            LabelInternalCopy.Text = MyGenTrainer.MyState.InternalCopy.ToString();
+            SliderInternalCopy.Value = (int)(MyGenTrainer.MyState.InternalCopy * 100);
+            LabelInternalCrossover.Text = MyGenTrainer.MyState.InternalCrossover.ToString();
+            SliderInternalCrossover.Value = (int)(MyGenTrainer.MyState.InternalCrossover * 100);
+
             LabelInternalMutation.Text = NewValue.ToString();
-
-            if (NewValue > MyGenTrainer.MyState.InternalMutation)
-            {
-                if (MyGenTrainer.MyState.InternalCopy >= NewValue - MyGenTrainer.MyState.InternalMutation)
-                    SliderInternalCopy.Value = 100 - SliderInternalMutation.Value - SliderInternalCrossover.Value;
-                else if (MyGenTrainer.MyState.InternalCopy > 0)// Get Value from Copy
-                {
-                    SliderInternalCrossover.Value = 100 - SliderInternalMutation.Value;
-                    SliderInternalCopy.Value = 0;
-                }
-                else // get it from Mutation
-                    SliderInternalCrossover.Value = 100 - SliderInternalMutation.Value;
-            }
-            else
-                SliderInternalCopy.Value = 100 - SliderInternalMutation.Value - SliderInternalCrossover.Value;
-
-            LabelInternalCopy.Text = ((float)SliderInternalCopy.Value / 100).ToString();
-            MyGenTrainer.MyState.InternalCopy = (float)SliderInternalCopy.Value / 100;
-            LabelInternalCrossover.Text = ((float)SliderInternalCrossover.Value / 100).ToString();
-            MyGenTrainer.MyState.InternalCrossover = (float)SliderInternalCrossover.Value / 100;
-
             MyGenTrainer.MyState.InternalMutation = NewValue;
         }
         private void CheckBoxMutateWeights_CheckedChanged(object sender, EventArgs e)
@@ -102,29 +95,49 @@ namespace GeneticNetworkTrainerForm
         {
             float NewValue = (float)SliderInternalCopy.Value / 100;
 
+            if (NewValue > MyGenTrainer.MyState.InternalCopy)// increasing
+                CalculateInternalScrolls(NewValue - MyGenTrainer.MyState.InternalCopy, ScrolType.Copy);
+            else// descrease
+                MyGenTrainer.MyState.InternalNew += (MyGenTrainer.MyState.InternalCopy - NewValue);
+
+            MyGenTrainer.MyState.InternalNew = (float)Math.Round(MyGenTrainer.MyState.InternalNew, 2);
+            MyGenTrainer.MyState.InternalCopy = (float)Math.Round(MyGenTrainer.MyState.InternalCopy, 2);
+            MyGenTrainer.MyState.InternalCrossover = (float)Math.Round(MyGenTrainer.MyState.InternalCrossover, 2);
+            MyGenTrainer.MyState.InternalMutation = (float)Math.Round(MyGenTrainer.MyState.InternalMutation, 2);
+
+            LabelInternalNew.Text = MyGenTrainer.MyState.InternalNew.ToString();
+            SliderInternalNew.Value = (int)(MyGenTrainer.MyState.InternalNew * 100);
+            LabelInternalMutation.Text = MyGenTrainer.MyState.InternalMutation.ToString();
+            SliderInternalMutation.Value = (int)(MyGenTrainer.MyState.InternalMutation * 100);
+            LabelInternalCrossover.Text = MyGenTrainer.MyState.InternalCrossover.ToString();
+            SliderInternalCrossover.Value = (int)(MyGenTrainer.MyState.InternalCrossover * 100);
+
             LabelInternalCopy.Text = NewValue.ToString();
-
-            if (NewValue > MyGenTrainer.MyState.InternalCopy)
-            {
-                if (MyGenTrainer.MyState.InternalCrossover >= NewValue - MyGenTrainer.MyState.InternalCopy)
-                    SliderInternalCrossover.Value = 100 - SliderInternalMutation.Value - SliderInternalCopy.Value;
-                else if (MyGenTrainer.MyState.InternalCrossover > 0)// Get Value from Crossover
-                {
-                    SliderInternalMutation.Value = 100 - SliderInternalCopy.Value;
-                    SliderInternalCrossover.Value = 0;
-                }
-                else // get it from Mutation
-                    SliderInternalMutation.Value = 100 - SliderInternalCopy.Value;
-            }
-            else
-                SliderInternalCrossover.Value = 100 - SliderInternalMutation.Value - SliderInternalCopy.Value;
-
-            LabelInternalMutation.Text = ((float)SliderInternalMutation.Value / 100).ToString();
-            MyGenTrainer.MyState.InternalMutation = (float)SliderInternalMutation.Value / 100;
-            LabelInternalCrossover.Text = ((float)SliderInternalCrossover.Value / 100).ToString();
-            MyGenTrainer.MyState.InternalCrossover = (float)SliderInternalCrossover.Value / 100;
-
             MyGenTrainer.MyState.InternalCopy = NewValue;
+        }
+        private void SliderInternalNew_Scroll(object sender, EventArgs e)
+        {
+            float NewValue = (float)SliderInternalNew.Value / 100;
+
+            if (NewValue > MyGenTrainer.MyState.InternalNew)// increasing
+                CalculateInternalScrolls(NewValue - MyGenTrainer.MyState.InternalNew, ScrolType.New);
+            else// descrease
+                MyGenTrainer.MyState.InternalCopy += (MyGenTrainer.MyState.InternalNew - NewValue);
+
+            MyGenTrainer.MyState.InternalNew = (float)Math.Round(MyGenTrainer.MyState.InternalNew, 2);
+            MyGenTrainer.MyState.InternalCopy = (float)Math.Round(MyGenTrainer.MyState.InternalCopy, 2);
+            MyGenTrainer.MyState.InternalCrossover = (float)Math.Round(MyGenTrainer.MyState.InternalCrossover, 2);
+            MyGenTrainer.MyState.InternalMutation = (float)Math.Round(MyGenTrainer.MyState.InternalMutation, 2);
+
+            LabelInternalCopy.Text = MyGenTrainer.MyState.InternalCopy.ToString();
+            SliderInternalCopy.Value = (int)(MyGenTrainer.MyState.InternalCopy * 100);
+            LabelInternalMutation.Text = MyGenTrainer.MyState.InternalMutation.ToString();
+            SliderInternalMutation.Value = (int)(MyGenTrainer.MyState.InternalMutation * 100);
+            LabelInternalCrossover.Text = MyGenTrainer.MyState.InternalCrossover.ToString();
+            SliderInternalCrossover.Value = (int)(MyGenTrainer.MyState.InternalCrossover * 100);
+
+            LabelInternalNew.Text = NewValue.ToString();
+            MyGenTrainer.MyState.InternalNew = NewValue;
         }
         private void SliderAnnealing_Scroll(object sender, EventArgs e)
         {
@@ -201,6 +214,65 @@ namespace GeneticNetworkTrainerForm
                 TextBoxRulesWinThreshold.Text = MyGenTrainer.MyState.ThresholdOfWin.ToString();
             }
             else MyGenTrainer.MyState.ThresholdOfWin = NewValue;
+        }
+
+        private void CalculateInternalScrolls(float AmountToIncrease, ScrolType Type)
+        {
+            if (Type != ScrolType.New && AmountToIncrease>0)//Get it from New
+            {
+                if (MyGenTrainer.MyState.InternalNew >= AmountToIncrease)
+                {
+                    MyGenTrainer.MyState.InternalNew -= AmountToIncrease;
+                    return;
+                }
+                else
+                {
+                    AmountToIncrease -= MyGenTrainer.MyState.InternalNew;
+                    MyGenTrainer.MyState.InternalNew = 0;
+                }
+            }
+
+            if (Type != ScrolType.Copy && AmountToIncrease > 0)//Get it from Copy
+            {
+                if (MyGenTrainer.MyState.InternalCopy >= AmountToIncrease)
+                {
+                    MyGenTrainer.MyState.InternalCopy -= AmountToIncrease;
+                    return;
+                }
+                else
+                {
+                    AmountToIncrease -= MyGenTrainer.MyState.InternalCopy;
+                    MyGenTrainer.MyState.InternalCopy = 0;
+                }
+            }
+
+            if (Type != ScrolType.Crossover && AmountToIncrease > 0)//Get it from Crossover
+            {
+                if (MyGenTrainer.MyState.InternalCrossover >= AmountToIncrease)
+                {
+                    MyGenTrainer.MyState.InternalCrossover -= AmountToIncrease;
+                    return;
+                }
+                else
+                {
+                    AmountToIncrease -= MyGenTrainer.MyState.InternalCrossover;
+                    MyGenTrainer.MyState.InternalCrossover = 0;
+                }
+            }
+
+            if (Type != ScrolType.Mutation && AmountToIncrease > 0)//Get it from Mutation
+            {
+                if (MyGenTrainer.MyState.InternalMutation >= AmountToIncrease)
+                {
+                    MyGenTrainer.MyState.InternalMutation -= AmountToIncrease;
+                    return;
+                }
+                else
+                {
+                    AmountToIncrease -= MyGenTrainer.MyState.InternalMutation;
+                    MyGenTrainer.MyState.InternalMutation = 0;
+                }
+            }
         }
     }
 }
