@@ -458,12 +458,6 @@ namespace GeneticNetworkTrainerForm
         }
         private void PopulateStructIslands()
         {
-            LabelStatsStructIsland.Text = MyGenTrainer.SettledStatsStructure.BestIsland.ToString();
-            LabelStructID.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure.ToString();
-            LabelIntIsland.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].StructStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure].BestIsland.ToString();
-            LabelStatScore.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].StructStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure].InternalIslandsStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].StructStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure].BestIsland].ScoreHistory.ReadLastValue().ToString("0.0000");
-            LabelStatTestScore.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].StructStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure].InternalIslandsStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].StructStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure].BestIsland].TestScoreHistory.ReadLastValue().ToString("0.0000");
-
             if (MainTabControl.SelectedIndex != 3 || !NewStructStatsReady) return;
 
             ListViewStructIslands.Items.Clear();
@@ -501,6 +495,16 @@ namespace GeneticNetworkTrainerForm
             ListViewStructuresSelection = 0;
             ListViewStructures.Items[ListViewStructuresSelection].Selected = true;
             ListViewStructures.Items[ListViewStructuresSelection].Focused = true;
+        }
+        private void PopulateBestNet()
+        {
+            LabelStatsBestType.Text = "Score";
+            LabelStatsStructIsland.Text = MyGenTrainer.SettledStatsStructure.BestIsland.ToString();
+            LabelStructID.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure.ToString();
+            LabelIntIsland.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].StructStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure].BestIsland.ToString();
+            LabelStatScore.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].StructStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure].InternalIslandsStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].StructStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure].BestIsland].ScoreHistory.ReadLastValue().ToString("0.0000");
+            LabelStatTestScore.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].StructStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure].InternalIslandsStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].StructStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure].BestIsland].TestScoreHistory.ReadLastValue().ToString("0.0000");
+
         }
     }
 }

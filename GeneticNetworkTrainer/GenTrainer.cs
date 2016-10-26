@@ -500,7 +500,7 @@ namespace GeneticNetworkTrainer
             int PopulationFromCrossover = (int)Math.Floor(MyState.InternalCrossover * CurrInternalPopulationPerIsland[ThreadID]);
             int PopulationFromMutation = (int)Math.Floor(MyState.InternalMutation * CurrInternalPopulationPerIsland[ThreadID]);
             int PopulationFromCopy = (int)Math.Floor(MyState.InternalCopy * CurrInternalPopulationPerIsland[ThreadID]);
-            int PopulationFromNew = CurrInternalPopulationPerIsland[ThreadID] - PopulationFromCrossover - PopulationFromMutation- PopulationFromCopy;
+            int PopulationFromNew = CurrInternalPopulationPerIsland[ThreadID] - PopulationFromCrossover - PopulationFromMutation - PopulationFromCopy;
 
             // Crossovering...
             // Solve this quadratic equation to Find the Number of Parents needed : (x^2-x)/2 = PopulationFromCrossover
@@ -667,17 +667,18 @@ namespace GeneticNetworkTrainer
         }
         private float[] ListToHistogram(float[] InList)
         {
+            float[] InListToUse = InList.Where(f => !float.IsNaN(f)).ToArray();
             float[] ToReturn = new float[HistogramsBins * 2 + 1];
-            float MaxValue = (float)Math.Ceiling(InList.Max());
-            float MinValue = InList.Min();
+            float MaxValue = (float)Math.Ceiling(InListToUse.Max());
+            float MinValue = InListToUse.Min();
             float BinWidth;
 
             if (MaxValue == (float)Math.Ceiling(MinValue)) BinWidth = 1;
             else BinWidth = (MaxValue - MinValue) / HistogramsBins;
 
             // Putting Bar Values
-            for (int Cnt = 0; Cnt < InList.Length; Cnt++)
-                ToReturn[(int)Math.Floor((InList[Cnt] - MinValue) / BinWidth)]++;
+            for (int Cnt = 0; Cnt < InListToUse.Length; Cnt++)
+                ToReturn[(int)Math.Floor((InListToUse[Cnt] - MinValue) / BinWidth)]++;
 
             // Putting Bar Labels
             for (int Cnt = 0; Cnt < HistogramsBins + 1; Cnt++) ToReturn[HistogramsBins + Cnt] = MinValue + Cnt * BinWidth;

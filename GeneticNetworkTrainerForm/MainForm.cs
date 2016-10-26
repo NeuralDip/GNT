@@ -380,6 +380,7 @@ namespace GeneticNetworkTrainerForm
                         NewStructStatsReady = true;
                         RedrawAllPlots();
                         PopulateAllListViews();
+                        PopulateBestNet();
                         break;
                     default:
                         AppendFeedback("Happening not implemented... : " + WhatHappened.ToString(), 1);
