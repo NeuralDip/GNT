@@ -112,6 +112,7 @@ namespace GeneticNetworkTrainerForm
             RedrawInternalIslandsPlot();
             PopulateInternalNets();
             RedrawInternalPlot();
+            PopulateStructType();
         }
         private void ListViewStructures_ColumnClicked(object sender, ColumnClickEventArgs e)
         {
@@ -472,13 +473,7 @@ namespace GeneticNetworkTrainerForm
         }
         private void PopulateStructs()
         {
-            LabelStructTypeLayers.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].LayersHistory.ReadLastValue().ToString();
-            LabelStructTypeNeurons.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].NeuronsHistory.ReadLastValue().ToString();
-            if (MyGenTrainer.SettledNetsStructure.Count != 0)
-            {
-                LabelStructTypeWeights.Text = MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][0][0].GetWeightsNumber().ToString();
-                LabelStructTypeConnections.Text = MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][0][0].GetConnectionsNumber().ToString();
-            }
+            PopulateStructType();
             if (MainTabControl.SelectedIndex != 3 || !NewStructStatsReady) return;
             NewStructStatsReady = false;
             NewInternalStatsReady = true;
@@ -491,6 +486,7 @@ namespace GeneticNetworkTrainerForm
                 ListViewStructures.Items[Cnt].SubItems.Add(MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[Cnt].TestScoreHistory.ReadLastValue().ToString());
                 ListViewStructures.Items[Cnt].SubItems.Add(MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[Cnt].LayersHistory.ReadLastValue().ToString());
                 ListViewStructures.Items[Cnt].SubItems.Add(MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[Cnt].NeuronsHistory.ReadLastValue().ToString());
+                ListViewStructures.Items[Cnt].SubItems.Add(MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][Cnt][0][0].GetConnectionsNumber().ToString());
             }
             ListViewStructuresSelection = 0;
             ListViewStructures.Items[ListViewStructuresSelection].Selected = true;
@@ -504,6 +500,17 @@ namespace GeneticNetworkTrainerForm
             LabelIntIsland.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].StructStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure].BestIsland.ToString();
             LabelStatScore.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].StructStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure].InternalIslandsStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].StructStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure].BestIsland].ScoreHistory.ReadLastValue().ToString("0.0000");
             LabelStatTestScore.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].StructStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure].InternalIslandsStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].StructStats[MyGenTrainer.SettledStatsStructure.StructIslandsStats[MyGenTrainer.SettledStatsStructure.BestIsland].BestStructure].BestIsland].TestScoreHistory.ReadLastValue().ToString("0.0000");
+
+        }
+        private void PopulateStructType()
+        {
+            LabelStructTypeLayers.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].LayersHistory.ReadLastValue().ToString();
+            LabelStructTypeNeurons.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].NeuronsHistory.ReadLastValue().ToString();
+            if (MyGenTrainer.SettledNetsStructure.Count != 0)
+            {
+                LabelStructTypeWeights.Text = MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][0][0].GetWeightsNumber().ToString();
+                LabelStructTypeConnections.Text = MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][0][0].GetConnectionsNumber().ToString();
+            }
 
         }
     }

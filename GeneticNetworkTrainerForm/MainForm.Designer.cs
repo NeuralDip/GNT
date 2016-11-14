@@ -509,6 +509,7 @@ namespace GeneticNetworkTrainerForm
             this.LayoutOut = new System.Windows.Forms.TableLayoutPanel();
             this.LayoutIn = new System.Windows.Forms.TableLayoutPanel();
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.columnHeader15 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.MainTabControl.SuspendLayout();
             this.TabMainControl.SuspendLayout();
             this.groupBox9.SuspendLayout();
@@ -971,7 +972,8 @@ namespace GeneticNetworkTrainerForm
             "SoftSign",
             "Sigmoid",
             "Tanh",
-            "SoftMax"});
+            "SoftMax",
+            "Normalize"});
             this.DropDownFixHidAct.Location = new System.Drawing.Point(54, 120);
             this.DropDownFixHidAct.Name = "DropDownFixHidAct";
             this.DropDownFixHidAct.Size = new System.Drawing.Size(72, 21);
@@ -997,7 +999,8 @@ namespace GeneticNetworkTrainerForm
             "SoftSign",
             "Sigmoid",
             "Tanh",
-            "SoftMax"});
+            "SoftMax",
+            "Normalize"});
             this.DropDownFixOutAct.Location = new System.Drawing.Point(54, 93);
             this.DropDownFixOutAct.Name = "DropDownFixOutAct";
             this.DropDownFixOutAct.Size = new System.Drawing.Size(72, 21);
@@ -2753,7 +2756,8 @@ namespace GeneticNetworkTrainerForm
             this.columnHeader8,
             this.columnHeader5,
             this.columnHeader9,
-            this.columnHeader10});
+            this.columnHeader10,
+            this.columnHeader15});
             this.ListViewStructures.FullRowSelect = true;
             this.ListViewStructures.HideSelection = false;
             this.ListViewStructures.Location = new System.Drawing.Point(3, 186);
@@ -3212,6 +3216,10 @@ namespace GeneticNetworkTrainerForm
             this.OpenFileDialog.Filter = "CSV files|*.csv";
             this.OpenFileDialog.Title = "Select .csv Containing Data";
             // 
+            // columnHeader15
+            // 
+            this.columnHeader15.Text = "Connections";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3407,6 +3415,7 @@ namespace GeneticNetworkTrainerForm
         private Button ButtonStatsBestScore;
         private Label LabelStatsBestType;
         private Label label44;
+        private ColumnHeader columnHeader15;
     }
 }
 

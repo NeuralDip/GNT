@@ -28,7 +28,8 @@ namespace GeneticNetworkTrainer
             SoftSign = 2,//f(x) = x / (1+|x|)
             Sigmoid = 3,// f(x) = 1/(1+exp(-x))
             Tanh = 4,
-            SoftMax = 5 // f(x) = e^x/sum(e^xi)
+            SoftMax = 5, // f(x) = e^x/sum(e^xi)
+            Normalize = 6 // f(x) = x/sum(xi)
         }
 
         // Constructor
@@ -297,6 +298,13 @@ namespace GeneticNetworkTrainer
                         ExpSum += Math.Exp(Output[B]);
                     for (int B = 0; B < Weights.GetLength(1); B++)
                         Output[B] = (float)(Math.Exp(Output[B]) / ExpSum);
+                    break;
+                case ActivationFunction.Normalize:
+                    double ExpSumB = 0;
+                    for (int B = 0; B < Weights.GetLength(1); B++)
+                        ExpSumB += Output[B];
+                    for (int B = 0; B < Weights.GetLength(1); B++)
+                        Output[B] = (float)(Output[B] / ExpSumB);
                     break;
                 default:
                     break;

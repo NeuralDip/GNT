@@ -251,6 +251,7 @@ namespace GeneticNetworkTrainer
             TempNetwork.IncrementalID++;
             TempNetwork.AdjacencyObject = AdjacencyObject.CloneMe();
             TempNetwork.Score = Score;
+            TempNetwork.TestScore = TestScore;
             if (Reset)
             {
                 foreach (GenLayer CurrLayer in AllLayers.Values)
@@ -259,6 +260,7 @@ namespace GeneticNetworkTrainer
                     CurrLayer.ResetBiases(RandomizeBiases, Rnd);
                 }
                 Score = 0;
+                TestScore = 0;
             }
             TempNetwork.ActionHistory = new List<string>(ActionHistory);
             if (TempNetwork.ActionHistory[TempNetwork.ActionHistory.Count - 1] != "Cloning...")
@@ -349,11 +351,16 @@ namespace GeneticNetworkTrainer
             {
                 EvaluateNet(InData[Cnt]);
 
+                double DoubleTestOutError = 0;
+                double DoubleOutError = 0;
+
                 for (int OutCnt = 0; OutCnt < Labels[Cnt].Length; OutCnt++)
                     if ((Cnt & 1) == 1 && Test)
-                        TestOutError += Math.Abs(Labels[Cnt][OutCnt] - Output[OutCnt]);
+                        DoubleTestOutError += Math.Pow(Labels[Cnt][OutCnt] - Output[OutCnt],2);
                     else
-                        OutError += Math.Abs(Labels[Cnt][OutCnt] - Output[OutCnt]);
+                        DoubleOutError += Math.Pow(Labels[Cnt][OutCnt] - Output[OutCnt],2);
+                TestOutError = (float)Math.Sqrt(DoubleTestOutError);
+                TestOutError = (float)Math.Sqrt(DoubleOutError);
 
                 if (ScoreRule == GenTrainer.ScoreRules.RuleOutError)
                 {
@@ -435,7 +442,7 @@ namespace GeneticNetworkTrainer
                     CurrLayer.SetActivationFunc((GenLayer.ActivationFunction)(Rnd.Next(Enum.GetValues(typeof(GenLayer.ActivationFunction)).Length)));
             }
             // Change the number of neurons to one of the layers
-            if (PenaltyBools[1] && PenaltyValues[1] < Child.GetLayersNumber())
+            if (PenaltyBools[1] && PenaltyValues[1] < Child.GetNeuronsNumber())
                 PenaltyThreashold = 0.5f - (PenaltyValues[1] - Child.GetNeuronsNumber()) / PenaltyValues[1];
             else PenaltyThreashold = 0.5f;
 
@@ -460,7 +467,7 @@ namespace GeneticNetworkTrainer
                 }
             }
             // Add or remove a connection
-            if (PenaltyBools[2] && PenaltyValues[2] < Child.GetLayersNumber())
+            if (PenaltyBools[2] && PenaltyValues[2] < Child.GetConnectionsNumber())
                 PenaltyThreashold = 0.5f - (PenaltyValues[2] - Child.GetConnectionsNumber()) / PenaltyValues[2];
             else PenaltyThreashold = 0.5f;
 
