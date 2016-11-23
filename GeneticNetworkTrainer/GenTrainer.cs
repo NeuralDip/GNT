@@ -651,15 +651,16 @@ namespace GeneticNetworkTrainer
                         DevelopingNetsStructure[SICnt] = ArrayNets.Reverse().ToList();
                         DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats = ArrayStats.Reverse().ToList();
 
-                        float StructCurrScore = int.MinValue;
-                        for (int LocalCnt = 0; LocalCnt < MyState.StructurePopulationPerIsland; LocalCnt++)
-                        {
-                            if (StructCurrScore < DevelopingNetsStructure[SICnt][LocalCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[LocalCnt].BestIsland][0].GetScore())
-                            {
-                                DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure = LocalCnt;
-                                StructCurrScore = DevelopingNetsStructure[SICnt][LocalCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[LocalCnt].BestIsland][0].GetScore();
-                            }
-                        }
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure = 0;
+                        //float StructCurrScore = int.MinValue;
+                        //for (int LocalCnt = 0; LocalCnt < MyState.StructurePopulationPerIsland; LocalCnt++)
+                        //{
+                        //    if (StructCurrScore < DevelopingNetsStructure[SICnt][LocalCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[LocalCnt].BestIsland][0].GetScore())
+                        //    {
+                        //        DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure = LocalCnt;
+                        //        StructCurrScore = DevelopingNetsStructure[SICnt][LocalCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[LocalCnt].BestIsland][0].GetScore();
+                        //    }
+                        //}
                         break;
                     case TrainingState.StructGenEnded:
                         float SIslandCurrScore = int.MinValue;

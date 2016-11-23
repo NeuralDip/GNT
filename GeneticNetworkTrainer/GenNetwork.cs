@@ -359,8 +359,8 @@ namespace GeneticNetworkTrainer
                         DoubleTestOutError += Math.Pow(Labels[Cnt][OutCnt] - Output[OutCnt],2);
                     else
                         DoubleOutError += Math.Pow(Labels[Cnt][OutCnt] - Output[OutCnt],2);
-                TestOutError = (float)Math.Sqrt(DoubleTestOutError);
-                TestOutError = (float)Math.Sqrt(DoubleOutError);
+                TestOutError += (float)Math.Sqrt(DoubleTestOutError);
+                OutError += (float)Math.Sqrt(DoubleOutError);
 
                 if (ScoreRule == GenTrainer.ScoreRules.RuleOutError)
                 {
