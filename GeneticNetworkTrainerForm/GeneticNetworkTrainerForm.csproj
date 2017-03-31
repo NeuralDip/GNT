@@ -78,6 +78,9 @@
     <Compile Include="MainForm.HandTester.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="MainForm.InitialNet.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainForm.InternalGenetics.cs">
       <SubType>Form</SubType>
     </Compile>

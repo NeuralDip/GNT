@@ -16,7 +16,7 @@ namespace GeneticNetworkTrainerForm
         private TabPage TabStructureGenetics;
         private Button ButtonStartStop;
         private RichTextBox Console;
-        private GroupBox groupBox3;
+        private GroupBox StartNetGroup;
         private Label label4;
         private Label label3;
         private GroupBox groupBox2;
@@ -250,7 +250,7 @@ namespace GeneticNetworkTrainerForm
             }
             base.Dispose(disposing);
         }
-        
+
 
         #region Windows Form Designer generated code
 
@@ -262,6 +262,30 @@ namespace GeneticNetworkTrainerForm
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.MainTabControl = new System.Windows.Forms.TabControl();
+            this.TabInitialNet = new System.Windows.Forms.TabPage();
+            this.InitNetConsole = new System.Windows.Forms.RichTextBox();
+            this.TextBoxInitNetInstructions = new System.Windows.Forms.TextBox();
+            this.GroupBoxInitNetLayerData = new System.Windows.Forms.GroupBox();
+            this.LabelInitNetInOut = new System.Windows.Forms.Label();
+            this.LabelInitNetWeightsMatrix = new System.Windows.Forms.Label();
+            this.label57 = new System.Windows.Forms.Label();
+            this.TextBoxInitNetOutLayers = new System.Windows.Forms.TextBox();
+            this.LabelInitNetActivation = new System.Windows.Forms.Label();
+            this.label43 = new System.Windows.Forms.Label();
+            this.LabelInitNetActivationFixed = new System.Windows.Forms.Label();
+            this.TextBoxInitNetNeuronNumber = new System.Windows.Forms.TextBox();
+            this.LabelInitNetID = new System.Windows.Forms.Label();
+            this.label45 = new System.Windows.Forms.Label();
+            this.TextBoxInitNetInLayers = new System.Windows.Forms.TextBox();
+            this.label49 = new System.Windows.Forms.Label();
+            this.label47 = new System.Windows.Forms.Label();
+            this.label48 = new System.Windows.Forms.Label();
+            this.ButtonInitNetAddLayer = new System.Windows.Forms.Button();
+            this.ButtonInitNetRemoveLayer = new System.Windows.Forms.Button();
+            this.PanelGraph = new System.Windows.Forms.Panel();
+            this.ButtonInitNetResetLayersPositions = new System.Windows.Forms.Button();
+            this.LabelInitNetNumberLayers = new System.Windows.Forms.Label();
+            this.label46 = new System.Windows.Forms.Label();
             this.TabMainControl = new System.Windows.Forms.TabPage();
             this.LabelGlobalStopwatchElapsed = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
@@ -293,7 +317,7 @@ namespace GeneticNetworkTrainerForm
             this.label29 = new System.Windows.Forms.Label();
             this.TextBoxStructureGenerations = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.StartNetGroup = new System.Windows.Forms.GroupBox();
             this.label23 = new System.Windows.Forms.Label();
             this.label40 = new System.Windows.Forms.Label();
             this.label41 = new System.Windows.Forms.Label();
@@ -468,6 +492,7 @@ namespace GeneticNetworkTrainerForm
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader15 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ListViewStructIslands = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -509,13 +534,15 @@ namespace GeneticNetworkTrainerForm
             this.LayoutOut = new System.Windows.Forms.TableLayoutPanel();
             this.LayoutIn = new System.Windows.Forms.TableLayoutPanel();
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.columnHeader15 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.MainTabControl.SuspendLayout();
+            this.TabInitialNet.SuspendLayout();
+            this.GroupBoxInitNetLayerData.SuspendLayout();
+            this.PanelGraph.SuspendLayout();
             this.TabMainControl.SuspendLayout();
             this.groupBox9.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
-            this.groupBox3.SuspendLayout();
+            this.StartNetGroup.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SliderDataToUse)).BeginInit();
@@ -561,6 +588,7 @@ namespace GeneticNetworkTrainerForm
             // 
             // MainTabControl
             // 
+            this.MainTabControl.Controls.Add(this.TabInitialNet);
             this.MainTabControl.Controls.Add(this.TabMainControl);
             this.MainTabControl.Controls.Add(this.TabStructureGenetics);
             this.MainTabControl.Controls.Add(this.TabInternalGenetics);
@@ -574,6 +602,270 @@ namespace GeneticNetworkTrainerForm
             this.MainTabControl.TabIndex = 0;
             this.MainTabControl.SelectedIndexChanged += new System.EventHandler(this.Tab_Changed_Handler);
             // 
+            // TabInitialNet
+            // 
+            this.TabInitialNet.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.TabInitialNet.Controls.Add(this.InitNetConsole);
+            this.TabInitialNet.Controls.Add(this.TextBoxInitNetInstructions);
+            this.TabInitialNet.Controls.Add(this.GroupBoxInitNetLayerData);
+            this.TabInitialNet.Controls.Add(this.ButtonInitNetAddLayer);
+            this.TabInitialNet.Controls.Add(this.ButtonInitNetRemoveLayer);
+            this.TabInitialNet.Controls.Add(this.PanelGraph);
+            this.TabInitialNet.Controls.Add(this.LabelInitNetNumberLayers);
+            this.TabInitialNet.Controls.Add(this.label46);
+            this.TabInitialNet.Location = new System.Drawing.Point(4, 22);
+            this.TabInitialNet.Name = "TabInitialNet";
+            this.TabInitialNet.Padding = new System.Windows.Forms.Padding(3);
+            this.TabInitialNet.Size = new System.Drawing.Size(1054, 668);
+            this.TabInitialNet.TabIndex = 6;
+            this.TabInitialNet.Text = "Inital Net";
+            // 
+            // InitNetConsole
+            // 
+            this.InitNetConsole.BackColor = System.Drawing.SystemColors.InfoText;
+            this.InitNetConsole.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.InitNetConsole.ForeColor = System.Drawing.Color.Yellow;
+            this.InitNetConsole.Location = new System.Drawing.Point(650, 465);
+            this.InitNetConsole.Name = "InitNetConsole";
+            this.InitNetConsole.Size = new System.Drawing.Size(398, 197);
+            this.InitNetConsole.TabIndex = 28;
+            this.InitNetConsole.Text = "";
+            // 
+            // TextBoxInitNetInstructions
+            // 
+            this.TextBoxInitNetInstructions.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.TextBoxInitNetInstructions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.TextBoxInitNetInstructions.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.TextBoxInitNetInstructions.Location = new System.Drawing.Point(259, 465);
+            this.TextBoxInitNetInstructions.Multiline = true;
+            this.TextBoxInitNetInstructions.Name = "TextBoxInitNetInstructions";
+            this.TextBoxInitNetInstructions.ReadOnly = true;
+            this.TextBoxInitNetInstructions.Size = new System.Drawing.Size(385, 55);
+            this.TextBoxInitNetInstructions.TabIndex = 17;
+            this.TextBoxInitNetInstructions.Text = resources.GetString("TextBoxInitNetInstructions.Text");
+            this.TextBoxInitNetInstructions.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // GroupBoxInitNetLayerData
+            // 
+            this.GroupBoxInitNetLayerData.Controls.Add(this.LabelInitNetInOut);
+            this.GroupBoxInitNetLayerData.Controls.Add(this.LabelInitNetWeightsMatrix);
+            this.GroupBoxInitNetLayerData.Controls.Add(this.label57);
+            this.GroupBoxInitNetLayerData.Controls.Add(this.TextBoxInitNetOutLayers);
+            this.GroupBoxInitNetLayerData.Controls.Add(this.LabelInitNetActivation);
+            this.GroupBoxInitNetLayerData.Controls.Add(this.label43);
+            this.GroupBoxInitNetLayerData.Controls.Add(this.LabelInitNetActivationFixed);
+            this.GroupBoxInitNetLayerData.Controls.Add(this.TextBoxInitNetNeuronNumber);
+            this.GroupBoxInitNetLayerData.Controls.Add(this.LabelInitNetID);
+            this.GroupBoxInitNetLayerData.Controls.Add(this.label45);
+            this.GroupBoxInitNetLayerData.Controls.Add(this.TextBoxInitNetInLayers);
+            this.GroupBoxInitNetLayerData.Controls.Add(this.label49);
+            this.GroupBoxInitNetLayerData.Controls.Add(this.label47);
+            this.GroupBoxInitNetLayerData.Controls.Add(this.label48);
+            this.GroupBoxInitNetLayerData.Location = new System.Drawing.Point(259, 526);
+            this.GroupBoxInitNetLayerData.Name = "GroupBoxInitNetLayerData";
+            this.GroupBoxInitNetLayerData.Size = new System.Drawing.Size(384, 136);
+            this.GroupBoxInitNetLayerData.TabIndex = 1;
+            this.GroupBoxInitNetLayerData.TabStop = false;
+            this.GroupBoxInitNetLayerData.Text = "Layer Data";
+            // 
+            // LabelInitNetInOut
+            // 
+            this.LabelInitNetInOut.AutoSize = true;
+            this.LabelInitNetInOut.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.LabelInitNetInOut.ForeColor = System.Drawing.Color.Blue;
+            this.LabelInitNetInOut.Location = new System.Drawing.Point(87, 25);
+            this.LabelInitNetInOut.Name = "LabelInitNetInOut";
+            this.LabelInitNetInOut.Size = new System.Drawing.Size(11, 13);
+            this.LabelInitNetInOut.TabIndex = 22;
+            this.LabelInitNetInOut.Text = "-";
+            // 
+            // LabelInitNetWeightsMatrix
+            // 
+            this.LabelInitNetWeightsMatrix.AutoSize = true;
+            this.LabelInitNetWeightsMatrix.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.LabelInitNetWeightsMatrix.ForeColor = System.Drawing.Color.Blue;
+            this.LabelInitNetWeightsMatrix.Location = new System.Drawing.Point(127, 108);
+            this.LabelInitNetWeightsMatrix.Name = "LabelInitNetWeightsMatrix";
+            this.LabelInitNetWeightsMatrix.Size = new System.Drawing.Size(11, 13);
+            this.LabelInitNetWeightsMatrix.TabIndex = 21;
+            this.LabelInitNetWeightsMatrix.Text = "-";
+            // 
+            // label57
+            // 
+            this.label57.AutoSize = true;
+            this.label57.Location = new System.Drawing.Point(8, 108);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(80, 13);
+            this.label57.TabIndex = 20;
+            this.label57.Text = "Weights Matrix:";
+            // 
+            // TextBoxInitNetOutLayers
+            // 
+            this.TextBoxInitNetOutLayers.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.TextBoxInitNetOutLayers.Enabled = false;
+            this.TextBoxInitNetOutLayers.Location = new System.Drawing.Point(307, 29);
+            this.TextBoxInitNetOutLayers.Multiline = true;
+            this.TextBoxInitNetOutLayers.Name = "TextBoxInitNetOutLayers";
+            this.TextBoxInitNetOutLayers.Size = new System.Drawing.Size(71, 101);
+            this.TextBoxInitNetOutLayers.TabIndex = 13;
+            // 
+            // LabelInitNetActivation
+            // 
+            this.LabelInitNetActivation.AutoSize = true;
+            this.LabelInitNetActivation.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.LabelInitNetActivation.ForeColor = System.Drawing.Color.Blue;
+            this.LabelInitNetActivation.Location = new System.Drawing.Point(162, 86);
+            this.LabelInitNetActivation.Name = "LabelInitNetActivation";
+            this.LabelInitNetActivation.Size = new System.Drawing.Size(11, 13);
+            this.LabelInitNetActivation.TabIndex = 19;
+            this.LabelInitNetActivation.Text = "-";
+            // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Location = new System.Drawing.Point(8, 53);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(90, 13);
+            this.label43.TabIndex = 4;
+            this.label43.Text = "Number Neurons:";
+            // 
+            // LabelInitNetActivationFixed
+            // 
+            this.LabelInitNetActivationFixed.AutoSize = true;
+            this.LabelInitNetActivationFixed.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.LabelInitNetActivationFixed.ForeColor = System.Drawing.Color.Lime;
+            this.LabelInitNetActivationFixed.Location = new System.Drawing.Point(114, 86);
+            this.LabelInitNetActivationFixed.Name = "LabelInitNetActivationFixed";
+            this.LabelInitNetActivationFixed.Size = new System.Drawing.Size(24, 13);
+            this.LabelInitNetActivationFixed.TabIndex = 18;
+            this.LabelInitNetActivationFixed.Text = "ID:";
+            // 
+            // TextBoxInitNetNeuronNumber
+            // 
+            this.TextBoxInitNetNeuronNumber.Location = new System.Drawing.Point(104, 50);
+            this.TextBoxInitNetNeuronNumber.Name = "TextBoxInitNetNeuronNumber";
+            this.TextBoxInitNetNeuronNumber.Size = new System.Drawing.Size(59, 20);
+            this.TextBoxInitNetNeuronNumber.TabIndex = 5;
+            this.TextBoxInitNetNeuronNumber.Leave += new System.EventHandler(this.TextBoxInitNetNeuronNumber_TextChanged);
+            // 
+            // LabelInitNetID
+            // 
+            this.LabelInitNetID.AutoSize = true;
+            this.LabelInitNetID.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.LabelInitNetID.ForeColor = System.Drawing.Color.Blue;
+            this.LabelInitNetID.Location = new System.Drawing.Point(35, 25);
+            this.LabelInitNetID.Name = "LabelInitNetID";
+            this.LabelInitNetID.Size = new System.Drawing.Size(11, 13);
+            this.LabelInitNetID.TabIndex = 17;
+            this.LabelInitNetID.Text = "-";
+            // 
+            // label45
+            // 
+            this.label45.AutoSize = true;
+            this.label45.Location = new System.Drawing.Point(239, 12);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(53, 13);
+            this.label45.TabIndex = 6;
+            this.label45.Text = "In Layers:";
+            // 
+            // TextBoxInitNetInLayers
+            // 
+            this.TextBoxInitNetInLayers.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.TextBoxInitNetInLayers.Enabled = false;
+            this.TextBoxInitNetInLayers.Location = new System.Drawing.Point(230, 29);
+            this.TextBoxInitNetInLayers.Multiline = true;
+            this.TextBoxInitNetInLayers.Name = "TextBoxInitNetInLayers";
+            this.TextBoxInitNetInLayers.Size = new System.Drawing.Size(71, 101);
+            this.TextBoxInitNetInLayers.TabIndex = 7;
+            // 
+            // label49
+            // 
+            this.label49.AutoSize = true;
+            this.label49.Location = new System.Drawing.Point(7, 86);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(101, 13);
+            this.label49.TabIndex = 15;
+            this.label49.Text = "Activation Function:";
+            // 
+            // label47
+            // 
+            this.label47.AutoSize = true;
+            this.label47.Location = new System.Drawing.Point(8, 25);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(21, 13);
+            this.label47.TabIndex = 10;
+            this.label47.Text = "ID:";
+            // 
+            // label48
+            // 
+            this.label48.AutoSize = true;
+            this.label48.Location = new System.Drawing.Point(308, 12);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(61, 13);
+            this.label48.TabIndex = 12;
+            this.label48.Text = "Out Layers:";
+            // 
+            // ButtonInitNetAddLayer
+            // 
+            this.ButtonInitNetAddLayer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.ButtonInitNetAddLayer.Location = new System.Drawing.Point(144, 494);
+            this.ButtonInitNetAddLayer.Name = "ButtonInitNetAddLayer";
+            this.ButtonInitNetAddLayer.Size = new System.Drawing.Size(109, 38);
+            this.ButtonInitNetAddLayer.TabIndex = 3;
+            this.ButtonInitNetAddLayer.Text = "Add Layer";
+            this.ButtonInitNetAddLayer.UseVisualStyleBackColor = false;
+            this.ButtonInitNetAddLayer.Click += new System.EventHandler(this.ButtonInitNetAddLayer_Click);
+            // 
+            // ButtonInitNetRemoveLayer
+            // 
+            this.ButtonInitNetRemoveLayer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.ButtonInitNetRemoveLayer.Location = new System.Drawing.Point(144, 538);
+            this.ButtonInitNetRemoveLayer.Name = "ButtonInitNetRemoveLayer";
+            this.ButtonInitNetRemoveLayer.Size = new System.Drawing.Size(109, 38);
+            this.ButtonInitNetRemoveLayer.TabIndex = 2;
+            this.ButtonInitNetRemoveLayer.Text = "Remove Layer";
+            this.ButtonInitNetRemoveLayer.UseVisualStyleBackColor = false;
+            this.ButtonInitNetRemoveLayer.Click += new System.EventHandler(this.ButtonInitNetRemoveLayer_Click);
+            // 
+            // PanelGraph
+            // 
+            this.PanelGraph.Controls.Add(this.ButtonInitNetResetLayersPositions);
+            this.PanelGraph.Location = new System.Drawing.Point(6, 6);
+            this.PanelGraph.Name = "PanelGraph";
+            this.PanelGraph.Size = new System.Drawing.Size(1042, 453);
+            this.PanelGraph.TabIndex = 0;
+            // 
+            // ButtonInitNetResetLayersPositions
+            // 
+            this.ButtonInitNetResetLayersPositions.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.ButtonInitNetResetLayersPositions.Location = new System.Drawing.Point(933, 415);
+            this.ButtonInitNetResetLayersPositions.Name = "ButtonInitNetResetLayersPositions";
+            this.ButtonInitNetResetLayersPositions.Size = new System.Drawing.Size(109, 38);
+            this.ButtonInitNetResetLayersPositions.TabIndex = 1;
+            this.ButtonInitNetResetLayersPositions.Text = "ResetPositions";
+            this.ButtonInitNetResetLayersPositions.UseVisualStyleBackColor = false;
+            this.ButtonInitNetResetLayersPositions.Click += new System.EventHandler(this.ButtonResetLayersPositions_Click);
+            // 
+            // LabelInitNetNumberLayers
+            // 
+            this.LabelInitNetNumberLayers.AutoSize = true;
+            this.LabelInitNetNumberLayers.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.LabelInitNetNumberLayers.ForeColor = System.Drawing.Color.Blue;
+            this.LabelInitNetNumberLayers.Location = new System.Drawing.Point(242, 593);
+            this.LabelInitNetNumberLayers.Name = "LabelInitNetNumberLayers";
+            this.LabelInitNetNumberLayers.Size = new System.Drawing.Size(11, 13);
+            this.LabelInitNetNumberLayers.TabIndex = 16;
+            this.LabelInitNetNumberLayers.Text = "-";
+            // 
+            // label46
+            // 
+            this.label46.AutoSize = true;
+            this.label46.Location = new System.Drawing.Point(143, 593);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(93, 13);
+            this.label46.TabIndex = 8;
+            this.label46.Text = "Number of Layers:";
+            // 
             // TabMainControl
             // 
             this.TabMainControl.BackColor = System.Drawing.SystemColors.ControlDark;
@@ -582,7 +874,7 @@ namespace GeneticNetworkTrainerForm
             this.TabMainControl.Controls.Add(this.groupBox6);
             this.TabMainControl.Controls.Add(this.CheckBoxLog);
             this.TabMainControl.Controls.Add(this.groupBox5);
-            this.TabMainControl.Controls.Add(this.groupBox3);
+            this.TabMainControl.Controls.Add(this.StartNetGroup);
             this.TabMainControl.Controls.Add(this.groupBox2);
             this.TabMainControl.Controls.Add(this.groupBox1);
             this.TabMainControl.Controls.Add(this.ButtonStartStop);
@@ -836,7 +1128,7 @@ namespace GeneticNetworkTrainerForm
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(14, 113);
+            this.label18.Location = new System.Drawing.Point(16, 109);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(95, 13);
             this.label18.TabIndex = 5;
@@ -863,7 +1155,7 @@ namespace GeneticNetworkTrainerForm
             // label30
             // 
             this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(14, 89);
+            this.label30.Location = new System.Drawing.Point(16, 83);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(105, 13);
             this.label30.TabIndex = 13;
@@ -916,25 +1208,25 @@ namespace GeneticNetworkTrainerForm
             this.label17.TabIndex = 9;
             this.label17.Text = "Structure Generations:";
             // 
-            // groupBox3
+            // StartNetGroup
             // 
-            this.groupBox3.Controls.Add(this.label23);
-            this.groupBox3.Controls.Add(this.label40);
-            this.groupBox3.Controls.Add(this.label41);
-            this.groupBox3.Controls.Add(this.DropDownFixHidAct);
-            this.groupBox3.Controls.Add(this.CheckBoxFixHidAct);
-            this.groupBox3.Controls.Add(this.DropDownFixOutAct);
-            this.groupBox3.Controls.Add(this.CheckBoxFixOutAct);
-            this.groupBox3.Controls.Add(this.TextBoxNetOutput);
-            this.groupBox3.Controls.Add(this.TextBoxNetInput);
-            this.groupBox3.Controls.Add(this.label4);
-            this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Location = new System.Drawing.Point(6, 127);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(132, 147);
-            this.groupBox3.TabIndex = 30;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Network";
+            this.StartNetGroup.Controls.Add(this.label23);
+            this.StartNetGroup.Controls.Add(this.label40);
+            this.StartNetGroup.Controls.Add(this.label41);
+            this.StartNetGroup.Controls.Add(this.DropDownFixHidAct);
+            this.StartNetGroup.Controls.Add(this.CheckBoxFixHidAct);
+            this.StartNetGroup.Controls.Add(this.DropDownFixOutAct);
+            this.StartNetGroup.Controls.Add(this.CheckBoxFixOutAct);
+            this.StartNetGroup.Controls.Add(this.TextBoxNetOutput);
+            this.StartNetGroup.Controls.Add(this.TextBoxNetInput);
+            this.StartNetGroup.Controls.Add(this.label4);
+            this.StartNetGroup.Controls.Add(this.label3);
+            this.StartNetGroup.Location = new System.Drawing.Point(6, 127);
+            this.StartNetGroup.Name = "StartNetGroup";
+            this.StartNetGroup.Size = new System.Drawing.Size(132, 147);
+            this.StartNetGroup.TabIndex = 30;
+            this.StartNetGroup.TabStop = false;
+            this.StartNetGroup.Text = "Network Basics";
             // 
             // label23
             // 
@@ -2794,6 +3086,10 @@ namespace GeneticNetworkTrainerForm
             // 
             this.columnHeader10.Text = "Neurons";
             // 
+            // columnHeader15
+            // 
+            this.columnHeader15.Text = "Connections";
+            // 
             // ListViewStructIslands
             // 
             this.ListViewStructIslands.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
@@ -3216,10 +3512,6 @@ namespace GeneticNetworkTrainerForm
             this.OpenFileDialog.Filter = "CSV files|*.csv";
             this.OpenFileDialog.Title = "Select .csv Containing Data";
             // 
-            // columnHeader15
-            // 
-            this.columnHeader15.Text = "Connections";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3231,6 +3523,11 @@ namespace GeneticNetworkTrainerForm
             this.Name = "MainForm";
             this.Text = "GeneticNetworkTrainer";
             this.MainTabControl.ResumeLayout(false);
+            this.TabInitialNet.ResumeLayout(false);
+            this.TabInitialNet.PerformLayout();
+            this.GroupBoxInitNetLayerData.ResumeLayout(false);
+            this.GroupBoxInitNetLayerData.PerformLayout();
+            this.PanelGraph.ResumeLayout(false);
             this.TabMainControl.ResumeLayout(false);
             this.TabMainControl.PerformLayout();
             this.groupBox9.ResumeLayout(false);
@@ -3239,8 +3536,8 @@ namespace GeneticNetworkTrainerForm
             this.groupBox6.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
+            this.StartNetGroup.ResumeLayout(false);
+            this.StartNetGroup.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -3328,7 +3625,7 @@ namespace GeneticNetworkTrainerForm
             PlotStructureIslandsSeries.Model.PlotType = PlotType.XY;
             PlotStructureIslandsSeries.Model.Background = OxyColor.FromRgb(89, 15, 88);
             PlotStructureIslandsSeries.Model.TextColor = OxyColor.FromRgb(212, 240, 197);
-            PlotStructureIslandsSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Bottom, Minimum = 0, Maximum = 100, AbsoluteMaximum=500 });
+            PlotStructureIslandsSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Bottom, Minimum = 0, Maximum = 100, AbsoluteMaximum = 500 });
             PlotStructureIslandsSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Left, Minimum = 0, Maximum = 100 });
 
             PlotStructureIslandsHist.Model = new PlotModel();
@@ -3388,6 +3685,33 @@ namespace GeneticNetworkTrainerForm
             PlotInternalSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Left, Minimum = 0, Maximum = 100 });
             LineSeries PlotInternalSeriesLS = new LineSeries { StrokeThickness = 2, Color = OxyColor.FromRgb(255, 255, 255) };
             PlotInternalSeries.Model.Series.Add(PlotInternalSeriesLS);
+
+            NetGraphPlot = new PlotView();
+            NetGraphPlot.Model = new PlotModel() { PlotAreaBorderThickness = new OxyThickness(0) };
+            PanelGraph.Controls.Add(NetGraphPlot);
+            NetGraphPlot.Location = new System.Drawing.Point(0, 0);
+            NetGraphPlot.Size = new System.Drawing.Size(1042, 453);
+            NetGraphPlot.Model.PlotType = PlotType.Polar;
+            NetGraphPlot.Model.Background = OxyColor.FromRgb(100, 100, 100);
+            NetGraphPlot.Model.TextColor = OxyColor.FromRgb(212, 240, 197);
+            NetGraphPlot.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Bottom, Minimum = -0.1, Maximum = 1.1, IsAxisVisible = false, IsZoomEnabled = false, IsPanEnabled = false, Selectable = false });
+            NetGraphPlot.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Left, Minimum = -0.1, Maximum = 1.1, IsAxisVisible = false, IsZoomEnabled = false, IsPanEnabled = false, Selectable = false });
+            OxyColor[] MyScatterColors = new OxyColor[11];
+            MyScatterColors[0] = OxyColor.FromRgb(100, 100, 100);// Grey
+            MyScatterColors[1] = OxyColor.FromRgb(0, 0, 0);// Black
+            MyScatterColors[2] = OxyColor.FromRgb(255, 255, 255);// White
+            MyScatterColors[3] = OxyColor.FromRgb(255, 0, 0);// Red
+            MyScatterColors[4] = OxyColor.FromRgb(255, 0, 204);// Pink
+            MyScatterColors[5] = OxyColor.FromRgb(192, 0, 255);// Purple
+            MyScatterColors[6] = OxyColor.FromRgb(18, 0, 255);// Blue
+            MyScatterColors[7] = OxyColor.FromRgb(0, 255, 246);// Celest
+            MyScatterColors[8] = OxyColor.FromRgb(30, 255, 0);// Green
+            MyScatterColors[9] = OxyColor.FromRgb(255, 246, 0); // Yellow
+            MyScatterColors[10] = OxyColor.FromRgb(255, 125, 0);// Orange
+            NetGraphPlot.Model.Axes.Add(new LinearColorAxis { Key = "MyScatterColors", Position = AxisPosition.None, Palette = new OxyPalette(MyScatterColors), Minimum = 0, Maximum = 1, HighColor = OxyColors.YellowGreen, LowColor = OxyColors.Red });
+            NetGraphPlot.Model.MouseDown += Model_MouseDown;
+            NetGraphPlot.Model.MouseMove += Model_MouseMove;
+            NetGraphPlot.Model.MouseUp += Model_MouseUp;
         }
 
         private Label LabelDynC;
@@ -3416,6 +3740,30 @@ namespace GeneticNetworkTrainerForm
         private Label LabelStatsBestType;
         private Label label44;
         private ColumnHeader columnHeader15;
+        private TabPage TabInitialNet;
+        private Panel PanelGraph;
+        private Button ButtonInitNetResetLayersPositions;
+        private Button ButtonInitNetAddLayer;
+        private Button ButtonInitNetRemoveLayer;
+        private TextBox TextBoxInitNetOutLayers;
+        private Label label48;
+        private Label label47;
+        private Label label46;
+        private TextBox TextBoxInitNetInLayers;
+        private Label label45;
+        private TextBox TextBoxInitNetNeuronNumber;
+        private Label label43;
+        private Label LabelInitNetActivation;
+        private Label LabelInitNetActivationFixed;
+        private Label LabelInitNetID;
+        private Label LabelInitNetNumberLayers;
+        private Label label49;
+        private GroupBox GroupBoxInitNetLayerData;
+        private TextBox TextBoxInitNetInstructions;
+        private RichTextBox InitNetConsole;
+        private Label LabelInitNetWeightsMatrix;
+        private Label label57;
+        private Label LabelInitNetInOut;
     }
 }
 

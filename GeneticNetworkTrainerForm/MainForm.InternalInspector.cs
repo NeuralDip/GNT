@@ -84,7 +84,7 @@ namespace GeneticNetworkTrainerForm
                     for (int Cnt = 0; Cnt < ListViewNets.CheckedIndices.Count; Cnt++)
                     {
                         GenNetwork NetToSave = MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][ListViewInternalIslandsSelection][ListViewNets.CheckedIndices[Cnt]].CloneMe(false, false, false, null);
-                        string NetFileName = "\\I" + MyGenTrainer.MyState.InData[0].Length + "O" + MyGenTrainer.MyState.LabelData[0].Length + "_L" + NetToSave.GetLayersNumber() + "N" + NetToSave.GetNeuronsNumber() + "_D" + DateTime.Now.ToString("dd.MM.yy") + "[" + NetToSave.GetScore() + "_" + NetToSave.GetTestScore() + " ]";
+                        string NetFileName = "\\I" + MyGenTrainer.MyState.InData[0].Length + "O" + MyGenTrainer.MyState.LabelData[0].Length + "_L" + NetToSave.GetLayersCount() + "N" + NetToSave.GetNeuronsCount() + "_D" + DateTime.Now.ToString("dd.MM.yy") + "[" + NetToSave.GetScore() + "_" + NetToSave.GetTestScore() + " ]";
                         NetToSave.ExportNet(NetFileName.Replace(":", "."));
                         AppendFeedback(" Net " + "[" + ListViewStructIslandsSelection + "_" + ListViewStructuresSelection + "_" + ListViewInternalIslandsSelection + "_" + ListViewNets.CheckedIndices[Cnt] + " ] Exported Succesfully.", 0);
                     }
@@ -293,7 +293,7 @@ namespace GeneticNetworkTrainerForm
         }
         private void PopulateInternalIslands()
         {
-            if (MainTabControl.SelectedIndex != 4 || !NewInternalStatsReady) return;
+            if (MainTabControl.SelectedIndex != 5 || !NewInternalStatsReady) return;
 
             ListViewInternalIslands.Items.Clear();
 
@@ -308,7 +308,7 @@ namespace GeneticNetworkTrainerForm
         }
         private void PopulateInternalNets()
         {
-            if (MainTabControl.SelectedIndex != 4 || !NewInternalStatsReady) return;
+            if (MainTabControl.SelectedIndex != 5 || !NewInternalStatsReady) return;
             NewInternalStatsReady = false;
 
             ListViewNets.Items.Clear();

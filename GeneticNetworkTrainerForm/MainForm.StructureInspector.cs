@@ -459,7 +459,7 @@ namespace GeneticNetworkTrainerForm
         }
         private void PopulateStructIslands()
         {
-            if (MainTabControl.SelectedIndex != 3 || !NewStructStatsReady) return;
+            if (MainTabControl.SelectedIndex != 4 || !NewStructStatsReady) return;
 
             ListViewStructIslands.Items.Clear();
             for (int Cnt = 0; Cnt < MyGenTrainer.MyState.CurrNumberStructureIslands; Cnt++)
@@ -474,7 +474,7 @@ namespace GeneticNetworkTrainerForm
         private void PopulateStructs()
         {
             PopulateStructType();
-            if (MainTabControl.SelectedIndex != 3 || !NewStructStatsReady) return;
+            if (MainTabControl.SelectedIndex != 4 || !NewStructStatsReady) return;
             NewStructStatsReady = false;
             NewInternalStatsReady = true;
 
@@ -486,7 +486,7 @@ namespace GeneticNetworkTrainerForm
                 ListViewStructures.Items[Cnt].SubItems.Add(MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[Cnt].TestScoreHistory.ReadLastValue().ToString());
                 ListViewStructures.Items[Cnt].SubItems.Add(MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[Cnt].LayersHistory.ReadLastValue().ToString());
                 ListViewStructures.Items[Cnt].SubItems.Add(MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[Cnt].NeuronsHistory.ReadLastValue().ToString());
-                ListViewStructures.Items[Cnt].SubItems.Add(MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][Cnt][0][0].GetConnectionsNumber().ToString());
+                ListViewStructures.Items[Cnt].SubItems.Add(MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][Cnt][0][0].GetConnectionsCount().ToString());
             }
             ListViewStructuresSelection = 0;
             ListViewStructures.Items[ListViewStructuresSelection].Selected = true;
@@ -508,8 +508,8 @@ namespace GeneticNetworkTrainerForm
             LabelStructTypeNeurons.Text = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].NeuronsHistory.ReadLastValue().ToString();
             if (MyGenTrainer.SettledNetsStructure.Count != 0)
             {
-                LabelStructTypeWeights.Text = MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][0][0].GetWeightsNumber().ToString();
-                LabelStructTypeConnections.Text = MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][0][0].GetConnectionsNumber().ToString();
+                LabelStructTypeWeights.Text = MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][0][0].GetWeightsCount().ToString();
+                LabelStructTypeConnections.Text = MyGenTrainer.SettledNetsStructure[ListViewStructIslandsSelection][ListViewStructuresSelection][0][0].GetConnectionsCount().ToString();
             }
 
         }

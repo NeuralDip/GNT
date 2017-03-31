@@ -23,7 +23,7 @@ namespace GeneticNetworkTrainer
 
         public enum ActivationFunction
         {
-            Linear = 0,
+            None = 0,
             ReLU = 1,
             SoftSign = 2,//f(x) = x / (1+|x|)
             Sigmoid = 3,// f(x) = 1/(1+exp(-x))
@@ -124,9 +124,9 @@ namespace GeneticNetworkTrainer
             Weights = NewWeights;
             return true;
         }
-        public bool ModifyInput(int Start, int Delta)
+        public bool ModifyInput(int Start, int Delta, bool Force = false)
         {
-            if (IsInLayer) return false;
+            if (IsInLayer && !Force) return false;
             float[,] NewWeights = new float[Weights.GetLength(0) + Delta, Weights.GetLength(1)];
             if (Delta < 0)
             {
@@ -161,9 +161,9 @@ namespace GeneticNetworkTrainer
                 Weights = new float[0, Biases.Length];//inputs are zero and so is dim0
             }
         }
-        public void SetNumberOfNeurons(int Delta, Random Rnd)
+        public void SetNumberOfNeurons(int Delta, Random Rnd, bool Force = false)
         {
-            if (IsOutLayer || Biases.Length + Delta <= 0) return;
+            if ((IsOutLayer && !Force) || Biases.Length + Delta <= 0) return;
             float[,] NewWeights = new float[Weights.GetLength(0), Biases.Length + Delta];
             float[] NewBiases = new float[Biases.Length + Delta];
 
@@ -273,7 +273,7 @@ namespace GeneticNetworkTrainer
         {
             switch (MyActivation)
             {
-                case ActivationFunction.Linear:
+                case ActivationFunction.None:
                     // Nothing to Do...
                     break;
                 case ActivationFunction.ReLU:

@@ -5,6 +5,9 @@
 Genetic Network Trainer is a generator of NeuralNetworks, trained through genetic Algorithms.
 For details refer to the Documentation
 
+## Release 1.2
+Added Initial Network tab. You can define the network that structures will start from
+
 ## Release 0.1.1
 
 Added Possibility for "New" Nets in the Internal Genetics

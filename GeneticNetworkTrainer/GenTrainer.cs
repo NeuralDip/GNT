@@ -41,12 +41,7 @@ namespace GeneticNetworkTrainer
             public List<float[]> InData;
             public List<float[]> LabelData;
             public int DataToUse = 0;
-            public int NetInputs = 1;
-            public int NetOutputs = 1;
-            public bool FixOutActivation = false;
-            public int FixedOutActivation = 0;
-            public bool FixHiddenActivation = false;
-            public int FixedHiddenActivation = 0;
+            public GenNetwork BaseGenNetwork;
 
             public bool HalfDataForTesting = false;
 
@@ -330,8 +325,6 @@ namespace GeneticNetworkTrainer
 
         public void ResetStructures(bool Complete, bool StatsOnly)
         {
-            bool[] FixActivationBools = new bool[] { MyState.FixOutActivation, MyState.FixHiddenActivation };
-            int[] FixActivationFunctions = new int[] { MyState.FixedOutActivation, MyState.FixedHiddenActivation };
             if (!StatsOnly)
             {
                 if (Complete) SettledNetsStructure = new List<List<List<GenNetwork[]>>>(); //Islands[Structures[Islands[Nets]]]
@@ -350,10 +343,10 @@ namespace GeneticNetworkTrainer
                             if (Complete)
                             {
                                 SettledNetsStructure[SICnt][SPCnt].Add(new GenNetwork[MyState.InternalPopulationPerIsland]);
-                                for (int IPCnt = 0; IPCnt < MyState.InternalPopulationPerIsland; IPCnt++) SettledNetsStructure[SICnt][SPCnt][IICnt][IPCnt] = new GenNetwork(MyState.NetInputs, 1, MyState.NetOutputs, FixActivationBools, FixActivationFunctions, new int[] { });
+                                for (int IPCnt = 0; IPCnt < MyState.InternalPopulationPerIsland; IPCnt++) SettledNetsStructure[SICnt][SPCnt][IICnt][IPCnt] = MyState.BaseGenNetwork.CloneMe(true, true, true, Rnd);
                             }
                             DevelopingNetsStructure[SICnt][SPCnt].Add(new GenNetwork[MyState.InternalPopulationPerIsland]);
-                            for (int IPCnt = 0; IPCnt < MyState.InternalPopulationPerIsland; IPCnt++) DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt] = new GenNetwork(MyState.NetInputs, 1, MyState.NetOutputs, FixActivationBools, FixActivationFunctions, new int[] { });
+                            for (int IPCnt = 0; IPCnt < MyState.InternalPopulationPerIsland; IPCnt++) DevelopingNetsStructure[SICnt][SPCnt][IICnt][IPCnt] = MyState.BaseGenNetwork.CloneMe(true, true, true, Rnd);
                         }
                     }
                 }
@@ -429,9 +422,6 @@ namespace GeneticNetworkTrainer
 
         private void NextStructGeneration(int SICnt, int ThreadID)
         {
-            bool[] FixActivationBools = new bool[] { MyState.FixOutActivation, MyState.FixHiddenActivation };
-            int[] FixActivationFunctions = new int[] { MyState.FixedOutActivation, MyState.FixedHiddenActivation };
-
             List<List<GenNetwork[]>> NewGeneration = new List<List<GenNetwork[]>>();
             int PopulationFromCrossover = (int)Math.Floor(MyState.StructureCrossover * MyState.StructurePopulationPerIsland);
             int PopulationFromMutation = (int)Math.Floor(MyState.StructureMutation * MyState.StructurePopulationPerIsland);
@@ -470,7 +460,7 @@ namespace GeneticNetworkTrainer
             // Mutating
             for (int OriginalChildIdx = 0; ChildIdx < PopulationFromCrossover + PopulationFromMutation; ChildIdx++, OriginalChildIdx++)
             {
-                GenNetwork NewNetwork = DevelopingNetsStructure[SICnt][OriginalChildIdx][0][0].MutateStruct(MyState.StructureMutationStrength, new float[] { MyState.LayerCost, MyState.FunctionCost, MyState.NeuronCost, MyState.ConnectionCost }, FixActivationBools, FixActivationFunctions, new bool[] { MyState.ScorePenaltyLayers, MyState.ScorePenaltyNeurons, MyState.ScorePenaltyConnections }, new int[] { MyState.ScorePenaltyNumberOfLayers, MyState.ScorePenaltyNumberOfNeurons, MyState.ScorePenaltyNumberOfConnections }, Rnd);
+                GenNetwork NewNetwork = DevelopingNetsStructure[SICnt][OriginalChildIdx][0][0].MutateStruct(MyState.StructureMutationStrength, new float[] { MyState.LayerCost, MyState.FunctionCost, MyState.NeuronCost, MyState.ConnectionCost }, new bool[] { MyState.ScorePenaltyLayers, MyState.ScorePenaltyNeurons, MyState.ScorePenaltyConnections }, new int[] { MyState.ScorePenaltyNumberOfLayers, MyState.ScorePenaltyNumberOfNeurons, MyState.ScorePenaltyNumberOfConnections }, Rnd);
                 NewGeneration.Add(new List<GenNetwork[]>());
                 for (int IICnt = 0; IICnt < CurrInternalIslands[ThreadID]; IICnt++)// Repaet the new structure for all internal Islands and populations underneath
                 {
@@ -615,20 +605,20 @@ namespace GeneticNetworkTrainer
                     case TrainingState.StructEnded:
                         DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].ScoreHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].BestIsland][0].GetScore());
                         DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].TestScoreHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].BestIsland][0].GetTestScore());
-                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].LayersHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][0][0].GetLayersNumber());
-                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].NeuronsHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][0][0].GetNeuronsNumber());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].LayersHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][0][0].GetLayersCount());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].NeuronsHistory.PutValue(DevelopingNetsStructure[SICnt][SPCnt][0][0].GetNeuronsCount());
 
                         DevelopingStatsStructure.StructIslandsStats[SICnt].ScoreHistogramData[SPCnt] = (DevelopingNetsStructure[SICnt][SPCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].BestIsland][0].GetScore());
                         DevelopingStatsStructure.StructIslandsStats[SICnt].TestScoreHistogramData[SPCnt] = (DevelopingNetsStructure[SICnt][SPCnt][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].BestIsland][0].GetTestScore());
-                        DevelopingStatsStructure.StructIslandsStats[SICnt].LayersHistogramData[SPCnt] = (DevelopingNetsStructure[SICnt][SPCnt][0][0].GetLayersNumber());
-                        DevelopingStatsStructure.StructIslandsStats[SICnt].NeuronsHistogramData[SPCnt] = (DevelopingNetsStructure[SICnt][SPCnt][0][0].GetNeuronsNumber());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].LayersHistogramData[SPCnt] = (DevelopingNetsStructure[SICnt][SPCnt][0][0].GetLayersCount());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].NeuronsHistogramData[SPCnt] = (DevelopingNetsStructure[SICnt][SPCnt][0][0].GetNeuronsCount());
                         break;
                     case TrainingState.StructIslandEnded:
 
                         DevelopingStatsStructure.StructIslandsStats[SICnt].ScoreHistory.PutValue(DevelopingNetsStructure[SICnt][DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure].BestIsland][0].GetScore());
                         DevelopingStatsStructure.StructIslandsStats[SICnt].TestScoreHistory.PutValue(DevelopingNetsStructure[SICnt][DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure].BestIsland][0].GetTestScore());
-                        DevelopingStatsStructure.StructIslandsStats[SICnt].LayersHistory.PutValue(DevelopingNetsStructure[SICnt][DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure].BestIsland][0].GetLayersNumber());
-                        DevelopingStatsStructure.StructIslandsStats[SICnt].NeuronsHistory.PutValue(DevelopingNetsStructure[SICnt][DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure].BestIsland][0].GetNeuronsNumber());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].LayersHistory.PutValue(DevelopingNetsStructure[SICnt][DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure].BestIsland][0].GetLayersCount());
+                        DevelopingStatsStructure.StructIslandsStats[SICnt].NeuronsHistory.PutValue(DevelopingNetsStructure[SICnt][DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure][DevelopingStatsStructure.StructIslandsStats[SICnt].StructStats[DevelopingStatsStructure.StructIslandsStats[SICnt].BestStructure].BestIsland][0].GetNeuronsCount());
                         DevelopingStatsStructure.StructIslandsStats[SICnt].ScoreHistogram = ListToHistogram(DevelopingStatsStructure.StructIslandsStats[SICnt].ScoreHistogramData);
                         DevelopingStatsStructure.StructIslandsStats[SICnt].TestScoreHistogram = ListToHistogram(DevelopingStatsStructure.StructIslandsStats[SICnt].TestScoreHistogramData);
                         DevelopingStatsStructure.StructIslandsStats[SICnt].LayersHistogram = ListToHistogram(DevelopingStatsStructure.StructIslandsStats[SICnt].LayersHistogramData);

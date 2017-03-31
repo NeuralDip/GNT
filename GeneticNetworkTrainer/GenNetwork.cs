@@ -214,34 +214,42 @@ namespace GeneticNetworkTrainer
         private Dictionary<int, GenLayer> AllLayers;
         private Adjacency AdjacencyObject;
         private int IncrementalID;
+        bool[] FixedActivations; //{Hidden, Out}
+        int[] FixedActivationFunctions;
 
         private float Score = float.MinValue;
         private float TestScore = float.MinValue;
         private float OutError = 0;
         private float TestOutError = 0;
 
-        private GenNetwork() { AdjacencyObject = new Adjacency(0); AllLayers = new Dictionary<int, GenLayer>(); }
-        public GenNetwork(int InDimention, int InNeurons, int OutNeurons, bool[] FixedActivations, int[] FixedActivationFunctions, params int[] HiddenDimentions)// each integer in the array represents the number of neurons in each hidden layer. Layers are initially connected in series.
+        private GenNetwork()
         {
+            AdjacencyObject = new Adjacency(0);
+            AllLayers = new Dictionary<int, GenLayer>();
+            FixedActivations = new bool[2];
+            FixedActivationFunctions = new int[2];
+        }
+        public GenNetwork(int InDimention, int InNeurons, int OutNeurons, bool[] iFixedActivations, int[] iFixedActivationFunctions)// This constructor does not add hidden layers. 
+        {
+            FixedActivations = iFixedActivations;
+            FixedActivationFunctions = iFixedActivationFunctions;
             AllLayers = new Dictionary<int, GenLayer>();
             AdjacencyObject = new Adjacency(0);
-            AdjacencyObject.AddNode(IncrementalID, true, false);
-            AllLayers.Add(IncrementalID, new GenLayer(InDimention, InNeurons, true, false, IncrementalID++, FixedActivations[1] ? (GenLayer.ActivationFunction)FixedActivationFunctions[1] : GenLayer.ActivationFunction.Linear));
-            for (int Cnt = 1; Cnt < HiddenDimentions.Length + 1; Cnt++)
-            {
-                AdjacencyObject.AddNode(IncrementalID, false, false);
-                AllLayers.Add(IncrementalID, new GenLayer(0, HiddenDimentions[Cnt - 1], false, false, IncrementalID++, FixedActivations[1] ? (GenLayer.ActivationFunction)FixedActivationFunctions[1] : GenLayer.ActivationFunction.Linear));
-                AddConnection(IncrementalID - 2, IncrementalID - 1);
-            }
-            AdjacencyObject.AddNode(IncrementalID, false, true);
-            AllLayers.Add(IncrementalID, new GenLayer(0, OutNeurons, false, true, IncrementalID++, FixedActivations[0] ? (GenLayer.ActivationFunction)FixedActivationFunctions[0] : GenLayer.ActivationFunction.Linear));
-            AddConnection(IncrementalID - 2, IncrementalID - 1);
+            GenLayer NewLayer = new GenLayer(InDimention, InNeurons, true, false, IncrementalID, FixedActivations[0] ? (GenLayer.ActivationFunction)FixedActivationFunctions[1] : GenLayer.ActivationFunction.None);
+            AddLayer(NewLayer);
+
+            NewLayer = new GenLayer(0, OutNeurons, false, true, IncrementalID, FixedActivations[1] ? (GenLayer.ActivationFunction)FixedActivationFunctions[0] : GenLayer.ActivationFunction.None);
+            AddLayer(NewLayer);
+            AddConnection(0, 1);
         }
 
         public GenNetwork CloneMe(bool Reset, bool RandomizeWeights, bool RandomizeBiases, Random Rnd)
         {
             GenNetwork TempNetwork = new GenNetwork();
-
+            TempNetwork.FixedActivations[0] = FixedActivations[0];
+            TempNetwork.FixedActivations[1] = FixedActivations[1];
+            TempNetwork.FixedActivationFunctions[0] = FixedActivationFunctions[0];
+            TempNetwork.FixedActivationFunctions[1] = FixedActivationFunctions[1];
             TempNetwork.IncrementalID = 0;
             foreach (GenLayer CurrLayer in AllLayers.Values)
             {
@@ -272,10 +280,31 @@ namespace GeneticNetworkTrainer
         public float GetTestScore() { return TestScore; }
         public float GetOutError() { return OutError; }
         public float GetTestOutError() { return TestOutError; }
-        public int GetLayersNumber() { return AllLayers.Count; }
-        public int GetWeightsNumber() { int TotatWeights = 0; for (int Cnt = 0; Cnt < AllLayers.Count; Cnt++) TotatWeights += AllLayers[AdjacencyObject.IDsOrder[Cnt]].GetInDim() * AllLayers[AdjacencyObject.IDsOrder[Cnt]].GetOutDim(); return TotatWeights; }
-        public int GetNeuronsNumber() { int TotatNeurons = 0; for (int Cnt = 0; Cnt < AllLayers.Count; Cnt++) TotatNeurons += AllLayers[AdjacencyObject.IDsOrder[Cnt]].GetOutDim(); return TotatNeurons; }
-        public int GetConnectionsNumber()
+        public bool GetIsInLayer(int LayerID) { return AllLayers[LayerID].GetIsInLayer(); }
+        public bool GetIsOutLayer(int LayerID) { return AllLayers[LayerID].GetIsOutLayer(); }
+        public int GetLayersCount() { return AllLayers.Count; }
+        public List<int> GetAllLayersIDs() { return new List<int>(AdjacencyObject.IDsOrder); }
+        public int GetWeightsCount() { int TotatWeights = 0; for (int Cnt = 0; Cnt < AllLayers.Count; Cnt++) TotatWeights += AllLayers[AdjacencyObject.IDsOrder[Cnt]].GetInDim() * AllLayers[AdjacencyObject.IDsOrder[Cnt]].GetOutDim(); return TotatWeights; }
+        public int GetNeuronsCount() { int TotatNeurons = 0; for (int Cnt = 0; Cnt < AllLayers.Count; Cnt++) TotatNeurons += AllLayers[AdjacencyObject.IDsOrder[Cnt]].GetOutDim(); return TotatNeurons; }
+        public int GetLayerNeuronsCount(int LayerID) { return AllLayers[LayerID].GetOutDim(); }
+        public void SetLayerNeuronsCount(int LayerID, int NewNeurons)
+        {
+            int Delta = NewNeurons - GetLayerNeuronsCount(LayerID);
+            AllLayers[LayerID].SetNumberOfNeurons(Delta, new Random());
+            foreach (int CurrOutID in AllLayers[LayerID].GetOutList())
+            {
+                int Start = 0;
+                foreach (int CurrInID in AllLayers[CurrOutID].GetInList())
+                {
+                    if (CurrInID == LayerID) break;
+                    Start += AllLayers[CurrInID].GetOutput().Length;
+                }
+                AllLayers[CurrOutID].ModifyInput(Start, Delta);
+            }
+        }
+        public List<int> GetLayerInLayers(int LayerID) { return new List<int>(AllLayers[LayerID].GetInList()); }
+        public List<int> GetLayerOutLayers(int LayerID) { return new List<int>(AllLayers[LayerID].GetOutList()); }
+        public int GetConnectionsCount()
         {
             int TotatConnections = 0;
             for (int CntX = 0; CntX < AdjacencyObject.IDsOrder.Count; CntX++)
@@ -285,8 +314,18 @@ namespace GeneticNetworkTrainer
         }
         public int GetNetInDimention() { return AllLayers[0].GetInDim(); }
         public int GetNetOutDimention() { return AllLayers[1].GetOutDim(); }
+        public void SetNetInDimention(int NewInDimention) { AllLayers[0].ModifyInput(0, NewInDimention - AllLayers[0].GetInDim(), true); }
+        public void SetNetOutDimention(int NewOutDimention) { AllLayers[1].SetNumberOfNeurons(NewOutDimention - AllLayers[1].GetOutDim(), new Random(), true); }
         public float[] GetNetOutput() { return AllLayers[1].GetOutput(); }
         private float[] GetOutputByID(int ID) { return AllLayers[ID].GetOutput(); }
+        public bool[] GetFixedActivationsBools() { return FixedActivations; }
+        public int[] GetFixedActivationsTypes() { return FixedActivationFunctions; }
+        public void SetFixedActivation(bool[] iFixedActivations, int[] iFixedActivationFunctions) { FixedActivations = iFixedActivations; FixedActivationFunctions = iFixedActivationFunctions; }
+        public List<int> GetEvalOrder()
+        {
+            AdjacencyObject.EvalOrder();
+            return new List<int>(AdjacencyObject.EvaluationOrder);
+        }
         public string LogMeDesciption()
         {
             StringBuilder sb = new StringBuilder();
@@ -306,9 +345,9 @@ namespace GeneticNetworkTrainer
             sb.Append("Test Score : " + TestScore + "\n");
             sb.Append("Out Error : " + OutError + "\n");
             sb.Append("Test Out Error : " + TestOutError + "\n");
-            sb.Append("Layers : " + GetLayersNumber() + "\n");
-            sb.Append("Neurons : " + GetNeuronsNumber() + "\n");
-            sb.Append("Connections : " + GetConnectionsNumber() + "\n");
+            sb.Append("Layers : " + GetLayersCount() + "\n");
+            sb.Append("Neurons : " + GetNeuronsCount() + "\n");
+            sb.Append("Connections : " + GetConnectionsCount() + "\n");
             sb.Append("\n");
             return sb.ToString();
         }
@@ -356,9 +395,9 @@ namespace GeneticNetworkTrainer
 
                 for (int OutCnt = 0; OutCnt < Labels[Cnt].Length; OutCnt++)
                     if ((Cnt & 1) == 1 && Test)
-                        DoubleTestOutError += Math.Pow(Labels[Cnt][OutCnt] - Output[OutCnt],2);
+                        DoubleTestOutError += Math.Pow(Labels[Cnt][OutCnt] - Output[OutCnt], 2);
                     else
-                        DoubleOutError += Math.Pow(Labels[Cnt][OutCnt] - Output[OutCnt],2);
+                        DoubleOutError += Math.Pow(Labels[Cnt][OutCnt] - Output[OutCnt], 2);
                 TestOutError += (float)Math.Sqrt(DoubleTestOutError);
                 OutError += (float)Math.Sqrt(DoubleOutError);
 
@@ -412,20 +451,20 @@ namespace GeneticNetworkTrainer
         }
 
         // Structure GA
-        public GenNetwork MutateStruct(float MutationStength, float[] Costs, bool[] FixedActivations, int[] FixedActivationFunctions, bool[] PenaltyBools, int[] PenaltyValues, Random Rnd)
+        public GenNetwork MutateStruct(float MutationStength, float[] Costs, bool[] PenaltyBools, int[] PenaltyValues, Random Rnd)
         {                                     //Costs:[LayerCost, FunctionCost, NeuronsCost, ConnectionsCost]     //Penalties:[Layers,Neurons,Connections]
             GenNetwork Child = CloneMe(false, false, false, null);
             int[] Mutations = GetMutations(MutationStength, Costs, Rnd);
             // Create or destroy Layers
             float PenaltyThreashold;
-            if (PenaltyBools[0] && PenaltyValues[0] < Child.GetLayersNumber())
-                PenaltyThreashold = 0.5f - (PenaltyValues[0] - Child.GetLayersNumber()) / PenaltyValues[0];
+            if (PenaltyBools[0] && PenaltyValues[0] < Child.GetLayersCount())
+                PenaltyThreashold = 0.5f - (PenaltyValues[0] - Child.GetLayersCount()) / PenaltyValues[0];
             else PenaltyThreashold = 0.5f;
 
             for (int Cnt = 0; Cnt < Mutations[0]; Cnt++)
             {
                 if (Rnd.NextDouble() > PenaltyThreashold)//create
-                    Child.AddLayer(new GenLayer(0, 1, false, false, Child.IncrementalID, FixedActivations[1] ? (GenLayer.ActivationFunction)FixedActivationFunctions[1] : GenLayer.ActivationFunction.Linear));
+                    Child.AddLayer(new GenLayer(0, 1, false, false, Child.IncrementalID, FixedActivations[0] ? (GenLayer.ActivationFunction)FixedActivationFunctions[1] : GenLayer.ActivationFunction.None));
                 else//destroy
                 {
                     int LayerID = Child.AdjacencyObject.IDsOrder[Rnd.Next(1, Child.AllLayers.Count - 1)];
@@ -438,12 +477,12 @@ namespace GeneticNetworkTrainer
             for (int Cnt = 0; Cnt < Mutations[1]; Cnt++)
             {
                 GenLayer CurrLayer = Child.AllLayers[Child.AdjacencyObject.IDsOrder[Rnd.Next(Child.AllLayers.Count)]];
-                if ((CurrLayer.GetIsOutLayer() && !FixedActivations[0]) || !CurrLayer.GetIsOutLayer() && !FixedActivations[1])
+                if ((CurrLayer.GetIsOutLayer() && !FixedActivations[1]) || !CurrLayer.GetIsOutLayer() && !FixedActivations[0])
                     CurrLayer.SetActivationFunc((GenLayer.ActivationFunction)(Rnd.Next(Enum.GetValues(typeof(GenLayer.ActivationFunction)).Length)));
             }
             // Change the number of neurons to one of the layers
-            if (PenaltyBools[1] && PenaltyValues[1] < Child.GetNeuronsNumber())
-                PenaltyThreashold = 0.5f - (PenaltyValues[1] - Child.GetNeuronsNumber()) / PenaltyValues[1];
+            if (PenaltyBools[1] && PenaltyValues[1] < Child.GetNeuronsCount())
+                PenaltyThreashold = 0.5f - (PenaltyValues[1] - Child.GetNeuronsCount()) / PenaltyValues[1];
             else PenaltyThreashold = 0.5f;
 
             for (int Cnt = 0; Cnt < Mutations[2]; Cnt++)
@@ -453,22 +492,12 @@ namespace GeneticNetworkTrainer
 
                 if (Child.AllLayers[ChildIDToChange].GetOutDim() + Delta <= 0) continue;
 
-                Child.AllLayers[ChildIDToChange].SetNumberOfNeurons(Delta, Rnd);
+                Child.SetLayerNeuronsCount(ChildIDToChange, Child.GetLayerNeuronsCount(ChildIDToChange) + Delta);
                 Child.ActionHistory.Add("Change Neurons (ID, Delta) (" + ChildIDToChange + ", " + Delta + ")");
-                foreach (int CurrOutID in Child.AllLayers[ChildIDToChange].GetOutList())
-                {
-                    int Start = 0;
-                    foreach (int CurrInID in Child.AllLayers[CurrOutID].GetInList())
-                    {
-                        if (CurrInID == ChildIDToChange) break;
-                        Start += Child.AllLayers[CurrInID].GetOutput().Length;
-                    }
-                    Child.AllLayers[CurrOutID].ModifyInput(Start, Delta);
-                }
             }
             // Add or remove a connection
-            if (PenaltyBools[2] && PenaltyValues[2] < Child.GetConnectionsNumber())
-                PenaltyThreashold = 0.5f - (PenaltyValues[2] - Child.GetConnectionsNumber()) / PenaltyValues[2];
+            if (PenaltyBools[2] && PenaltyValues[2] < Child.GetConnectionsCount())
+                PenaltyThreashold = 0.5f - (PenaltyValues[2] - Child.GetConnectionsCount()) / PenaltyValues[2];
             else PenaltyThreashold = 0.5f;
 
             for (int Cnt = 0; Cnt < Mutations[3]; Cnt++)
@@ -585,15 +614,65 @@ namespace GeneticNetworkTrainer
 
             return Child;
         }
-
+        // HandCraft
+        public int HCAddLayer()
+        {
+            ActionHistory.Add("Add Layer With ID : " + IncrementalID);
+            AdjacencyObject.AddNode(IncrementalID, false, false);
+            AllLayers.Add(IncrementalID, new GenLayer(0, 1, false, false, IncrementalID, GenLayer.ActivationFunction.None));
+            ActionHistory.Add("Layer Added ");
+            return IncrementalID++;
+        }
+        public bool HCRemoveLayer(int iID)
+        {
+            ActionHistory.Add("Remove Layer With ID : " + iID);
+            if (AllLayers[iID].GetIsOutLayer() || AllLayers[iID].GetIsInLayer()) return false;
+            List<int> ToRemoveList = AllLayers[iID].GetInList();
+            for (int Cnt = ToRemoveList.Count - 1; Cnt >= 0; Cnt--) RemoveConnection(ToRemoveList[Cnt], iID);
+            ToRemoveList = AllLayers[iID].GetOutList();
+            for (int Cnt = ToRemoveList.Count - 1; Cnt >= 0; Cnt--) RemoveConnection(iID, ToRemoveList[Cnt]);
+            AdjacencyObject.RemoveNode(iID);
+            AllLayers.Remove(iID);
+            ActionHistory.Add("Layer Removed");
+            return true;
+        }
+        public int HCAddConnection(int FromID, int ToID)
+        {
+            ActionHistory.Add("Add Connection ( " + FromID + ", " + ToID + ")");
+            if (AllLayers[FromID].GetIsOutLayer() || AllLayers[ToID].GetIsInLayer()) return -1;
+            if (FromID == ToID) return -2;
+            if (AllLayers[FromID].GetOutList().Contains(ToID)) return -3;
+            AdjacencyObject.ConnectFromTo(FromID, ToID);
+            AllLayers[FromID].ConnectToOutput(ToID);
+            AllLayers[ToID].ConnectToInput(FromID, AllLayers[FromID].GetOutput().Length);
+            int[] EdgeToRemove = AdjacencyObject.RemoveCycles();
+            if (EdgeToRemove[0] != -1) return -4;
+            ActionHistory.Add("Connection Added");
+            return 0;
+        }
+        public bool HCRemoveConnection(int FromID, int ToID)
+        {
+            ActionHistory.Add("Remove Connection ( " + FromID + ", " + ToID + ")");
+            if (!AdjacencyObject.RemoveFromTo(FromID, ToID)) return false;
+            int Start = 0;
+            foreach (int CurrLayerID in AllLayers[ToID].GetInList())
+            {
+                if (CurrLayerID == AllLayers[FromID].GetID()) break;
+                Start += AllLayers[CurrLayerID].GetOutput().Length;
+            }
+            AllLayers[ToID].DisconnectFromInput(FromID, Start, AllLayers[FromID].GetOutput().Length);
+            AllLayers[FromID].DisconnectFromOutput(ToID);
+            ActionHistory.Add("Connection Removed");
+            return true;
+        }
         //Privates
         private void AddLayer(GenLayer LayerToAdd)
         {
             ActionHistory.Add("Add Layer With ID : " + IncrementalID);
-            AdjacencyObject.AddNode(IncrementalID, false, false);
+            AdjacencyObject.AddNode(IncrementalID, LayerToAdd.GetIsInLayer(), LayerToAdd.GetIsOutLayer());
             AllLayers.Add(IncrementalID, LayerToAdd);
-            IncrementalID++;
             ActionHistory.Add("Layer Added ");
+            IncrementalID++;
         }
         private bool RemoveLayer(int iID)
         {
@@ -611,9 +690,9 @@ namespace GeneticNetworkTrainer
         private bool AddConnection(int FromID, int ToID)
         {
             ActionHistory.Add("Add Connection ( " + FromID + ", " + ToID + ")");
-            if (FromID == 1 || ToID == 0) return false;// These generate cycles
             if (AllLayers[FromID].GetIsOutLayer() || AllLayers[ToID].GetIsInLayer()) return false;
-            if (FromID == ToID || AllLayers[FromID].GetIsOutLayer() || AllLayers[FromID].GetOutList().Contains(ToID)) return false;
+            if (FromID == ToID) return false;
+            if (AllLayers[FromID].GetOutList().Contains(ToID)) return false;
             AdjacencyObject.ConnectFromTo(FromID, ToID);
             AllLayers[FromID].ConnectToOutput(ToID);
             AllLayers[ToID].ConnectToInput(FromID, AllLayers[FromID].GetOutput().Length);

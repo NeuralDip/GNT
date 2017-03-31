@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections;
 using OxyPlot;
+using OxyPlot.Axes;
 using OxyPlot.WindowsForms;
 using System.Reflection;
 using GeneticNetworkTrainer;
@@ -29,13 +30,24 @@ namespace GeneticNetworkTrainerForm
         private PlotView PlotInternalIslandsSeries;
         private PlotView PlotInternalIslandsHist;
         private PlotView PlotInternalSeries;
+        private PlotView NetGraphPlot;
         private int HistogramsBins = 10;
 
         private string LogFileName;
+        private Random GlobalRandom;
         public MainForm()
         {
             InitializeComponent();
             MyInitialize();
+            MainTabControl.SelectedIndex = 1;
+            GlobalRandom = new Random();
+            TextBoxInitNetInstructions.Text = "";
+            TextBoxInitNetInstructions.AppendText("Left click & drag: Move the layers around.");
+            TextBoxInitNetInstructions.AppendText(Environment.NewLine);
+            TextBoxInitNetInstructions.AppendText("Right click & drag: Connect layers.");
+            TextBoxInitNetInstructions.AppendText(Environment.NewLine);
+            TextBoxInitNetInstructions.AppendText("Right click & drag again: Disconnect layers.");
+
             MyGenTrainer = new GenTrainer(AppendFeedback, SetControlPropertyThreadSafe, GetControlPropertyThreadSafe);
 
             LogFileName = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\Log.txt";
@@ -142,13 +154,15 @@ namespace GeneticNetworkTrainerForm
         {
             if (MainTabControl.SelectedIndex == 0)
             {
-                CheckBoxLog.Parent = MainTabControl.TabPages[0];
-                Console.Parent = MainTabControl.TabPages[0];
+                StartNetGroup.Parent = MainTabControl.TabPages[0];
+                StartNetGroup.Location = new Point(6, 465);
             }
             else if (MainTabControl.SelectedIndex == 1)
             {
+                StartNetGroup.Parent = MainTabControl.TabPages[1];
                 CheckBoxLog.Parent = MainTabControl.TabPages[1];
                 Console.Parent = MainTabControl.TabPages[1];
+                StartNetGroup.Location = new Point(6, 127);
             }
             else if (MainTabControl.SelectedIndex == 2)
             {
@@ -157,24 +171,29 @@ namespace GeneticNetworkTrainerForm
             }
             else if (MainTabControl.SelectedIndex == 3)
             {
-                PopulateAllListViews();
-                GroupBoxGlobalStats.Parent = MainTabControl.TabPages[3];
-                GroupBoxStructType.Parent = MainTabControl.TabPages[3];
-                GroupBoxStructType.Location = new Point(301, 189);
-                GroupBoxStructType.Size = new Size(152, 101);
+                CheckBoxLog.Parent = MainTabControl.TabPages[3];
+                Console.Parent = MainTabControl.TabPages[3];
             }
             else if (MainTabControl.SelectedIndex == 4)
             {
                 PopulateAllListViews();
                 GroupBoxGlobalStats.Parent = MainTabControl.TabPages[4];
                 GroupBoxStructType.Parent = MainTabControl.TabPages[4];
+                GroupBoxStructType.Location = new Point(301, 189);
+                GroupBoxStructType.Size = new Size(152, 101);
+            }
+            else if (MainTabControl.SelectedIndex == 5)
+            {
+                PopulateAllListViews();
+                GroupBoxGlobalStats.Parent = MainTabControl.TabPages[5];
+                GroupBoxStructType.Parent = MainTabControl.TabPages[5];
                 GroupBoxStructType.Location = new Point(242, 186);
                 GroupBoxStructType.Size = new Size(211, 101);
             }
             else
             {
-                CheckBoxLog.Parent = MainTabControl.TabPages[5];
-                Console.Parent = MainTabControl.TabPages[5];
+                CheckBoxLog.Parent = MainTabControl.TabPages[6];
+                Console.Parent = MainTabControl.TabPages[6];
             }
         }
         private void FromTrainerToForm()
@@ -186,12 +205,7 @@ namespace GeneticNetworkTrainerForm
                 LabelDataToUse.Text = MyGenTrainer.MyState.DataToUse.ToString();
                 LabelTotalData.Text = SliderDataToUse.Maximum.ToString();
 
-                TextBoxNetInput.Text = MyGenTrainer.MyState.NetInputs.ToString();
-                TextBoxNetOutput.Text = MyGenTrainer.MyState.NetOutputs.ToString();
-
                 ButtonSelectData.Text = MyGenTrainer.MyState.DataFileName;
-                TextBoxNetInput.Text = MyGenTrainer.MyState.NetInputs.ToString();
-                TextBoxNetOutput.Text = MyGenTrainer.MyState.NetOutputs.ToString();
 
                 StartStopState = StartSaveState.Ready;
                 SaveStateState = StartSaveState.Ready;
@@ -205,9 +219,6 @@ namespace GeneticNetworkTrainerForm
                 LabelDataToUse.Text = "-";
                 LabelTotalData.Text = "-";
 
-                TextBoxNetInput.Text = "1";
-                TextBoxNetOutput.Text = "1";
-
                 ButtonSelectData.Text = "Select Data File";
 
                 StartStopState = StartSaveState.NotReady;
@@ -215,6 +226,7 @@ namespace GeneticNetworkTrainerForm
                 ButtonStartStop.BackColor = Color.DarkGray;
                 ButtonSaveState.BackColor = Color.DarkGray;
             }
+            BaseNetworkToForm();
             FixStartButtStyle();
             FixLoadButtStyle();
             FixSaveButtStyle();
@@ -222,13 +234,6 @@ namespace GeneticNetworkTrainerForm
             SliderDataToUse.Enabled = MyGenTrainer.MyState.DataLoadedCorrectly;
             TextBoxNetInput.Enabled = MyGenTrainer.MyState.DataLoadedCorrectly && (OpenFileDialog.FileName != "");
             TextBoxNetOutput.Enabled = MyGenTrainer.MyState.DataLoadedCorrectly && (OpenFileDialog.FileName != "");
-
-            CheckBoxFixOutAct.Checked = MyGenTrainer.MyState.FixOutActivation;
-            DropDownFixOutAct.Enabled = MyGenTrainer.MyState.FixOutActivation;
-            DropDownFixOutAct.SelectedIndex = MyGenTrainer.MyState.FixedOutActivation;
-            CheckBoxFixHidAct.Checked = MyGenTrainer.MyState.FixHiddenActivation;
-            DropDownFixHidAct.Enabled = MyGenTrainer.MyState.FixHiddenActivation;
-            DropDownFixHidAct.SelectedIndex = MyGenTrainer.MyState.FixedHiddenActivation;
 
             CheckBoxHalfForTesting.Checked = MyGenTrainer.MyState.HalfDataForTesting;
 
@@ -332,7 +337,7 @@ namespace GeneticNetworkTrainerForm
             TextBoxInternalIslandsStep.Text = MyGenTrainer.MyState.InternalIslandsHalvingSteps.ToString();
 
             RadioRulesOutError.Checked = MyGenTrainer.MyState.ScoreRule == GenTrainer.ScoreRules.RuleOutError;
-            RadioRules1X2.Enabled = MyGenTrainer.MyState.NetOutputs == 3;
+            RadioRules1X2.Enabled = MyGenTrainer.MyState.BaseGenNetwork.GetNetOutDimention() == 3;
             RadioRules1X2.Checked = MyGenTrainer.MyState.ScoreRule == GenTrainer.ScoreRules.Rule1X2;
             TextBoxRulesWinThreshold.Text = MyGenTrainer.MyState.ThresholdOfWin.ToString();
             TextBoxRulesWinThreshold.Enabled = RadioRules1X2.Checked;
@@ -423,7 +428,6 @@ namespace GeneticNetworkTrainerForm
             PopulateInternalIslands();
             PopulateInternalNets();
         }
-
         public class ListViewColumnSorter : IComparer
         {
             /// <summary>

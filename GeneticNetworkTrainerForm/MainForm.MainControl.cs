@@ -42,12 +42,12 @@ namespace GeneticNetworkTrainerForm
 
             for (int CntLines = 0; CntLines < AllLines.Length; CntLines++)
             {
-                MyGenTrainer.MyState.InData.Add(new float[MyGenTrainer.MyState.NetInputs]);
-                MyGenTrainer.MyState.LabelData.Add(new float[MyGenTrainer.MyState.NetOutputs]);
+                MyGenTrainer.MyState.InData.Add(new float[MyGenTrainer.MyState.BaseGenNetwork.GetNetInDimention()]);
+                MyGenTrainer.MyState.LabelData.Add(new float[MyGenTrainer.MyState.BaseGenNetwork.GetNetOutDimention()]);
 
                 float[] CurrData = Array.ConvertAll(AllLines[CntLines].Split(','), Single.Parse);
-                Buffer.BlockCopy(CurrData, 0, MyGenTrainer.MyState.InData[CntLines], 0, sizeof(float) * MyGenTrainer.MyState.NetInputs);
-                Buffer.BlockCopy(CurrData, sizeof(float) * (CurrData.Length - MyGenTrainer.MyState.NetOutputs), MyGenTrainer.MyState.LabelData[CntLines], 0, sizeof(float) * MyGenTrainer.MyState.NetOutputs);
+                Buffer.BlockCopy(CurrData, 0, MyGenTrainer.MyState.InData[CntLines], 0, sizeof(float) * MyGenTrainer.MyState.BaseGenNetwork.GetNetInDimention());
+                Buffer.BlockCopy(CurrData, sizeof(float) * (CurrData.Length - MyGenTrainer.MyState.BaseGenNetwork.GetNetOutDimention()), MyGenTrainer.MyState.LabelData[CntLines], 0, sizeof(float) * MyGenTrainer.MyState.BaseGenNetwork.GetNetOutDimention());
             }
         }
         private void ButtonSelectData_Click(object sender, EventArgs e)
@@ -57,7 +57,7 @@ namespace GeneticNetworkTrainerForm
                 try
                 {
                     string[] AllLines = File.ReadAllLines(OpenFileDialog.FileName);
-                    MyGenTrainer.MyState.NetInputs = AllLines[0].Split(',').Length - MyGenTrainer.MyState.NetOutputs;
+                    MyGenTrainer.MyState.BaseGenNetwork.SetNetInDimention(AllLines[0].Split(',').Length - MyGenTrainer.MyState.BaseGenNetwork.GetNetOutDimention());
 
                     ReadFromFileToData(AllLines);
 
@@ -68,8 +68,8 @@ namespace GeneticNetworkTrainerForm
                     LabelDataToUse.Text = AllLines.Length.ToString();
                     LabelTotalData.Text = AllLines.Length.ToString();
 
-                    TextBoxNetInput.Text = MyGenTrainer.MyState.NetInputs.ToString();
-                    TextBoxNetOutput.Text = MyGenTrainer.MyState.NetOutputs.ToString();
+                    TextBoxNetInput.Text = MyGenTrainer.MyState.BaseGenNetwork.GetNetInDimention().ToString();
+                    TextBoxNetOutput.Text = MyGenTrainer.MyState.BaseGenNetwork.GetNetOutDimention().ToString();
                     //MyGenTrainer.MyState.NetInputs = InputDimention;
                     //MyGenTrainer.MyState.NetOutputs = 1;
 
@@ -131,23 +131,23 @@ namespace GeneticNetworkTrainerForm
             if (!int.TryParse(TextBoxNetInput.Text, out NewIn) || NewIn < 1 || (NewIn > AllIOs - 1))
             {
                 AppendFeedback(string.Format("Invalid input. Expected {0} < Integer < {1}", 0, AllIOs), 1);
-                TextBoxNetInput.Text = MyGenTrainer.MyState.NetInputs.ToString();
+                TextBoxNetInput.Text = MyGenTrainer.MyState.BaseGenNetwork.GetNetInDimention().ToString();
             }
             else
             {
                 try
                 {
-                    MyGenTrainer.MyState.NetInputs = NewIn;
-                    MyGenTrainer.MyState.NetOutputs = AllIOs - NewIn;
+                    MyGenTrainer.MyState.BaseGenNetwork.SetNetInDimention(NewIn);
+                    MyGenTrainer.MyState.BaseGenNetwork.SetNetOutDimention(AllIOs - NewIn);
                     TextBoxNetInput.Text = NewIn.ToString();
-                    TextBoxNetOutput.Text = MyGenTrainer.MyState.NetOutputs.ToString();
+                    TextBoxNetOutput.Text = MyGenTrainer.MyState.BaseGenNetwork.GetNetOutDimention().ToString();
                     ReadFromFileToData(AllLines);
                     MyGenTrainer.ResetStructures(true, false);
                     ResetHandTester();
                 }
                 catch (Exception Ex)
                 {
-                    TextBoxNetInput.Text = MyGenTrainer.MyState.NetInputs.ToString();
+                    TextBoxNetInput.Text = MyGenTrainer.MyState.BaseGenNetwork.GetNetInDimention().ToString();
                     AppendFeedback(" Did not Split Data. Message: " + Ex.Message + "\n Trace: " + GetTrace(Ex), 3);
                 }
             }
@@ -162,15 +162,15 @@ namespace GeneticNetworkTrainerForm
             if (!int.TryParse(TextBoxNetOutput.Text, out NewOut) || NewOut < 1 || (NewOut > AllIOs - 1))
             {
                 AppendFeedback(string.Format("Invalid input. Expected {0} < Integer < {1}", 0, AllIOs), 1);
-                TextBoxNetOutput.Text = MyGenTrainer.MyState.NetOutputs.ToString();
+                TextBoxNetOutput.Text = MyGenTrainer.MyState.BaseGenNetwork.GetNetOutDimention().ToString();
             }
             else
             {
                 try
                 {
-                    MyGenTrainer.MyState.NetInputs = AllIOs - NewOut;
-                    MyGenTrainer.MyState.NetOutputs = NewOut;
-                    TextBoxNetInput.Text = MyGenTrainer.MyState.NetInputs.ToString();
+                    MyGenTrainer.MyState.BaseGenNetwork.SetNetInDimention(AllIOs - NewOut);
+                    MyGenTrainer.MyState.BaseGenNetwork.SetNetOutDimention(NewOut);
+                    TextBoxNetInput.Text = MyGenTrainer.MyState.BaseGenNetwork.GetNetInDimention().ToString();
                     TextBoxNetOutput.Text = NewOut.ToString();
 
                     ReadFromFileToData(AllLines);
@@ -188,29 +188,38 @@ namespace GeneticNetworkTrainerForm
                 }
                 catch (Exception Ex)
                 {
-                    TextBoxNetOutput.Text = MyGenTrainer.MyState.NetOutputs.ToString();
+                    TextBoxNetOutput.Text = MyGenTrainer.MyState.BaseGenNetwork.GetNetOutDimention().ToString();
                     AppendFeedback(" Did not Split Data. Message: " + Ex.Message + "\n Trace: " + GetTrace(Ex), 3);
                 }
             }
         }
         private void CheckBoxFixOutAct_CheckedChanged(object sender, EventArgs e)
         {
-            MyGenTrainer.MyState.FixOutActivation = CheckBoxFixOutAct.Checked;
-            DropDownFixOutAct.Enabled = MyGenTrainer.MyState.FixOutActivation;
+            UpdateFormToFixedActivations();
+            DropDownFixOutAct.Enabled = CheckBoxFixOutAct.Checked;
+            PopulateLayerData();
         }
         private void CheckBoxFixHidAct_CheckedChanged(object sender, EventArgs e)
         {
-            MyGenTrainer.MyState.FixHiddenActivation = CheckBoxFixHidAct.Checked;
-            DropDownFixHidAct.Enabled = MyGenTrainer.MyState.FixHiddenActivation;
+            UpdateFormToFixedActivations();
+            DropDownFixHidAct.Enabled = CheckBoxFixHidAct.Checked;
+            PopulateLayerData();
         }
         private void DropDownFixOutAct_SelectedIndexChanged(object sender, EventArgs e)
         {
-            MyGenTrainer.MyState.FixedOutActivation = DropDownFixOutAct.SelectedIndex;
+            UpdateFormToFixedActivations();
+            PopulateLayerData();
         }
-
         private void DropDownFixHidAct_SelectedIndexChanged(object sender, EventArgs e)
         {
-            MyGenTrainer.MyState.FixedHiddenActivation = DropDownFixHidAct.SelectedIndex;
+            UpdateFormToFixedActivations();
+            PopulateLayerData();
+        }
+        private void UpdateFormToFixedActivations()
+        {
+            bool[] ActivationBools = new bool[] { CheckBoxFixHidAct.Checked, CheckBoxFixOutAct.Checked };
+            int[] ActivationValues = new int[] { DropDownFixHidAct.SelectedIndex, DropDownFixOutAct.SelectedIndex };
+            MyGenTrainer.MyState.BaseGenNetwork.SetFixedActivation(ActivationBools, ActivationValues);
         }
 
         private void TextBoxInternalPopulation_TextChanged(object sender, EventArgs e)
