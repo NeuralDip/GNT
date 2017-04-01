@@ -501,7 +501,7 @@ namespace GeneticNetworkTrainerForm
 
         private void UpdateGlobalStopWatch(object sender, EventArgs e)
         {
-            LabelGlobalStopwatchElapsed.Text = MyGlobalStopWatch.Elapsed.ToString("h\\:mm\\:ss");
+            LabelGlobalStopwatchElapsed.Text = MyGlobalStopWatch.Elapsed.ToString("d\\:h\\:mm\\:ss");
         }
         private void FixLoadButtStyle()
         {

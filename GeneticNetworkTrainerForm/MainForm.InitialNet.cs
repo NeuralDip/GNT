@@ -60,10 +60,14 @@ namespace GeneticNetworkTrainerForm
             if (LayerInListSelected == -1) return;
             int NewValue;
             if (!int.TryParse(TextBoxInitNetNeuronNumber.Text, out NewValue) || NewValue < 1)
+            {
+                MyAppendColoredText(InitNetConsole, "Neurons count can only be a positive integer.", Color.Yellow);
                 TextBoxInitNetNeuronNumber.Text = MyGenTrainer.MyState.BaseGenNetwork.GetLayerNeuronsCount(ListToLayers[LayerInListSelected]).ToString();
+            }
             else
             {
                 MyGenTrainer.MyState.BaseGenNetwork.SetLayerNeuronsCount(ListToLayers[LayerInListSelected], NewValue);
+                MyAppendColoredText(InitNetConsole, "Set neurons of layer " + ListToLayers[LayerInListSelected] + " To " + NewValue + ".", Color.White);
                 PopulateLayerData();
                 DrawGraphPlot(false);
             }
