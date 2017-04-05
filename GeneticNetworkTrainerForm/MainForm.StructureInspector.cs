@@ -30,7 +30,7 @@ namespace GeneticNetworkTrainerForm
                     {
                         for (int IPCnt = 0; IPCnt < MyGenTrainer.MyState.InternalPopulationPerIsland; IPCnt++)
                         {
-                           if( MyGenTrainer.SettledStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].ScoreHistory.ReadLastValue()> BestScore)
+                            if (MyGenTrainer.SettledStatsStructure.StructIslandsStats[SICnt].StructStats[SPCnt].InternalIslandsStats[IICnt].NetStats[IPCnt].ScoreHistory.ReadLastValue() > BestScore)
                             {
                                 BestStructIsland = SICnt;
                                 BestStruct = SPCnt;
@@ -186,6 +186,7 @@ namespace GeneticNetworkTrainerForm
         {
             if (RadioStructIslandSeries.Checked)// Series
             {
+                int StartIndex;
                 if (ListViewStructIslandsSelection >= MyGenTrainer.SettledStatsStructure.StructIslandsStats.Count)
                     ListViewStructIslandsSelection = 0;
                 PlotStructureIslandsSeries.Model.Series.Clear();
@@ -197,7 +198,9 @@ namespace GeneticNetworkTrainerForm
 
                     float[] MyData = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].ScoreHistory.GetData();
                     if (MyData == null || MyData.Length == 0) return;
-                    for (int Cnt = 0; Cnt < MyData.Length; Cnt++)
+                    StartIndex = 0;
+                    if (MyData.Length > 500) StartIndex = MyData.Length - 500;
+                    for (int Cnt = StartIndex; Cnt < MyData.Length; Cnt++)
                     {
                         if (MyData[Cnt] > MaxY) MaxY = MyData[Cnt];
                         if (MyData[Cnt] < MinY) MinY = MyData[Cnt];
@@ -205,6 +208,7 @@ namespace GeneticNetworkTrainerForm
                     }
                     PlotStructureIslandsSeries.Model.Series.Add(PlotStructureIslandsSeriesLS);
                     PlotStructureIslandsSeries.Model.Axes[0].Maximum = MyData.Length;
+                    PlotStructureIslandsSeries.Model.Axes[0].Minimum = StartIndex;
                     PlotStructureIslandsSeries.Model.Axes[1].Maximum = MaxY + 1;
                     PlotStructureIslandsSeries.Model.Axes[1].Minimum = MinY;
                 }
@@ -216,7 +220,9 @@ namespace GeneticNetworkTrainerForm
 
                     float[] MyData = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].TestScoreHistory.GetData();
                     if (MyData == null || MyData.Length == 0) return;
-                    for (int Cnt = 0; Cnt < MyData.Length; Cnt++)
+                    StartIndex = 0;
+                    if (MyData.Length > 500) StartIndex = MyData.Length - 500;
+                    for (int Cnt = StartIndex; Cnt < MyData.Length; Cnt++)
                     {
                         if (MyData[Cnt] > MaxY) MaxY = MyData[Cnt];
                         if (MyData[Cnt] < MinY) MinY = MyData[Cnt];
@@ -224,6 +230,7 @@ namespace GeneticNetworkTrainerForm
                     }
                     PlotStructureIslandsSeries.Model.Series.Add(PlotStructureIslandsSeriesLS);
                     PlotStructureIslandsSeries.Model.Axes[0].Maximum = MyData.Length;
+                    PlotStructureIslandsSeries.Model.Axes[0].Minimum = StartIndex;
                     PlotStructureIslandsSeries.Model.Axes[1].Maximum = MaxY + 1;
                     PlotStructureIslandsSeries.Model.Axes[1].Minimum = MinY;
                 }
@@ -236,7 +243,9 @@ namespace GeneticNetworkTrainerForm
                     float[] MyData = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].LayersHistory.GetData();
 
                     if (MyData == null || MyData.Length == 0) return;
-                    for (int Cnt = 0; Cnt < MyData.Length; Cnt++)
+                    StartIndex = 0;
+                    if (MyData.Length > 500) StartIndex = MyData.Length - 500;
+                    for (int Cnt = StartIndex; Cnt < MyData.Length; Cnt++)
                     {
                         if (MyData[Cnt] > MaxY) MaxY = MyData[Cnt];
                         if (MyData[Cnt] < MinY) MinY = MyData[Cnt];
@@ -244,6 +253,7 @@ namespace GeneticNetworkTrainerForm
                     }
                     PlotStructureIslandsSeries.Model.Series.Add(PlotStructureIslandsSeriesLS);
                     PlotStructureIslandsSeries.Model.Axes[0].Maximum = MyData.Length;
+                    PlotStructureIslandsSeries.Model.Axes[0].Minimum = StartIndex;
                     PlotStructureIslandsSeries.Model.Axes[1].Maximum = MaxY + 1;
                     PlotStructureIslandsSeries.Model.Axes[1].Minimum = MinY;
                 }
@@ -255,7 +265,9 @@ namespace GeneticNetworkTrainerForm
 
                     float[] MyData = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].NeuronsHistory.GetData();
                     if (MyData == null || MyData.Length == 0) return;
-                    for (int Cnt = 0; Cnt < MyData.Length; Cnt++)
+                    StartIndex = 0;
+                    if (MyData.Length > 500) StartIndex = MyData.Length - 500;
+                    for (int Cnt = StartIndex; Cnt < MyData.Length; Cnt++)
                     {
                         if (MyData[Cnt] > MaxY) MaxY = MyData[Cnt];
                         if (MyData[Cnt] < MinY) MinY = MyData[Cnt];
@@ -263,6 +275,7 @@ namespace GeneticNetworkTrainerForm
                     }
                     PlotStructureIslandsSeries.Model.Series.Add(PlotStructureIslandsSeriesLS);
                     PlotStructureIslandsSeries.Model.Axes[0].Maximum = MyData.Length;
+                    PlotStructureIslandsSeries.Model.Axes[0].Minimum = StartIndex;
                     PlotStructureIslandsSeries.Model.Axes[1].Maximum = MaxY + 1;
                     PlotStructureIslandsSeries.Model.Axes[1].Minimum = MinY;
                 }
@@ -374,6 +387,7 @@ namespace GeneticNetworkTrainerForm
         }
         private void RedrawStructPlot()
         {
+            int StartIndex;
             if (ListViewStructIslandsSelection >= MyGenTrainer.SettledStatsStructure.StructIslandsStats.Count)
                 ListViewStructIslandsSelection = 0;
             if (ListViewStructuresSelection >= MyGenTrainer.SettledStatsStructure.StructIslandsStats[0].StructStats.Count)
@@ -387,7 +401,9 @@ namespace GeneticNetworkTrainerForm
 
                 float[] MyData = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].ScoreHistory.GetData();
                 if (MyData == null || MyData.Length == 0) return;
-                for (int Cnt = 0; Cnt < MyData.Length; Cnt++)
+                StartIndex = 0;
+                if (MyData.Length > 500) StartIndex = MyData.Length - 500;
+                for (int Cnt = StartIndex; Cnt < MyData.Length; Cnt++)
                 {
                     if (MyData[Cnt] > MaxY) MaxY = MyData[Cnt];
                     if (MyData[Cnt] < MinY) MinY = MyData[Cnt];
@@ -395,6 +411,7 @@ namespace GeneticNetworkTrainerForm
                 }
                 PlotStructureSeries.Model.Series.Add(PlotStructureIslandsSeriesLS);
                 PlotStructureSeries.Model.Axes[0].Maximum = MyData.Length;
+                PlotStructureSeries.Model.Axes[0].Minimum = StartIndex;
                 PlotStructureSeries.Model.Axes[1].Maximum = MaxY + 1;
                 PlotStructureSeries.Model.Axes[1].Minimum = MinY;
             }
@@ -406,7 +423,9 @@ namespace GeneticNetworkTrainerForm
 
                 float[] MyData = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].TestScoreHistory.GetData();
                 if (MyData == null || MyData.Length == 0) return;
-                for (int Cnt = 0; Cnt < MyData.Length; Cnt++)
+                StartIndex = 0;
+                if (MyData.Length > 500) StartIndex = MyData.Length - 500;
+                for (int Cnt = StartIndex; Cnt < MyData.Length; Cnt++)
                 {
                     if (MyData[Cnt] > MaxY) MaxY = MyData[Cnt];
                     if (MyData[Cnt] < MinY) MinY = MyData[Cnt];
@@ -414,6 +433,7 @@ namespace GeneticNetworkTrainerForm
                 }
                 PlotStructureSeries.Model.Series.Add(PlotStructureIslandsSeriesLS);
                 PlotStructureSeries.Model.Axes[0].Maximum = MyData.Length;
+                PlotStructureSeries.Model.Axes[0].Minimum = StartIndex;
                 PlotStructureSeries.Model.Axes[1].Maximum = MaxY + 1;
                 PlotStructureSeries.Model.Axes[1].Minimum = MinY;
             }
@@ -425,7 +445,9 @@ namespace GeneticNetworkTrainerForm
 
                 float[] MyData = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].LayersHistory.GetData();
                 if (MyData == null || MyData.Length == 0) return;
-                for (int Cnt = 0; Cnt < MyData.Length; Cnt++)
+                StartIndex = 0;
+                if (MyData.Length > 500) StartIndex = MyData.Length - 500;
+                for (int Cnt = StartIndex; Cnt < MyData.Length; Cnt++)
                 {
                     if (MyData[Cnt] > MaxY) MaxY = MyData[Cnt];
                     if (MyData[Cnt] < MinY) MinY = MyData[Cnt];
@@ -433,6 +455,7 @@ namespace GeneticNetworkTrainerForm
                 }
                 PlotStructureSeries.Model.Series.Add(PlotStructureIslandsSeriesLS);
                 PlotStructureSeries.Model.Axes[0].Maximum = MyData.Length;
+                PlotStructureSeries.Model.Axes[0].Minimum = StartIndex;
                 PlotStructureSeries.Model.Axes[1].Maximum = MaxY + 1;
                 PlotStructureSeries.Model.Axes[1].Minimum = MinY;
             }
@@ -444,7 +467,9 @@ namespace GeneticNetworkTrainerForm
 
                 float[] MyData = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].NeuronsHistory.GetData();
                 if (MyData == null || MyData.Length == 0) return;
-                for (int Cnt = 0; Cnt < MyData.Length; Cnt++)
+                StartIndex = 0;
+                if (MyData.Length > 500) StartIndex = MyData.Length - 500;
+                for (int Cnt = StartIndex; Cnt < MyData.Length; Cnt++)
                 {
                     if (MyData[Cnt] > MaxY) MaxY = MyData[Cnt];
                     if (MyData[Cnt] < MinY) MinY = MyData[Cnt];
@@ -452,6 +477,7 @@ namespace GeneticNetworkTrainerForm
                 }
                 PlotStructureSeries.Model.Series.Add(PlotStructureIslandsSeriesLS);
                 PlotStructureSeries.Model.Axes[0].Maximum = MyData.Length;
+                PlotStructureSeries.Model.Axes[0].Minimum = StartIndex;
                 PlotStructureSeries.Model.Axes[1].Maximum = MaxY + 1;
                 PlotStructureSeries.Model.Axes[1].Minimum = MinY;
             }

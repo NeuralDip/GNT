@@ -99,6 +99,7 @@ namespace GeneticNetworkTrainerForm
         {
             if (RadioInternalSeries.Checked)// Series
             {
+                int StartIndex;
                 PlotInternalIslandsSeries.Model.Series.Clear();
                 if (RadioInternalScore.Checked)
                 {
@@ -108,7 +109,9 @@ namespace GeneticNetworkTrainerForm
 
                     float[] MyData = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].InternalIslandsStats[ListViewInternalIslandsSelection].ScoreHistory.GetData();
                     if (MyData == null || MyData.Length == 0) return;
-                    for (int Cnt = 0; Cnt < MyData.Length; Cnt++)
+                    StartIndex = 0;
+                    if (MyData.Length > 500) StartIndex = MyData.Length - 500;
+                    for (int Cnt = StartIndex; Cnt < MyData.Length; Cnt++)
                     {
                         if (MyData[Cnt] > MaxY) MaxY = MyData[Cnt];
                         if (MyData[Cnt] < MinY) MinY = MyData[Cnt];
@@ -116,6 +119,7 @@ namespace GeneticNetworkTrainerForm
                     }
                     PlotInternalIslandsSeries.Model.Series.Add(PlotInternalIslandsSeriesLS);
                     PlotInternalIslandsSeries.Model.Axes[0].Maximum = MyData.Length;
+                    PlotInternalIslandsSeries.Model.Axes[0].Minimum = StartIndex;
                     PlotInternalIslandsSeries.Model.Axes[1].Maximum = MaxY + 1;
                     PlotInternalIslandsSeries.Model.Axes[1].Minimum = MinY;
                 }
@@ -127,7 +131,9 @@ namespace GeneticNetworkTrainerForm
 
                     float[] MyData = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].InternalIslandsStats[ListViewInternalIslandsSelection].TestScoreHistory.GetData();
                     if (MyData == null || MyData.Length == 0) return;
-                    for (int Cnt = 0; Cnt < MyData.Length; Cnt++)
+                    StartIndex = 0;
+                    if (MyData.Length > 500) StartIndex = MyData.Length - 500;
+                    for (int Cnt = StartIndex; Cnt < MyData.Length; Cnt++)
                     {
                         if (MyData[Cnt] > MaxY) MaxY = MyData[Cnt];
                         if (MyData[Cnt] < MinY) MinY = MyData[Cnt];
@@ -135,6 +141,7 @@ namespace GeneticNetworkTrainerForm
                     }
                     PlotInternalIslandsSeries.Model.Series.Add(PlotInternalIslandsSeriesLS);
                     PlotInternalIslandsSeries.Model.Axes[0].Maximum = MyData.Length;
+                    PlotInternalIslandsSeries.Model.Axes[0].Minimum = StartIndex;
                     PlotInternalIslandsSeries.Model.Axes[1].Maximum = MaxY + 1;
                     PlotInternalIslandsSeries.Model.Axes[1].Minimum = MinY;
                 }
@@ -199,6 +206,7 @@ namespace GeneticNetworkTrainerForm
         private void RedrawInternalPlot()
         {
             PlotInternalSeries.Model.Series.Clear();
+            int StartIndex;
             if (ListViewNets.CheckedIndices.Count > 1)// Show only score from all selected networks
             {
                 float MaxY = float.MinValue;
@@ -209,7 +217,9 @@ namespace GeneticNetworkTrainerForm
                     LineSeries PlotInternalNetsLS = new LineSeries { Title = ListViewNets.CheckedIndices[GraphCnt] + "-Score", StrokeThickness = 2, Color = GetOxyColor(GraphCnt) };
                     MyData = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].InternalIslandsStats[ListViewInternalIslandsSelection].NetStats[ListViewNets.CheckedIndices[GraphCnt]].ScoreHistory.GetData();
                     if (MyData == null || MyData.Length == 0) return;
-                    for (int Cnt = 0; Cnt < MyData.Length; Cnt++)
+                    StartIndex = 0;
+                    if (MyData.Length > 500) StartIndex = MyData.Length - 500;
+                    for (int Cnt = StartIndex; Cnt < MyData.Length; Cnt++)
                     {
                         if (MyData[Cnt] > MaxY) MaxY = MyData[Cnt];
                         if (MyData[Cnt] < MinY) MinY = MyData[Cnt];
@@ -217,6 +227,7 @@ namespace GeneticNetworkTrainerForm
                     }
                     PlotInternalSeries.Model.Series.Add(PlotInternalNetsLS);
                     PlotInternalSeries.Model.Axes[0].Maximum = MyData.Length;
+                    PlotInternalSeries.Model.Axes[0].Minimum = StartIndex;
                     PlotInternalSeries.Model.Axes[1].Maximum = MaxY + 1;
                     PlotInternalSeries.Model.Axes[1].Minimum = MinY;
                 }
@@ -228,7 +239,9 @@ namespace GeneticNetworkTrainerForm
                 LineSeries PlotInternalNetScore = new LineSeries { Title = "Score", StrokeThickness = 2, Color = GetOxyColor(0) };
                 float[] MyData = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].InternalIslandsStats[ListViewInternalIslandsSelection].NetStats[ListViewNets.CheckedIndices[0]].ScoreHistory.GetData();
                 if (MyData == null || MyData.Length == 0) return;
-                for (int Cnt = 0; Cnt < MyData.Length; Cnt++)
+                StartIndex = 0;
+                if (MyData.Length > 500) StartIndex = MyData.Length - 500;
+                for (int Cnt = StartIndex; Cnt < MyData.Length; Cnt++)
                 {
                     if (MyData[Cnt] > MaxY) MaxY = MyData[Cnt];
                     if (MyData[Cnt] < MinY) MinY = MyData[Cnt];
@@ -236,13 +249,16 @@ namespace GeneticNetworkTrainerForm
                 }
                 PlotInternalSeries.Model.Series.Add(PlotInternalNetScore);
                 PlotInternalSeries.Model.Axes[0].Maximum = MyData.Length;
+                PlotInternalSeries.Model.Axes[0].Minimum = StartIndex;
                 PlotInternalSeries.Model.Axes[1].Maximum = MaxY + 1;
                 PlotInternalSeries.Model.Axes[1].Minimum = MinY;
                 if (CheckBoxHalfForTesting.Checked)
                 {
                     LineSeries PlotInternalNetTstScore = new LineSeries { Title = "Test Score", StrokeThickness = 2, Color = GetOxyColor(1) };
                     MyData = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].InternalIslandsStats[ListViewInternalIslandsSelection].NetStats[ListViewNets.CheckedIndices[0]].TestScoreHistory.GetData();
-                    for (int Cnt = 0; Cnt < MyData.Length; Cnt++)
+                    StartIndex = 0;
+                    if (MyData.Length > 500) StartIndex = MyData.Length - 500;
+                    for (int Cnt = StartIndex; Cnt < MyData.Length; Cnt++)
                     {
                         if (MyData[Cnt] > MaxY) MaxY = MyData[Cnt];
                         if (MyData[Cnt] < MinY) MinY = MyData[Cnt];
@@ -250,12 +266,15 @@ namespace GeneticNetworkTrainerForm
                     }
                     PlotInternalSeries.Model.Series.Add(PlotInternalNetTstScore);
                     PlotInternalSeries.Model.Axes[0].Maximum = MyData.Length;
+                    PlotInternalSeries.Model.Axes[0].Minimum = StartIndex;
                     PlotInternalSeries.Model.Axes[1].Maximum = MaxY + 1;
                     PlotInternalSeries.Model.Axes[1].Minimum = MinY;
                 }
                 LineSeries PlotInternalNetOuterr = new LineSeries { Title = "Out Error", StrokeThickness = 2, Color = GetOxyColor(2) };
                 MyData = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].InternalIslandsStats[ListViewInternalIslandsSelection].NetStats[ListViewNets.CheckedIndices[0]].OutErrorHistory.GetData();
-                for (int Cnt = 0; Cnt < MyData.Length; Cnt++)
+                StartIndex = 0;
+                if (MyData.Length > 500) StartIndex = MyData.Length - 500;
+                for (int Cnt = StartIndex; Cnt < MyData.Length; Cnt++)
                 {
                     if (MyData[Cnt] > MaxY) MaxY = MyData[Cnt];
                     if (MyData[Cnt] < MinY) MinY = MyData[Cnt];
@@ -263,13 +282,16 @@ namespace GeneticNetworkTrainerForm
                 }
                 PlotInternalSeries.Model.Series.Add(PlotInternalNetOuterr);
                 PlotInternalSeries.Model.Axes[0].Maximum = MyData.Length;
+                PlotInternalSeries.Model.Axes[0].Minimum = StartIndex;
                 PlotInternalSeries.Model.Axes[1].Maximum = MaxY + 1;
                 PlotInternalSeries.Model.Axes[1].Minimum = MinY;
+                StartIndex = 0;
+                if (MyData.Length > 500) StartIndex = MyData.Length - 500;
                 if (CheckBoxHalfForTesting.Checked)
                 {
                     LineSeries PlotInternalNetTstOutErr = new LineSeries { Title = "Test Out Error", StrokeThickness = 2, Color = GetOxyColor(3) };
                     MyData = MyGenTrainer.SettledStatsStructure.StructIslandsStats[ListViewStructIslandsSelection].StructStats[ListViewStructuresSelection].InternalIslandsStats[ListViewInternalIslandsSelection].NetStats[ListViewNets.CheckedIndices[0]].TestOutErrorHistory.GetData();
-                    for (int Cnt = 0; Cnt < MyData.Length; Cnt++)
+                    for (int Cnt = StartIndex; Cnt < MyData.Length; Cnt++)
                     {
                         if (MyData[Cnt] > MaxY) MaxY = MyData[Cnt];
                         if (MyData[Cnt] < MinY) MinY = MyData[Cnt];
@@ -277,6 +299,7 @@ namespace GeneticNetworkTrainerForm
                     }
                     PlotInternalSeries.Model.Series.Add(PlotInternalNetTstOutErr);
                     PlotInternalSeries.Model.Axes[0].Maximum = MyData.Length;
+                    PlotInternalSeries.Model.Axes[0].Minimum = StartIndex;
                     PlotInternalSeries.Model.Axes[1].Maximum = MaxY + 1;
                     PlotInternalSeries.Model.Axes[1].Minimum = MinY;
                 }

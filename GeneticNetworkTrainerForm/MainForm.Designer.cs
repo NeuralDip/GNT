@@ -3625,7 +3625,7 @@ namespace GeneticNetworkTrainerForm
             PlotStructureIslandsSeries.Model.PlotType = PlotType.XY;
             PlotStructureIslandsSeries.Model.Background = OxyColor.FromRgb(89, 15, 88);
             PlotStructureIslandsSeries.Model.TextColor = OxyColor.FromRgb(212, 240, 197);
-            PlotStructureIslandsSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Bottom, Minimum = 0, Maximum = 100, AbsoluteMaximum = 500 });
+            PlotStructureIslandsSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Bottom, Minimum = 0, Maximum = 100 });
             PlotStructureIslandsSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Left, Minimum = 0, Maximum = 100 });
 
             PlotStructureIslandsHist.Model = new PlotModel();
@@ -3645,7 +3645,7 @@ namespace GeneticNetworkTrainerForm
             PlotStructureSeries.Model.PlotType = PlotType.XY;
             PlotStructureSeries.Model.Background = OxyColor.FromRgb(89, 15, 88);
             PlotStructureSeries.Model.TextColor = OxyColor.FromRgb(212, 240, 197);
-            PlotStructureSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Bottom, Minimum = 0, Maximum = 100, AbsoluteMaximum = 500 });
+            PlotStructureSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Bottom, Minimum = 0, Maximum = 100 });
             PlotStructureSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Left, Minimum = 0, Maximum = 100 });
             LineSeries PlotStructureSeriesLS = new LineSeries { StrokeThickness = 2, Color = OxyColor.FromRgb(255, 255, 255) };
             PlotStructureSeries.Model.Series.Add(PlotStructureSeriesLS);
@@ -3657,7 +3657,7 @@ namespace GeneticNetworkTrainerForm
             PlotInternalIslandsSeries.Model.PlotType = PlotType.XY;
             PlotInternalIslandsSeries.Model.Background = OxyColor.FromRgb(89, 15, 88);
             PlotInternalIslandsSeries.Model.TextColor = OxyColor.FromRgb(212, 240, 197);
-            PlotInternalIslandsSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Bottom, Minimum = 0, Maximum = 100, AbsoluteMaximum = 500 });
+            PlotInternalIslandsSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Bottom, Minimum = 0, Maximum = 100 });
             PlotInternalIslandsSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Left, Minimum = 0, Maximum = 100 });
             LineSeries PlotInternalIslandsSeriesLS = new LineSeries { StrokeThickness = 2, Color = OxyColor.FromRgb(255, 255, 255) };
             PlotInternalIslandsSeries.Model.Series.Add(PlotInternalIslandsSeriesLS);
@@ -3681,7 +3681,7 @@ namespace GeneticNetworkTrainerForm
             PlotInternalSeries.Model.PlotType = PlotType.XY;
             PlotInternalSeries.Model.Background = OxyColor.FromRgb(89, 15, 88);
             PlotInternalSeries.Model.TextColor = OxyColor.FromRgb(212, 240, 197);
-            PlotInternalSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Bottom, Minimum = 0, Maximum = 100, AbsoluteMaximum = 500 });
+            PlotInternalSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Bottom, Minimum = 0, Maximum = 100 });
             PlotInternalSeries.Model.Axes.Add(new LinearAxis() { Position = AxisPosition.Left, Minimum = 0, Maximum = 100 });
             LineSeries PlotInternalSeriesLS = new LineSeries { StrokeThickness = 2, Color = OxyColor.FromRgb(255, 255, 255) };
             PlotInternalSeries.Model.Series.Add(PlotInternalSeriesLS);
